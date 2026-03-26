@@ -171,6 +171,49 @@ public class GalaxyGenerator : MonoBehaviour
 
         return PlanetType.AstraPrime;
     }
+
+    void OnDrawGizmos()
+    {
+        DrawGridGizmos();
+        DrawConnectionsGizmos();
+    }
+
+    void DrawGridGizmos()
+    {
+        Gizmos.color = Color.gray;
+
+        for (int x = 0; x < gridSize; x++)
+        {
+            for (int y = 0; y < gridSize; y++)
+            {
+                Vector3 pos = new Vector3(x * cellSize, y * cellSize, 0);
+
+                Gizmos.DrawWireCube(pos, Vector3.one * cellSize);
+            }
+        }
+    }
+
+    void DrawConnectionsGizmos()
+    {
+        if (allPlanets == null) return;
+
+        Gizmos.color = Color.yellow;
+
+        foreach (PlanetData planet in allPlanets)
+        {
+            if (planet == null) continue;
+
+            foreach (PlanetData neighbor in planet.neighbors)
+            {
+                if (neighbor == null) continue;
+
+                Gizmos.DrawLine(
+                    planet.transform.position,
+                    neighbor.transform.position
+                );
+            }
+        }
+    }
 }
 
 public enum PlanetType
@@ -238,4 +281,6 @@ public class PlanetData : MonoBehaviour
             sr.color = gm.GetEnemyColor();
         }
     }
+
+
 }
