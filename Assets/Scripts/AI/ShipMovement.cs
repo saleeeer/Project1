@@ -9,6 +9,9 @@ public class ShipMovement : MonoBehaviour
     [Header("Control")]
     public bool isPlayerControlled = false;
 
+    [Header("Empire")]
+    public int empireIndex;
+
     [Header("Stop Distance")]
     public float stopOffset = 0.2f;
 
@@ -22,7 +25,7 @@ public class ShipMovement : MonoBehaviour
 
     int currentIndex = 0;
 
-    bool isOrbiting = false;
+    public bool isOrbiting = false;
     float orbitAngle = 0f;
 
     void Start()
@@ -61,7 +64,6 @@ public class ShipMovement : MonoBehaviour
 
     void Update()
     {
-        // 🔥 SOLO el jugador procesa input
         if (isPlayerControlled)
         {
             HandleInput();
@@ -153,6 +155,9 @@ public class ShipMovement : MonoBehaviour
             currentPlanet = targetPlanetNode;
             currentIndex++;
 
+            // 🔥 CAPTURA DE PLANETA
+            currentPlanet.SetOwner(empireIndex);
+
             if (currentIndex >= path.Count)
             {
                 isOrbiting = true;
@@ -211,7 +216,7 @@ public class ShipMovement : MonoBehaviour
         queue.Enqueue(start);
         cameFrom[start] = null;
 
-        Faction myFaction = start.ownerFaction;
+        int myEmpire = empireIndex;
 
         while (queue.Count > 0)
         {
@@ -222,8 +227,8 @@ public class ShipMovement : MonoBehaviour
 
             foreach (PlanetData neighbor in current.neighbors)
             {
-                // 🔥 RESTRICCIÓN DE FACCIÓN
-                if (neighbor.ownerFaction != myFaction)
+                // 🔥 permitir neutrales o propios
+                if (neighbor.ownerEmpireIndex != -1 && neighbor.ownerEmpireIndex != myEmpire)
                     continue;
 
                 if (!cameFrom.ContainsKey(neighbor))
@@ -238,7 +243,7 @@ public class ShipMovement : MonoBehaviour
         PlanetData temp = goal;
 
         if (!cameFrom.ContainsKey(goal))
-            return path; // no hay camino
+            return path;
 
         while (temp != null)
         {

@@ -33,8 +33,6 @@ public class GalaxyGenerator : MonoBehaviour
         planetPositions.Clear();
         allPlanets.Clear();
 
-        int center = gridSize / 2;
-
         for (int x = 0; x < gridSize; x++)
         {
             for (int y = 0; y < gridSize; y++)
@@ -77,8 +75,8 @@ public class GalaxyGenerator : MonoBehaviour
 
         data.planetType = type;
 
-        // 🔥 TODOS empiezan neutrales
-        data.SetOwner(Faction.Neutral);
+        // 🔥 AHORA: neutral = -1
+        data.SetOwner(-1);
 
         allPlanets.Add(data);
     }
@@ -172,6 +170,8 @@ public class GalaxyGenerator : MonoBehaviour
         return PlanetType.AstraPrime;
     }
 
+    // 🟡 GIZMOS
+
     void OnDrawGizmos()
     {
         DrawGridGizmos();
@@ -187,7 +187,6 @@ public class GalaxyGenerator : MonoBehaviour
             for (int y = 0; y < gridSize; y++)
             {
                 Vector3 pos = new Vector3(x * cellSize, y * cellSize, 0);
-
                 Gizmos.DrawWireCube(pos, Vector3.one * cellSize);
             }
         }
@@ -216,6 +215,7 @@ public class GalaxyGenerator : MonoBehaviour
     }
 }
 
+// 🌍 TIPOS DE PLANETA
 public enum PlanetType
 {
     AstraPrime,
@@ -227,20 +227,15 @@ public enum PlanetType
     Dominia
 }
 
-public enum Faction
-{
-    Neutral,
-    Player,
-    Enemy
-}
-
+// 🌍 DATA DEL PLANETA (NUEVO SISTEMA)
 public class PlanetData : MonoBehaviour
 {
     public PlanetType planetType;
 
     public List<PlanetData> neighbors = new List<PlanetData>();
 
-    public Faction ownerFaction = Faction.Neutral;
+    // 🔥 dueño real del planeta
+    public int ownerEmpireIndex = -1; // -1 = neutral
 
     SpriteRenderer sr;
 
@@ -249,10 +244,9 @@ public class PlanetData : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
     }
 
-    public void SetOwner(Faction newOwner)
+    public void SetOwner(int empireIndex)
     {
-        ownerFaction = newOwner;
-
+        ownerEmpireIndex = empireIndex;
         UpdateColor();
     }
 
@@ -260,27 +254,16 @@ public class PlanetData : MonoBehaviour
     {
         if (sr == null) return;
 
-        // 🔥 obtener colores desde GameManager
         GameManager gm = FindObjectOfType<GameManager>();
 
-        if (ownerFaction == Faction.Neutral)
+        if (ownerEmpireIndex == -1)
         {
             sr.color = Color.white;
             return;
         }
 
-        if (gm == null)
-            return;
+        if (gm == null) return;
 
-        if (ownerFaction == Faction.Player)
-        {
-            sr.color = gm.GetPlayerColor();
-        }
-        else if (ownerFaction == Faction.Enemy)
-        {
-            sr.color = gm.GetEnemyColor();
-        }
+        sr.color = gm.GetEmpireColor(ownerEmpireIndex);
     }
-
-
 }

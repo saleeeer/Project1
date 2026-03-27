@@ -8,16 +8,16 @@ public class GameManager : MonoBehaviour
     public GameObject playerShipPrefab;
     public GameObject enemyShipPrefab;
 
-    [Header("Spawn Settings")]
-    public int aiShipCount = 1;
+    [Header("Empires")]
+    public List<EmpireData> empires = new List<EmpireData>();
 
     GalaxyGenerator galaxy;
 
-    int selectedEmpire;
+    int selectedEmpireIndex;
 
     void Start()
     {
-        selectedEmpire = PlayerPrefs.GetInt("SelectedEmpire", 0);
+        selectedEmpireIndex = PlayerPrefs.GetInt("SelectedEmpire", 0);
 
         StartCoroutine(SpawnShips());
     }
@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 
         if (galaxy == null || galaxy.allPlanets.Count == 0)
         {
-            Debug.LogError("No hay planetas para spawnear naves!");
+            Debug.LogError("No hay planetas!");
             yield break;
         }
 
@@ -38,21 +38,25 @@ public class GameManager : MonoBehaviour
         PlanetData playerPlanet = galaxy.allPlanets[0];
         SpawnPlayerShip(playerPlanet);
 
-        // 🔴 ENEMIGOS
-        for (int i = 0; i < aiShipCount; i++)
+        // 🔴 ENEMIGOS (UNO POR IMPERIO)
+        for (int i = 0; i < empires.Count; i++)
         {
+            if (i == selectedEmpireIndex)
+                continue;
+
             PlanetData aiPlanet = GetRandomPlanetDifferentFrom(playerPlanet);
 
             if (aiPlanet != null)
             {
-                SpawnEnemyShip(aiPlanet);
+                SpawnEnemyShip(aiPlanet, i);
             }
         }
     }
 
     void SpawnPlayerShip(PlanetData planet)
     {
-        planet.SetOwner(Faction.Player);
+        // asignar dueño del planeta
+        planet.SetOwner(selectedEmpireIndex);
 
         GameObject ship = Instantiate(playerShipPrefab);
 
@@ -66,15 +70,17 @@ public class GameManager : MonoBehaviour
 
         movement.isPlayerControlled = true;
         movement.currentPlanet = planet;
+        movement.empireIndex = selectedEmpireIndex;
 
         ship.transform.position = planet.transform.position;
 
-        ApplyEmpireVisual(ship, true);
+        ApplyEmpireVisual(ship, selectedEmpireIndex);
     }
 
-    void SpawnEnemyShip(PlanetData planet)
+    void SpawnEnemyShip(PlanetData planet, int empireIndex)
     {
-        planet.SetOwner(Faction.Enemy);
+        // asignar dueño del planeta
+        planet.SetOwner(empireIndex);
 
         GameObject ship = Instantiate(enemyShipPrefab);
 
@@ -88,6 +94,7 @@ public class GameManager : MonoBehaviour
 
         movement.isPlayerControlled = false;
         movement.currentPlanet = planet;
+        movement.empireIndex = empireIndex;
 
         if (ship.GetComponent<AIShipController>() == null)
         {
@@ -96,7 +103,7 @@ public class GameManager : MonoBehaviour
 
         ship.transform.position = planet.transform.position;
 
-        ApplyEmpireVisual(ship, false);
+        ApplyEmpireVisual(ship, empireIndex);
     }
 
     PlanetData GetRandomPlanetDifferentFrom(PlanetData exclude)
@@ -105,51 +112,32 @@ public class GameManager : MonoBehaviour
 
         int attempts = 20;
 
-        while (attempts > 0)
+        while (attempts-- > 0)
         {
             PlanetData p = planets[Random.Range(0, planets.Count)];
 
             if (p != exclude)
                 return p;
-
-            attempts--;
         }
 
         return null;
     }
 
-    // 🔵 PLAYER COLOR
-    public Color GetPlayerColor()
+    // 🔥 COLOR POR IMPERIO (usado por planetas y naves)
+    public Color GetEmpireColor(int empireIndex)
     {
-        switch (selectedEmpire)
-        {
-            case 0: return Color.blue;
-            case 1: return Color.red;
-            case 2: return Color.green;
-            case 3: return Color.yellow;
-        }
+        if (empireIndex >= 0 && empireIndex < empires.Count)
+            return empires[empireIndex].color;
 
-        return Color.blue;
+        return Color.white;
     }
 
-    // 🔴 ENEMY COLOR DINÁMICO
-    public Color GetEnemyColor()
+    void ApplyEmpireVisual(GameObject ship, int empireIndex)
     {
-        // si jugador es rojo → enemigo azul
-        if (GetPlayerColor() == Color.red)
-            return Color.blue;
+        if (empireIndex < 0 || empireIndex >= empires.Count)
+            return;
 
-        // si jugador es azul → enemigo rojo
-        if (GetPlayerColor() == Color.blue)
-            return Color.red;
-
-        // fallback (para otros colores)
-        return Color.red;
-    }
-
-    void ApplyEmpireVisual(GameObject ship, bool isPlayer)
-    {
-        Color color = isPlayer ? GetPlayerColor() : GetEnemyColor();
+        Color color = empires[empireIndex].color;
 
         SpriteRenderer[] renderers = ship.GetComponentsInChildren<SpriteRenderer>();
 

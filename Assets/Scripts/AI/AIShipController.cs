@@ -1,78 +1,49 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(ShipMovement))]
 public class AIShipController : MonoBehaviour
 {
-    ShipMovement movement;
-
-    [Header("AI Settings")]
-    public float decisionDelay = 2f;
-
-    GalaxyGenerator galaxy;
+    ShipMovement ship;
 
     void Start()
     {
-        movement = GetComponent<ShipMovement>();
-
-        galaxy = FindObjectOfType<GalaxyGenerator>();
-
-        StartCoroutine(AILoop());
+        ship = GetComponent<ShipMovement>();
     }
 
-    IEnumerator AILoop()
+    void Update()
     {
-        // esperar a que todo esté inicializado
-        yield return new WaitForSeconds(1f);
+        if (ship == null) return;
 
-        while (true)
+        if (ship.isPlayerControlled) return;
+
+        if (ship.isOrbiting)
         {
-            yield return new WaitForSeconds(decisionDelay);
+            PlanetData target = FindTargetPlanet();
 
-            TryChooseNewTarget();
+            if (target != null)
+            {
+                ship.SetTarget(target);
+            }
         }
     }
 
-    void TryChooseNewTarget()
+    PlanetData FindTargetPlanet()
     {
-        // si está moviéndose, no hacer nada
-        if (movement.path != null && movement.path.Count > 0 && !IsIdle())
-            return;
+        if (ship.currentPlanet == null) return null;
 
-        if (movement.currentPlanet == null)
-            return;
+        List<PlanetData> options = new List<PlanetData>();
 
-        PlanetData target = ChooseRandomPlanet();
-
-        if (target != null && target != movement.currentPlanet)
+        foreach (PlanetData p in ship.currentPlanet.neighbors)
         {
-            movement.SetTarget(target);
-        }
-    }
-
-    PlanetData ChooseRandomPlanet()
-    {
-        if (galaxy == null || galaxy.allPlanets.Count == 0)
-            return null;
-
-        int attempts = 10;
-
-        while (attempts > 0)
-        {
-            PlanetData randomPlanet = galaxy.allPlanets[Random.Range(0, galaxy.allPlanets.Count)];
-
-            if (randomPlanet != movement.currentPlanet)
-                return randomPlanet;
-
-            attempts--;
+            // 🔥 atacar cualquier planeta que no sea propio
+            if (p.ownerEmpireIndex != ship.empireIndex)
+            {
+                options.Add(p);
+            }
         }
 
-        return null;
-    }
+        if (options.Count == 0) return null;
 
-    bool IsIdle()
-    {
-        return movement.path == null || movement.path.Count == 0 || movement.currentPlanet == movement.targetPlanet;
+        return options[Random.Range(0, options.Count)];
     }
 }

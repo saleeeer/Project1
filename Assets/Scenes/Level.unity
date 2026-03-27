@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetPrefab: {fileID: 728102551231298994, guid: df627b2d7432a144bb81ca4bf2648171, type: 3}
-  gridSize: 7
+  gridSize: 11
   cellSize: 47.8
   spawnChance: 0.25
   randomOffset: 2.72
@@ -235,7 +235,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 185.12907
+  orthographic size: 297.28204
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -260,7 +260,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 125, y: 144, z: -10}
+  m_LocalPosition: {x: 203, y: 238, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -297,7 +297,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerShipPrefab: {fileID: 4912607222141858788, guid: 4e24e797b5c8f814bbe9170973baf304, type: 3}
   enemyShipPrefab: {fileID: 8197212717312797383, guid: c564e45b008fec6479e9af8f73ef1f26, type: 3}
-  aiShipCount: 1
+  empires:
+  - name: Blue
+    color: {r: 0.003680706, g: 0, b: 1, a: 1}
+  - name: Red
+    color: {r: 1, g: 0, b: 0, a: 1}
+  - name: Green
+    color: {r: 0.122642085, g: 0.6415094, b: 0, a: 1}
+  - name: Black
+    color: {r: 0, g: 0, b: 0, a: 1}
 --- !u!4 &1052138309
 Transform:
   m_ObjectHideFlags: 0
