@@ -104,11 +104,8 @@ public class GalaxyGenerator : MonoBehaviour
 
                 if (dist < connectionDistance)
                 {
-                    if (!IsPathBlocked(a.transform.position, b.transform.position))
-                    {
-                        if (!a.neighbors.Contains(b))
-                            a.neighbors.Add(b);
-                    }
+                    if (!a.neighbors.Contains(b))
+                        a.neighbors.Add(b);
                 }
             }
         }

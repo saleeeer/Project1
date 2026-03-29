@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7596445142858351669}
   - component: {fileID: 4314488078900066055}
   - component: {fileID: -5803167263839452437}
+  - component: {fileID: -4548499013200262932}
   m_Layer: 0
   m_Name: PlayerShip
   m_TagString: Untagged
@@ -98,13 +99,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba7085061632a7448b73c861dd7befc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 100
   isPlayerControlled: 1
-  stopOffset: 1
+  empireIndex: 0
+  orbitDistance: 20
   orbitSpeed: 50
   currentPlanet: {fileID: 0}
   targetPlanet: {fileID: 0}
   path: []
+  isOrbiting: 0
+--- !u!114 &-4548499013200262932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4912607222141858788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a2f2199ca684ae4a83ea21b929b7902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
+  currentHealth: 10
+  damage: 2
 --- !u!1 &4960566327068814729
 GameObject:
   m_ObjectHideFlags: 0

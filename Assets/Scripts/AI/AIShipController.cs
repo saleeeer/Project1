@@ -13,12 +13,11 @@ public class AIShipController : MonoBehaviour
     void Update()
     {
         if (ship == null) return;
-
         if (ship.isPlayerControlled) return;
 
-        if (ship.isOrbiting)
+        if (ship.isOrbiting && ship.targetPlanet == null)
         {
-            PlanetData target = FindTargetPlanet();
+            PlanetData target = FindTarget();
 
             if (target != null)
             {
@@ -27,23 +26,22 @@ public class AIShipController : MonoBehaviour
         }
     }
 
-    PlanetData FindTargetPlanet()
+    PlanetData FindTarget()
     {
-        if (ship.currentPlanet == null) return null;
+        PlanetData[] all = FindObjectsOfType<PlanetData>();
 
-        List<PlanetData> options = new List<PlanetData>();
+        List<PlanetData> valid = new List<PlanetData>();
 
-        foreach (PlanetData p in ship.currentPlanet.neighbors)
+        foreach (PlanetData p in all)
         {
-            // 🔥 atacar cualquier planeta que no sea propio
+            if (p == ship.currentPlanet) continue;
+
             if (p.ownerEmpireIndex != ship.empireIndex)
-            {
-                options.Add(p);
-            }
+                valid.Add(p);
         }
 
-        if (options.Count == 0) return null;
+        if (valid.Count == 0) return null;
 
-        return options[Random.Range(0, options.Count)];
+        return valid[Random.Range(0, valid.Count)];
     }
 }

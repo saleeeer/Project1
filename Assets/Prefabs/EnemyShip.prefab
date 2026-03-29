@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 3958480728472675703}
   - component: {fileID: -2989238954956042805}
   - component: {fileID: -2453881214356160206}
+  - component: {fileID: -7222383176043160371}
   m_Layer: 0
   m_Name: EnemyShip
   m_TagString: Untagged
@@ -183,13 +184,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba7085061632a7448b73c861dd7befc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 10
   isPlayerControlled: 0
-  stopOffset: 1
+  empireIndex: 0
+  orbitDistance: 20
   orbitSpeed: 50
   currentPlanet: {fileID: 0}
   targetPlanet: {fileID: 0}
   path: []
+  isOrbiting: 0
 --- !u!114 &-2453881214356160206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,4 +205,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a3319818560974bbb4ed2d654b6e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  decisionDelay: 2
+--- !u!114 &-7222383176043160371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8197212717312797383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a2f2199ca684ae4a83ea21b929b7902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
+  currentHealth: 10
+  damage: 2
