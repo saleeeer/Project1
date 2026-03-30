@@ -16,6 +16,9 @@ public class ShipMovement : MonoBehaviour
     public float orbitDistance = 2f;
     public float orbitSpeed = 50f;
 
+    [Header("Capture")]
+    public float captureTime = 3f;
+
     public PlanetData currentPlanet;
     public PlanetData targetPlanet;
 
@@ -25,6 +28,18 @@ public class ShipMovement : MonoBehaviour
 
     public bool isOrbiting = false;
     float orbitAngle;
+
+    ShipCombat combat;
+
+    bool isCapturing = false;
+
+    void Awake()
+    {
+        combat = GetComponent<ShipCombat>();
+
+        if (combat == null)
+            combat = gameObject.AddComponent<ShipCombat>();
+    }
 
     void Start()
     {
@@ -62,6 +77,8 @@ public class ShipMovement : MonoBehaviour
 
     void Update()
     {
+        HandleCombat();
+
         if (isPlayerControlled)
             HandleInput();
 
@@ -70,6 +87,8 @@ public class ShipMovement : MonoBehaviour
         else
             Move();
     }
+
+    // ================= INPUT =================
 
     void HandleInput()
     {
@@ -89,14 +108,15 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
+    // ================= MOVIMIENTO =================
+
     public void SetTarget(PlanetData newTarget)
     {
         if (currentPlanet == null || newTarget == null) return;
 
         targetPlanet = newTarget;
 
-        path = new List<PlanetData>();
-        path.Add(newTarget);
+        path = new List<PlanetData>() { newTarget };
 
         currentIndex = 0;
         isOrbiting = false;
@@ -112,7 +132,7 @@ public class ShipMovement : MonoBehaviour
 
         Vector3 direction = (targetPos - transform.position).normalized;
 
-        // ROTACIÓN AL MOVERSE
+        // ROTACIÓN
         if (direction != Vector3.zero)
         {
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -129,14 +149,72 @@ public class ShipMovement : MonoBehaviour
         {
             currentPlanet = targetNode;
 
-            currentPlanet.SetOwner(empireIndex);
-
             isOrbiting = true;
             targetPlanet = null;
 
             SnapToOrbit(currentPlanet);
+
+            StartCoroutine(CaptureRoutine());
         }
     }
+
+    // ================= CAPTURA =================
+
+    IEnumerator CaptureRoutine()
+    {
+        isCapturing = true;
+
+        float timer = 0f;
+
+        while (timer < captureTime)
+        {
+            // ❌ cancelar si aparece enemigo
+            if (EnemyOnPlanet())
+            {
+                isCapturing = false;
+                yield break;
+            }
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // ✅ capturar solo si no hay enemigos
+        if (!EnemyOnPlanet())
+        {
+            currentPlanet.SetOwner(empireIndex);
+        }
+
+        isCapturing = false;
+    }
+
+    bool EnemyOnPlanet()
+    {
+        ShipMovement[] ships = FindObjectsOfType<ShipMovement>();
+
+        foreach (ShipMovement s in ships)
+        {
+            if (s == this) continue;
+
+            if (s.currentPlanet == currentPlanet &&
+                s.empireIndex != empireIndex)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void RecheckCapture()
+    {
+        if (!EnemyOnPlanet())
+        {
+            currentPlanet.SetOwner(empireIndex);
+        }
+    }
+
+    // ================= ORBITA =================
 
     void Orbit()
     {
@@ -171,18 +249,41 @@ public class ShipMovement : MonoBehaviour
     {
         Vector2 dir = (transform.position - planet.transform.position);
 
-        // 🔥 SI ESTÁ EN EL CENTRO → dirección random
         if (dir.magnitude < 0.01f)
-        {
             dir = Random.insideUnitCircle.normalized;
-        }
         else
-        {
             dir = dir.normalized;
-        }
 
         orbitAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
         transform.position = planet.transform.position + (Vector3)(dir * orbitDistance);
+    }
+
+    // ================= COMBATE =================
+
+    void HandleCombat()
+    {
+        ShipMovement[] ships = FindObjectsOfType<ShipMovement>();
+
+        foreach (ShipMovement other in ships)
+        {
+            if (other == this) continue;
+            if (other.empireIndex == empireIndex) continue;
+
+            ShipCombat otherCombat = other.GetComponent<ShipCombat>();
+
+            if (otherCombat == null) continue;
+
+            combat.TryAttack(otherCombat);
+        }
+    }
+
+    void OnDestroy()
+    {
+        // 🔥 cuando una nave muere → re-evaluar planeta
+        if (currentPlanet != null)
+        {
+            RecheckCapture();
+        }
     }
 }

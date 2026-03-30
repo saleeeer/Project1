@@ -1,9 +1,15 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class AIShipController : MonoBehaviour
 {
     ShipMovement ship;
+
+    [Header("AI Timing")]
+    public float waitBeforeAttack = 3f; // 🔥 tiempo defendiendo
+
+    bool isThinking = false;
 
     void Start()
     {
@@ -15,33 +21,52 @@ public class AIShipController : MonoBehaviour
         if (ship == null) return;
         if (ship.isPlayerControlled) return;
 
-        if (ship.isOrbiting && ship.targetPlanet == null)
+        if (ship.isOrbiting && !isThinking)
         {
-            PlanetData target = FindTarget();
-
-            if (target != null)
-            {
-                ship.SetTarget(target);
-            }
+            StartCoroutine(AIBehaviour());
         }
     }
 
-    PlanetData FindTarget()
+    IEnumerator AIBehaviour()
     {
-        PlanetData[] all = FindObjectsOfType<PlanetData>();
+        isThinking = true;
 
-        List<PlanetData> valid = new List<PlanetData>();
+        // 🔥 1. DEFENDER (espera)
+        yield return new WaitForSeconds(waitBeforeAttack);
 
-        foreach (PlanetData p in all)
+        // 🔥 2. ELEGIR OBJETIVO
+        PlanetData target = ChooseTarget();
+
+        if (target != null)
+        {
+            ship.SetTarget(target);
+        }
+
+        // 🔥 pequeño delay para evitar spam
+        yield return new WaitForSeconds(0.5f);
+
+        isThinking = false;
+    }
+
+    PlanetData ChooseTarget()
+    {
+        PlanetData[] allPlanets = FindObjectsOfType<PlanetData>();
+
+        List<PlanetData> validTargets = new List<PlanetData>();
+
+        foreach (PlanetData p in allPlanets)
         {
             if (p == ship.currentPlanet) continue;
 
+            // 🔥 solo atacar planetas que NO son tuyos
             if (p.ownerEmpireIndex != ship.empireIndex)
-                valid.Add(p);
+            {
+                validTargets.Add(p);
+            }
         }
 
-        if (valid.Count == 0) return null;
+        if (validTargets.Count == 0) return null;
 
-        return valid[Random.Range(0, valid.Count)];
+        return validTargets[Random.Range(0, validTargets.Count)];
     }
 }

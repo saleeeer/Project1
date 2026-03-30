@@ -123,6 +123,9 @@ MonoBehaviour:
   maxHealth: 10
   currentHealth: 10
   damage: 2
+  attackRange: 20
+  attackCooldown: 1
+  bulletPrefab: {fileID: 1198013783727692442, guid: 9d1485c2d151dfc429c7686bb4933e63, type: 3}
 --- !u!1 &4960566327068814729
 GameObject:
   m_ObjectHideFlags: 0
