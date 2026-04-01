@@ -8,7 +8,7 @@ public class ShipCombat : MonoBehaviour
     public float damage = 5f;
 
     [Header("Combat")]
-    public float attackRange = 3f;
+    public float attackRange = 5f;
     public float attackCooldown = 1f;
 
     float lastAttackTime;
@@ -45,7 +45,6 @@ public class ShipCombat : MonoBehaviour
     {
         if (bulletPrefab == null)
         {
-            // fallback sin visual
             target.TakeDamage(damage);
             return;
         }
