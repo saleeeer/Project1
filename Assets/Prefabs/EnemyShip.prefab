@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a3319818560974bbb4ed2d654b6e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitBeforeAttack: 3
+  waitBeforeAttack: 6
 --- !u!114 &-7222383176043160371
 MonoBehaviour:
   m_ObjectHideFlags: 0

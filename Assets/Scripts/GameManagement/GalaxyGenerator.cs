@@ -53,32 +53,26 @@ public class GalaxyGenerator : MonoBehaviour
                 if (IsTooClose(finalPosition))
                     continue;
 
-                PlanetType randomType = GetRandomPlanetType();
-
-                SpawnPlanet(finalPosition, randomType);
+                SpawnPlanet(finalPosition);
             }
         }
 
         ConnectPlanets();
     }
 
-    void SpawnPlanet(Vector3 position, PlanetType type)
+    void SpawnPlanet(Vector3 position)
     {
         GameObject planet = Instantiate(planetPrefab, position, Quaternion.identity);
-
-        planetPositions.Add(position);
 
         PlanetData data = planet.GetComponent<PlanetData>();
 
         if (data == null)
             data = planet.AddComponent<PlanetData>();
 
-        data.planetType = type;
-
-        // 🔥 AHORA: neutral = -1
         data.SetOwner(-1);
 
         allPlanets.Add(data);
+        planetPositions.Add(position);
     }
 
     bool IsTooClose(Vector3 position)
@@ -94,88 +88,52 @@ public class GalaxyGenerator : MonoBehaviour
 
     void ConnectPlanets()
     {
+        int maxConnections = 3;
+
         foreach (PlanetData a in allPlanets)
         {
-            foreach (PlanetData b in allPlanets)
+            // Lista de planetas ordenados por distancia
+            List<PlanetData> sorted = new List<PlanetData>(allPlanets);
+
+            sorted.Sort((b, c) =>
+            {
+                float distB = Vector2.Distance(a.transform.position, b.transform.position);
+                float distC = Vector2.Distance(a.transform.position, c.transform.position);
+                return distB.CompareTo(distC);
+            });
+
+            int connections = 0;
+
+            foreach (PlanetData b in sorted)
             {
                 if (a == b) continue;
 
-                float dist = Vector2.Distance(a.transform.position, b.transform.position);
-
-                if (dist < connectionDistance)
+                if (!a.neighbors.Contains(b))
                 {
-                    if (!a.neighbors.Contains(b))
-                        a.neighbors.Add(b);
+                    a.neighbors.Add(b);
+
+                    if (!b.neighbors.Contains(a))
+                        b.neighbors.Add(a);
+
+                    connections++;
+
+                    if (connections >= maxConnections)
+                        break;
                 }
             }
         }
     }
 
-    bool IsPathBlocked(Vector2 start, Vector2 end)
-    {
-        foreach (PlanetData p in allPlanets)
-        {
-            Vector2 center = p.transform.position;
-
-            if (center == start || center == end)
-                continue;
-
-            float radius = 0.5f;
-            CircleCollider2D col = p.GetComponent<CircleCollider2D>();
-
-            if (col != null)
-                radius = col.radius * p.transform.localScale.x;
-
-            float distance = DistancePointToLine(center, start, end);
-
-            if (distance < radius)
-                return true;
-        }
-
-        return false;
-    }
-
-    float DistancePointToLine(Vector2 point, Vector2 a, Vector2 b)
-    {
-        float l2 = (b - a).sqrMagnitude;
-
-        if (l2 == 0) return Vector2.Distance(point, a);
-
-        float t = Vector2.Dot(point - a, b - a) / l2;
-        t = Mathf.Clamp01(t);
-
-        Vector2 projection = a + t * (b - a);
-
-        return Vector2.Distance(point, projection);
-    }
-
-    PlanetType GetRandomPlanetType()
-    {
-        int value = Random.Range(0, 7);
-
-        switch (value)
-        {
-            case 0: return PlanetType.AstraPrime;
-            case 1: return PlanetType.Valkurion;
-            case 2: return PlanetType.Novaeon;
-            case 3: return PlanetType.HeliosIX;
-            case 4: return PlanetType.Calystrum;
-            case 5: return PlanetType.Orionis;
-            case 6: return PlanetType.Dominia;
-        }
-
-        return PlanetType.AstraPrime;
-    }
-
-    // 🟡 GIZMOS
+    // ================= GIZMOS =================
 
     void OnDrawGizmos()
     {
-        DrawGridGizmos();
-        DrawConnectionsGizmos();
+        DrawGrid();
+        DrawConnections();
+        DrawPlanets();
     }
 
-    void DrawGridGizmos()
+    void DrawGrid()
     {
         Gizmos.color = Color.gray;
 
@@ -189,7 +147,7 @@ public class GalaxyGenerator : MonoBehaviour
         }
     }
 
-    void DrawConnectionsGizmos()
+    void DrawConnections()
     {
         if (allPlanets == null) return;
 
@@ -210,29 +168,27 @@ public class GalaxyGenerator : MonoBehaviour
             }
         }
     }
+
+    void DrawPlanets()
+    {
+        if (allPlanets == null) return;
+
+        Gizmos.color = Color.cyan;
+
+        foreach (PlanetData planet in allPlanets)
+        {
+            if (planet != null)
+            {
+                Gizmos.DrawSphere(planet.transform.position, 0.3f);
+            }
+        }
+    }
 }
 
-// 🌍 TIPOS DE PLANETA
-public enum PlanetType
-{
-    AstraPrime,
-    Valkurion,
-    Novaeon,
-    HeliosIX,
-    Calystrum,
-    Orionis,
-    Dominia
-}
-
-// 🌍 DATA DEL PLANETA (NUEVO SISTEMA)
 public class PlanetData : MonoBehaviour
 {
-    public PlanetType planetType;
-
     public List<PlanetData> neighbors = new List<PlanetData>();
-
-    // 🔥 dueño real del planeta
-    public int ownerEmpireIndex = -1; // -1 = neutral
+    public int ownerEmpireIndex = -1;
 
     SpriteRenderer sr;
 
@@ -241,9 +197,9 @@ public class PlanetData : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
     }
 
-    public void SetOwner(int empireIndex)
+    public void SetOwner(int index)
     {
-        ownerEmpireIndex = empireIndex;
+        ownerEmpireIndex = index;
         UpdateColor();
     }
 

@@ -23,19 +23,12 @@ public class ShipMovement : MonoBehaviour
     public PlanetData targetPlanet;
 
     public List<PlanetData> path = new List<PlanetData>();
-
-    int currentIndex = 0;
+    int currentPathIndex = 0;
 
     public bool isOrbiting = false;
     float orbitAngle;
 
     ShipCombat combat;
-
-    bool isCapturing = false;
-
-    // 🔥 COMBATE TIPO DUELO
-    bool isFighting = false;
-    ShipMovement currentEnemy;
 
     void Awake()
     {
@@ -81,10 +74,6 @@ public class ShipMovement : MonoBehaviour
 
     void Update()
     {
-        HandleCombat();
-
-        if (isFighting) return; // 🔥 frena todo durante combate
-
         if (isPlayerControlled)
             HandleInput();
 
@@ -92,6 +81,9 @@ public class ShipMovement : MonoBehaviour
             Orbit();
         else
             Move();
+
+        // 🔥 COMBATE SIN BLOQUEAR MOVIMIENTO
+        HandleCombat();
     }
 
     // ================= INPUT =================
@@ -114,30 +106,76 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
-    // ================= MOVIMIENTO =================
+    // ================= PATHFINDING =================
 
     public void SetTarget(PlanetData newTarget)
     {
         if (currentPlanet == null || newTarget == null) return;
 
-        targetPlanet = newTarget;
+        path = FindPath(currentPlanet, newTarget);
 
-        path = new List<PlanetData>() { newTarget };
+        if (path == null || path.Count == 0) return;
 
-        currentIndex = 0;
+        currentPathIndex = 0;
         isOrbiting = false;
     }
 
+    List<PlanetData> FindPath(PlanetData start, PlanetData goal)
+    {
+        Queue<PlanetData> queue = new Queue<PlanetData>();
+        Dictionary<PlanetData, PlanetData> cameFrom = new Dictionary<PlanetData, PlanetData>();
+
+        queue.Enqueue(start);
+        cameFrom[start] = null;
+
+        while (queue.Count > 0)
+        {
+            PlanetData current = queue.Dequeue();
+
+            if (current == goal)
+                break;
+
+            foreach (PlanetData neighbor in current.neighbors)
+            {
+                if (!cameFrom.ContainsKey(neighbor))
+                {
+                    queue.Enqueue(neighbor);
+                    cameFrom[neighbor] = current;
+                }
+            }
+        }
+
+        if (!cameFrom.ContainsKey(goal))
+            return null;
+
+        List<PlanetData> result = new List<PlanetData>();
+        PlanetData temp = goal;
+
+        while (temp != null)
+        {
+            result.Add(temp);
+            temp = cameFrom[temp];
+        }
+
+        result.Reverse();
+
+        if (result.Count > 0)
+            result.RemoveAt(0);
+
+        return result;
+    }
+
+    // ================= MOVIMIENTO =================
+
     void Move()
     {
-        if (path == null || path.Count == 0) return;
+        if (path == null || currentPathIndex >= path.Count) return;
 
-        PlanetData targetNode = path[currentIndex];
+        PlanetData targetNode = path[currentPathIndex];
 
-        Vector3 targetPos = targetNode.transform.position;
+        Vector3 direction = (targetNode.transform.position - transform.position).normalized;
 
-        Vector3 direction = (targetPos - transform.position).normalized;
-
+        // 🔥 ROTACIÓN HACIA DONDE VA
         if (direction != Vector3.zero)
         {
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -146,20 +184,21 @@ public class ShipMovement : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(
             transform.position,
-            targetPos,
+            targetNode.transform.position,
             speed * Time.deltaTime
         );
 
-        if (Vector3.Distance(transform.position, targetPos) < 0.1f)
+        if (Vector3.Distance(transform.position, targetNode.transform.position) < 0.1f)
         {
             currentPlanet = targetNode;
+            currentPathIndex++;
 
-            isOrbiting = true;
-            targetPlanet = null;
-
-            SnapToOrbit(currentPlanet);
-
-            StartCoroutine(CaptureRoutine());
+            if (currentPathIndex >= path.Count)
+            {
+                isOrbiting = true;
+                SnapToOrbit(currentPlanet);
+                StartCoroutine(CaptureRoutine());
+            }
         }
     }
 
@@ -167,17 +206,12 @@ public class ShipMovement : MonoBehaviour
 
     IEnumerator CaptureRoutine()
     {
-        isCapturing = true;
-
         float timer = 0f;
 
         while (timer < captureTime)
         {
             if (EnemyOnPlanet())
-            {
-                isCapturing = false;
                 yield break;
-            }
 
             timer += Time.deltaTime;
             yield return null;
@@ -187,8 +221,6 @@ public class ShipMovement : MonoBehaviour
         {
             currentPlanet.SetOwner(empireIndex);
         }
-
-        isCapturing = false;
     }
 
     bool EnemyOnPlanet()
@@ -209,14 +241,6 @@ public class ShipMovement : MonoBehaviour
         return false;
     }
 
-    void RecheckCapture()
-    {
-        if (!EnemyOnPlanet())
-        {
-            currentPlanet.SetOwner(empireIndex);
-        }
-    }
-
     // ================= ORBITA =================
 
     void Orbit()
@@ -233,9 +257,7 @@ public class ShipMovement : MonoBehaviour
             0
         ) * orbitDistance;
 
-        Vector3 orbitPos = currentPlanet.transform.position + offset;
-
-        transform.position = orbitPos;
+        transform.position = currentPlanet.transform.position + offset;
 
         Vector3 direction = new Vector3(
             -Mathf.Sin(rad),
@@ -261,67 +283,35 @@ public class ShipMovement : MonoBehaviour
         transform.position = planet.transform.position + (Vector3)(dir * orbitDistance);
     }
 
-    // ================= COMBATE TIPO DUELO =================
+    // ================= COMBATE =================
 
     void HandleCombat()
     {
-        if (isFighting) return;
+        if (currentPlanet == null) return;
 
         ShipMovement[] ships = FindObjectsOfType<ShipMovement>();
 
         foreach (ShipMovement other in ships)
         {
             if (other == this) continue;
-            if (other.empireIndex == empireIndex) continue;
 
-            float dist = Vector2.Distance(transform.position, other.transform.position);
-
-            if (dist < combat.attackRange)
+            // 🔥 SOLO SI MISMO PLANETA
+            if (other.currentPlanet == currentPlanet &&
+                other.empireIndex != empireIndex)
             {
-                StartCoroutine(FightRoutine(other));
-                break;
+                ShipCombat enemyCombat = other.GetComponent<ShipCombat>();
+
+                if (enemyCombat != null)
+                {
+                    // 🔥 MIRAR AL ENEMIGO
+                    Vector3 dir = (other.transform.position - transform.position).normalized;
+
+                    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                    transform.rotation = Quaternion.Euler(0, 0, angle);
+
+                    combat.TryAttack(enemyCombat);
+                }
             }
-        }
-    }
-
-    IEnumerator FightRoutine(ShipMovement enemy)
-    {
-        isFighting = true;
-        currentEnemy = enemy;
-
-        ShipCombat enemyCombat = enemy.GetComponent<ShipCombat>();
-
-        while (enemy != null && enemyCombat != null && combat != null)
-        {
-            LookAt(enemy.transform.position);
-            enemy.LookAt(transform.position);
-
-            combat.TryAttack(enemyCombat);
-
-            if (enemyCombat != null)
-                enemyCombat.TryAttack(combat);
-
-            yield return null;
-        }
-
-        isFighting = false;
-        currentEnemy = null;
-    }
-
-    void LookAt(Vector3 target)
-    {
-        Vector3 dir = (target - transform.position).normalized;
-
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-        transform.rotation = Quaternion.Euler(0, 0, angle);
-    }
-
-    void OnDestroy()
-    {
-        if (currentPlanet != null)
-        {
-            RecheckCapture();
         }
     }
 }

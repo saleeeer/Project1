@@ -154,7 +154,7 @@ MonoBehaviour:
   planetPrefab: {fileID: 728102551231298994, guid: df627b2d7432a144bb81ca4bf2648171, type: 3}
   gridSize: 11
   cellSize: 47.8
-  spawnChance: 0.25
+  spawnChance: 0.22
   randomOffset: 2.72
   minPlanetDistance: 10
   connectionDistance: 12
@@ -306,6 +306,7 @@ MonoBehaviour:
     color: {r: 0.122642085, g: 0.6415094, b: 0, a: 1}
   - name: Black
     color: {r: 0, g: 0, b: 0, a: 1}
+  galaxy: {fileID: 233988300}
 --- !u!4 &1052138309
 Transform:
   m_ObjectHideFlags: 0
@@ -326,5 +327,5 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
-  - {fileID: 233988301}
   - {fileID: 1052138309}
+  - {fileID: 233988301}

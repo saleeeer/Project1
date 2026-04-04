@@ -21,23 +21,18 @@ public class Bullet : MonoBehaviour
             return;
         }
 
-        Vector3 direction = (target.position - transform.position).normalized;
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            target.position,
+            speed * Time.deltaTime
+        );
 
-        transform.position += direction * speed * Time.deltaTime;
-
-        // Rotación del proyectil
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
-
-        // Impacto
-        if (Vector3.Distance(transform.position, target.position) < 0.2f)
+        if (Vector3.Distance(transform.position, target.position) < 0.1f)
         {
             ShipCombat combat = target.GetComponent<ShipCombat>();
 
             if (combat != null)
-            {
                 combat.TakeDamage(damage);
-            }
 
             Destroy(gameObject);
         }
