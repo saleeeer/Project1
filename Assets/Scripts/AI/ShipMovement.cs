@@ -314,4 +314,14 @@ public class ShipMovement : MonoBehaviour
             }
         }
     }
+
+    void OnDestroy()
+    {
+        GameManager gm = FindObjectOfType<GameManager>();
+
+        if (gm != null)
+        {
+            gm.UnregisterShip(empireIndex);
+        }
+    }
 }

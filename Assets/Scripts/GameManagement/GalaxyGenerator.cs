@@ -1,5 +1,6 @@
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class GalaxyGenerator : MonoBehaviour
 {
@@ -185,38 +186,3 @@ public class GalaxyGenerator : MonoBehaviour
     }
 }
 
-public class PlanetData : MonoBehaviour
-{
-    public List<PlanetData> neighbors = new List<PlanetData>();
-    public int ownerEmpireIndex = -1;
-
-    SpriteRenderer sr;
-
-    void Awake()
-    {
-        sr = GetComponent<SpriteRenderer>();
-    }
-
-    public void SetOwner(int index)
-    {
-        ownerEmpireIndex = index;
-        UpdateColor();
-    }
-
-    void UpdateColor()
-    {
-        if (sr == null) return;
-
-        GameManager gm = FindObjectOfType<GameManager>();
-
-        if (ownerEmpireIndex == -1)
-        {
-            sr.color = Color.white;
-            return;
-        }
-
-        if (gm == null) return;
-
-        sr.color = gm.GetEmpireColor(ownerEmpireIndex);
-    }
-}

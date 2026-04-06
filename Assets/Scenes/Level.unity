@@ -306,7 +306,8 @@ MonoBehaviour:
     color: {r: 0.122642085, g: 0.6415094, b: 0, a: 1}
   - name: Black
     color: {r: 0, g: 0, b: 0, a: 1}
-  galaxy: {fileID: 233988300}
+  maxShipsPerEmpire: 20
+  maxFleetSize: 5
 --- !u!4 &1052138309
 Transform:
   m_ObjectHideFlags: 0

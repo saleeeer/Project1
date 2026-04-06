@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
-
     [Header("Prefabs")]
     public GameObject playerShipPrefab;
     public GameObject enemyShipPrefab;
@@ -13,24 +11,35 @@ public class GameManager : MonoBehaviour
     [Header("Empires")]
     public List<EmpireData> empires = new List<EmpireData>();
 
-    public GalaxyGenerator galaxy;
+    [Header("Limits")]
+    public int maxShipsPerEmpire = 20;
+    public int maxFleetSize = 5;
+
+    Dictionary<int, int> empireShipCount = new Dictionary<int, int>();
 
     int selectedEmpireIndex;
 
     void Awake()
     {
-        Instance = this;
+        selectedEmpireIndex = PlayerPrefs.GetInt("SelectedEmpire", 0);
+
+        for (int i = 0; i < empires.Count; i++)
+        {
+            empireShipCount[i] = 0;
+        }
     }
 
     void Start()
     {
-        selectedEmpireIndex = PlayerPrefs.GetInt("SelectedEmpire", 0);
-        StartCoroutine(SpawnShips());
+        StartCoroutine(AssignStartingPlanets());
     }
 
-    IEnumerator SpawnShips()
+    // 🔥 ASIGNAR PLANETAS A IMPERIOS
+    IEnumerator AssignStartingPlanets()
     {
         yield return null;
+
+        GalaxyGenerator galaxy = FindObjectOfType<GalaxyGenerator>();
 
         if (galaxy == null || galaxy.allPlanets.Count == 0)
         {
@@ -38,79 +47,72 @@ public class GameManager : MonoBehaviour
             yield break;
         }
 
+        // 🔵 PLANETA DEL JUGADOR
         PlanetData playerPlanet = galaxy.allPlanets[0];
-        SpawnPlayerShip(playerPlanet);
+        playerPlanet.SetOwner(selectedEmpireIndex);
 
+        // 🔴 PLANETAS DE IA
         for (int i = 0; i < empires.Count; i++)
         {
             if (i == selectedEmpireIndex) continue;
 
-            PlanetData aiPlanet = GetRandomPlanetDifferentFrom(playerPlanet);
+            PlanetData aiPlanet = GetRandomPlanetDifferentFrom(playerPlanet, galaxy.allPlanets);
 
             if (aiPlanet != null)
-                SpawnEnemyShip(aiPlanet, i);
+            {
+                aiPlanet.SetOwner(i);
+            }
         }
     }
 
-    public Color GetEmpireColor(int index)
+    PlanetData GetRandomPlanetDifferentFrom(PlanetData exclude, List<PlanetData> all)
     {
-        if (index >= 0 && index < empires.Count)
-            return empires[index].color;
+        int attempts = 20;
 
-        return Color.white;
-    }
-
-    void SpawnPlayerShip(PlanetData planet)
-    {
-        planet.SetOwner(selectedEmpireIndex);
-
-        GameObject ship = Instantiate(playerShipPrefab, planet.transform.position, Quaternion.identity);
-
-        ShipMovement m = ship.GetComponent<ShipMovement>();
-        m.isPlayerControlled = true;
-        m.currentPlanet = planet;
-        m.empireIndex = selectedEmpireIndex;
-        ApplyEmpireVisual(ship, selectedEmpireIndex);
-    }
-
-    void SpawnEnemyShip(PlanetData planet, int empireIndex)
-    {
-        planet.SetOwner(empireIndex);
-
-        GameObject ship = Instantiate(enemyShipPrefab, planet.transform.position, Quaternion.identity);
-
-        ShipMovement m = ship.GetComponent<ShipMovement>();
-        m.isPlayerControlled = false;
-        m.currentPlanet = planet;
-        m.empireIndex = empireIndex;
-
-        if (!ship.GetComponent<AIShipController>())
-            ship.AddComponent<AIShipController>();
-        ApplyEmpireVisual(ship, empireIndex);
-    }
-
-    PlanetData GetRandomPlanetDifferentFrom(PlanetData exclude)
-    {
-        List<PlanetData> planets = galaxy.allPlanets;
-
-        for (int i = 0; i < 20; i++)
+        while (attempts-- > 0)
         {
-            PlanetData p = planets[Random.Range(0, planets.Count)];
-            if (p != exclude) return p;
+            PlanetData p = all[Random.Range(0, all.Count)];
+
+            if (p != exclude && p.ownerEmpireIndex == -1)
+                return p;
         }
 
         return null;
     }
 
-    void ApplyEmpireVisual(GameObject ship, int empireIndex)
+    // ================= LIMITES =================
+
+    public bool CanSpawnShip(int empireIndex)
     {
-        Color color = empires[empireIndex].color;
+        if (!empireShipCount.ContainsKey(empireIndex))
+            empireShipCount[empireIndex] = 0;
 
-        SpriteRenderer[] renderers = ship.GetComponentsInChildren<SpriteRenderer>();
+        return empireShipCount[empireIndex] < maxShipsPerEmpire;
+    }
 
-        foreach (SpriteRenderer sr in renderers)
-        {
-            sr.color = color;
-        }
+    public void RegisterShip(int empireIndex)
+    {
+        if (!empireShipCount.ContainsKey(empireIndex))
+            empireShipCount[empireIndex] = 0;
+
+        empireShipCount[empireIndex]++;
+    }
+
+    public void UnregisterShip(int empireIndex)
+    {
+        if (!empireShipCount.ContainsKey(empireIndex))
+            return;
+
+        empireShipCount[empireIndex]--;
+    }
+
+    // ================= COLOR =================
+
+    public Color GetEmpireColor(int empireIndex)
+    {
+        if (empireIndex >= 0 && empireIndex < empires.Count)
+            return empires[empireIndex].color;
+
+        return Color.white;
     }
 }

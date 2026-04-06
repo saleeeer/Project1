@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8985967963742625130}
   - component: {fileID: 487869575144108108}
   - component: {fileID: 134915304051466174}
+  - component: {fileID: 3311151885715015514}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -120,3 +121,18 @@ CircleCollider2D:
   m_Offset: {x: 0.020363748, y: 0}
   serializedVersion: 2
   m_Radius: 0.77043205
+--- !u!114 &3311151885715015514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728102551231298994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d14abd258ba04a84dbbad4b8c3fbee2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  neighbors: []
+  ownerEmpireIndex: -1
+  spawnInterval: 5
