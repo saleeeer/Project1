@@ -34,7 +34,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(AssignStartingPlanets());
     }
 
-    // 🔥 ASIGNAR PLANETAS A IMPERIOS
     IEnumerator AssignStartingPlanets()
     {
         yield return null;
@@ -47,11 +46,11 @@ public class GameManager : MonoBehaviour
             yield break;
         }
 
-        // 🔵 PLANETA DEL JUGADOR
         PlanetData playerPlanet = galaxy.allPlanets[0];
         playerPlanet.SetOwner(selectedEmpireIndex);
 
-        // 🔴 PLANETAS DE IA
+        Debug.Log("Jugador recibe planeta: " + playerPlanet.name);
+
         for (int i = 0; i < empires.Count; i++)
         {
             if (i == selectedEmpireIndex) continue;
@@ -61,6 +60,7 @@ public class GameManager : MonoBehaviour
             if (aiPlanet != null)
             {
                 aiPlanet.SetOwner(i);
+                Debug.Log("IA " + i + " recibe planeta: " + aiPlanet.name);
             }
         }
     }
@@ -106,7 +106,43 @@ public class GameManager : MonoBehaviour
         empireShipCount[empireIndex]--;
     }
 
-    // ================= COLOR =================
+    // ================= STATS =================
+
+    public EmpireStats GetEmpireTotalStats(int empireIndex)
+    {
+        EmpireStats baseStats = empires[empireIndex].stats;
+
+        EmpireStats total = new EmpireStats();
+
+        total.power = baseStats.power;
+        total.defense = baseStats.defense;
+        total.accuracy = baseStats.accuracy;
+        total.morale = baseStats.morale;
+        total.intelligence = baseStats.intelligence;
+
+        PlanetData[] planets = FindObjectsOfType<PlanetData>();
+
+        Debug.Log("---- CALCULANDO STATS PARA IMPERIO " + empireIndex + " ----");
+
+        foreach (PlanetData p in planets)
+        {
+            if (p.ownerEmpireIndex != empireIndex) continue;
+
+            Debug.Log("Sumando buffs de planeta: " + p.name +
+                " | Power+" + p.statBuff.power +
+                " Def+" + p.statBuff.defense);
+
+            total.power += p.statBuff.power;
+            total.defense += p.statBuff.defense;
+            total.accuracy += p.statBuff.accuracy;
+            total.morale += p.statBuff.morale;
+            total.intelligence += p.statBuff.intelligence;
+        }
+
+        Debug.Log("TOTAL FINAL → Power: " + total.power + " Defense: " + total.defense);
+
+        return total;
+    }
 
     public Color GetEmpireColor(int empireIndex)
     {

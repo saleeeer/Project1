@@ -5,4 +5,6 @@ public class EmpireData
 {
     public string name;
     public Color color;
+
+    public EmpireStats stats = new EmpireStats();
 }

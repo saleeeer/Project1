@@ -17,6 +17,9 @@ public class PlanetData : MonoBehaviour
     [Header("Production")]
     public float spawnInterval = 2f;
 
+    [Header("Stat Buffs")]
+    public EmpireStats statBuff = new EmpireStats();
+
     SpriteRenderer sr;
 
     void Awake()
@@ -33,6 +36,8 @@ public class PlanetData : MonoBehaviour
     {
         ownerEmpireIndex = index;
         UpdateColor();
+
+        Debug.Log(name + " ahora pertenece al imperio " + index);
     }
 
     void UpdateColor()
@@ -52,19 +57,13 @@ public class PlanetData : MonoBehaviour
         sr.color = gm.GetEmpireColor(ownerEmpireIndex);
     }
 
-    // ================= PRODUCCIÓN =================
-
     IEnumerator ProductionRoutine()
     {
         while (true)
         {
             yield return new WaitForSeconds(spawnInterval);
 
-            if (ownerEmpireIndex == -1)
-            {
-                Debug.Log(name + " es neutral, no produce");
-                continue;
-            }
+            if (ownerEmpireIndex == -1) continue;
 
             if (units < maxUnits)
             {
@@ -72,13 +71,16 @@ public class PlanetData : MonoBehaviour
                 Debug.Log(name + " produce unidad. Total: " + units);
             }
 
-            // 🔥 TEST AUTOMÁTICO DE ENVÍO
-            PlanetData target = GetRandomPlanet();
-
-            if (target != null && target != this)
+            // 🔥 ENVÍO AUTOMÁTICO
+            if (units >= 1)
             {
-                Debug.Log(name + " intenta enviar flota a " + target.name);
-                SendFleet(target);
+                PlanetData target = GetRandomPlanet();
+
+                if (target != null && target != this)
+                {
+                    Debug.Log(name + " ENVÍA FLOTA a " + target.name);
+                    SendFleet(target);
+                }
             }
         }
     }
@@ -88,18 +90,14 @@ public class PlanetData : MonoBehaviour
     public void SendFleet(PlanetData target)
     {
         if (target == null) return;
-        if (units <= 0)
-        {
-            Debug.Log(name + " no tiene unidades para enviar");
-            return;
-        }
+        if (units <= 0) return;
 
         GameManager gm = FindObjectOfType<GameManager>();
         if (gm == null) return;
 
         int amount = Mathf.Min(units, gm.maxFleetSize);
 
-        Debug.Log(name + " enviando flota de tamaño: " + amount);
+        Debug.Log(name + " enviando " + amount + " naves");
 
         units -= amount;
 
@@ -107,7 +105,7 @@ public class PlanetData : MonoBehaviour
         {
             if (!gm.CanSpawnShip(ownerEmpireIndex))
             {
-                Debug.Log("Límite de naves alcanzado para imperio " + ownerEmpireIndex);
+                Debug.Log("Límite de naves alcanzado");
                 break;
             }
 
@@ -133,7 +131,7 @@ public class PlanetData : MonoBehaviour
             Quaternion.identity
         );
 
-        Debug.Log("SPAWNING SHIP desde " + name);
+        Debug.Log("🚀 SPAWN NAVE desde " + name);
 
         ShipMovement m = ship.GetComponent<ShipMovement>();
 
@@ -165,8 +163,6 @@ public class PlanetData : MonoBehaviour
             sr.color = color;
         }
     }
-
-    // ================= UTIL =================
 
     PlanetData GetRandomPlanet()
     {
