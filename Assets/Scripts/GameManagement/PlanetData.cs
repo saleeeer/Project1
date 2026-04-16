@@ -71,14 +71,12 @@ public class PlanetData : MonoBehaviour
                 Debug.Log(name + " produce unidad. Total: " + units);
             }
 
-            // 🔥 ENVÍO AUTOMÁTICO
             if (units >= 1)
             {
                 PlanetData target = GetRandomPlanet();
 
                 if (target != null && target != this)
                 {
-                    Debug.Log(name + " ENVÍA FLOTA a " + target.name);
                     SendFleet(target);
                 }
             }
@@ -97,17 +95,12 @@ public class PlanetData : MonoBehaviour
 
         int amount = Mathf.Min(units, gm.maxFleetSize);
 
-        Debug.Log(name + " enviando " + amount + " naves");
-
         units -= amount;
 
         for (int i = 0; i < amount; i++)
         {
             if (!gm.CanSpawnShip(ownerEmpireIndex))
-            {
-                Debug.Log("Límite de naves alcanzado");
                 break;
-            }
 
             SpawnShip(target);
         }
@@ -119,9 +112,13 @@ public class PlanetData : MonoBehaviour
 
         int playerEmpire = PlayerPrefs.GetInt("SelectedEmpire");
 
-        GameObject prefab = (ownerEmpireIndex == playerEmpire)
-            ? gm.playerShipPrefab
-            : gm.enemyShipPrefab;
+        GameObject prefab = GetRandomShipPrefab(gm, ownerEmpireIndex == playerEmpire);
+
+        if (prefab == null)
+        {
+            Debug.LogError("No hay prefabs asignados!");
+            return;
+        }
 
         Vector2 offset = Random.insideUnitCircle.normalized * 2f;
 
@@ -130,8 +127,6 @@ public class PlanetData : MonoBehaviour
             transform.position + (Vector3)offset,
             Quaternion.identity
         );
-
-        Debug.Log("🚀 SPAWN NAVE desde " + name);
 
         ShipMovement m = ship.GetComponent<ShipMovement>();
 
@@ -149,6 +144,16 @@ public class PlanetData : MonoBehaviour
         ApplyColor(ship);
 
         gm.RegisterShip(ownerEmpireIndex);
+    }
+
+    GameObject GetRandomShipPrefab(GameManager gm, bool isPlayer)
+    {
+        List<GameObject> list = isPlayer ? gm.playerShipPrefabs : gm.enemyShipPrefabs;
+
+        if (list == null || list.Count == 0)
+            return null;
+
+        return list[Random.Range(0, list.Count)];
     }
 
     void ApplyColor(GameObject ship)

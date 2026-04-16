@@ -295,17 +295,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8bdc0ebdc6f604e8bf6115a83df67c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerShipPrefab: {fileID: 4912607222141858788, guid: 4e24e797b5c8f814bbe9170973baf304, type: 3}
-  enemyShipPrefab: {fileID: 8197212717312797383, guid: c564e45b008fec6479e9af8f73ef1f26, type: 3}
+  playerShipPrefabs:
+  - {fileID: 4912607222141858788, guid: fdcbab4c3f2c5964c8642c2109eaeb20, type: 3}
+  - {fileID: 4912607222141858788, guid: 903cb2b49c9df3d478c038713e46717b, type: 3}
+  - {fileID: 4912607222141858788, guid: 4e24e797b5c8f814bbe9170973baf304, type: 3}
+  enemyShipPrefabs:
+  - {fileID: 8197212717312797383, guid: c564e45b008fec6479e9af8f73ef1f26, type: 3}
+  - {fileID: 8197212717312797383, guid: b9312ce62f0625f46b04e83038522b0d, type: 3}
+  - {fileID: 8197212717312797383, guid: 5f466bc9f7092ff488f916da7293271a, type: 3}
   empires:
   - name: Blue
     color: {r: 0.003680706, g: 0, b: 1, a: 1}
+    stats:
+      power: 1
+      defense: 1
+      accuracy: 1
+      morale: 1
+      intelligence: 1
   - name: Red
     color: {r: 1, g: 0, b: 0, a: 1}
+    stats:
+      power: 1
+      defense: 1
+      accuracy: 1
+      morale: 1
+      intelligence: 1
   - name: Green
     color: {r: 0.122642085, g: 0.6415094, b: 0, a: 1}
+    stats:
+      power: 1
+      defense: 1
+      accuracy: 1
+      morale: 1
+      intelligence: 1
   - name: Black
     color: {r: 0, g: 0, b: 0, a: 1}
+    stats:
+      power: 1
+      defense: 1
+      accuracy: 1
+      morale: 1
+      intelligence: 1
   maxShipsPerEmpire: 20
   maxFleetSize: 5
 --- !u!4 &1052138309

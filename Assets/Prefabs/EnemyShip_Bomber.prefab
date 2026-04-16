@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: -2453881214356160206}
   - component: {fileID: -7222383176043160371}
   m_Layer: 0
-  m_Name: EnemyShip
+  m_Name: EnemyShip_Bomber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -184,12 +184,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba7085061632a7448b73c861dd7befc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
+  shipType: 1
+  speed: 1000
   isPlayerControlled: 0
   empireIndex: 0
   orbitDistance: 20
   orbitSpeed: 50
-  captureTime: 3
   currentPlanet: {fileID: 0}
   targetPlanet: {fileID: 0}
   path: []

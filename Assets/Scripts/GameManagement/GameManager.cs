@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Prefabs")]
-    public GameObject playerShipPrefab;
-    public GameObject enemyShipPrefab;
+    [Header("Ship Prefabs")]
+    public List<GameObject> playerShipPrefabs;
+    public List<GameObject> enemyShipPrefabs;
 
     [Header("Empires")]
     public List<EmpireData> empires = new List<EmpireData>();
@@ -122,15 +122,9 @@ public class GameManager : MonoBehaviour
 
         PlanetData[] planets = FindObjectsOfType<PlanetData>();
 
-        Debug.Log("---- CALCULANDO STATS PARA IMPERIO " + empireIndex + " ----");
-
         foreach (PlanetData p in planets)
         {
             if (p.ownerEmpireIndex != empireIndex) continue;
-
-            Debug.Log("Sumando buffs de planeta: " + p.name +
-                " | Power+" + p.statBuff.power +
-                " Def+" + p.statBuff.defense);
 
             total.power += p.statBuff.power;
             total.defense += p.statBuff.defense;
@@ -138,8 +132,6 @@ public class GameManager : MonoBehaviour
             total.morale += p.statBuff.morale;
             total.intelligence += p.statBuff.intelligence;
         }
-
-        Debug.Log("TOTAL FINAL → Power: " + total.power + " Defense: " + total.defense);
 
         return total;
     }

@@ -135,4 +135,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   neighbors: []
   ownerEmpireIndex: -1
+  units: 0
+  maxUnits: 20
   spawnInterval: 5
+  statBuff:
+    power: 1
+    defense: 1
+    accuracy: 1
+    morale: 1
+    intelligence: 1
