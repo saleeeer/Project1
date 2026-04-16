@@ -70,11 +70,80 @@ public class GalaxyGenerator : MonoBehaviour
         if (data == null)
             data = planet.AddComponent<PlanetData>();
 
+        // 🔥 NUEVO: asignar tipo de planeta
+        data.planetType = GetRandomPlanetType();
+
+        // 🔥 NUEVO: aplicar buffs según tipo
+        ApplyPlanetBuffs(data);
+
+        // 🔥 mantener sistema actual
         data.SetOwner(-1);
 
         allPlanets.Add(data);
         planetPositions.Add(position);
     }
+
+    // ================= BUFFS AUTOMÁTICOS =================
+
+    void ApplyPlanetBuffs(PlanetData planet)
+    {
+        planet.statBuff = new EmpireStats(); // reset
+
+        switch (planet.planetType)
+        {
+            case PlanetType.AstraPrime:
+                planet.statBuff.power = 5;
+                break;
+
+            case PlanetType.Valkurion:
+                planet.statBuff.defense = 5;
+                break;
+
+            case PlanetType.Novaeon:
+                planet.statBuff.accuracy = 5;
+                break;
+
+            case PlanetType.HeliosIX:
+                planet.statBuff.morale = 5;
+                break;
+
+            case PlanetType.Calystrum:
+                planet.statBuff.intelligence = 5;
+                break;
+
+            case PlanetType.Orionis:
+                planet.statBuff.power = 2;
+                planet.statBuff.defense = 2;
+                break;
+
+            case PlanetType.Dominia:
+                planet.statBuff.power = 3;
+                planet.statBuff.morale = 3;
+                break;
+        }
+
+        Debug.Log($"🌍 {planet.name} tipo {planet.planetType} → Buff aplicado");
+    }
+
+    PlanetType GetRandomPlanetType()
+    {
+        int value = Random.Range(0, 7);
+
+        switch (value)
+        {
+            case 0: return PlanetType.AstraPrime;
+            case 1: return PlanetType.Valkurion;
+            case 2: return PlanetType.Novaeon;
+            case 3: return PlanetType.HeliosIX;
+            case 4: return PlanetType.Calystrum;
+            case 5: return PlanetType.Orionis;
+            case 6: return PlanetType.Dominia;
+        }
+
+        return PlanetType.AstraPrime;
+    }
+
+    // ================= LÓGICA EXISTENTE =================
 
     bool IsTooClose(Vector3 position)
     {
@@ -93,7 +162,6 @@ public class GalaxyGenerator : MonoBehaviour
 
         foreach (PlanetData a in allPlanets)
         {
-            // Lista de planetas ordenados por distancia
             List<PlanetData> sorted = new List<PlanetData>(allPlanets);
 
             sorted.Sort((b, c) =>
@@ -185,4 +253,3 @@ public class GalaxyGenerator : MonoBehaviour
         }
     }
 }
-

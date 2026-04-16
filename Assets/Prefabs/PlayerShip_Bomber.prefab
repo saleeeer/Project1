@@ -100,11 +100,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shipType: 1
-  speed: 1000
+  speed: 10
   isPlayerControlled: 1
   empireIndex: 0
   orbitDistance: 20
   orbitSpeed: 50
+  captureTime: 3
   currentPlanet: {fileID: 0}
   targetPlanet: {fileID: 0}
   path: []

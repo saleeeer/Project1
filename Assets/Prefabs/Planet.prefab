@@ -133,14 +133,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d14abd258ba04a84dbbad4b8c3fbee2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planetType: 0
   neighbors: []
   ownerEmpireIndex: -1
   units: 0
   maxUnits: 20
   spawnInterval: 5
   statBuff:
-    power: 1
-    defense: 1
-    accuracy: 1
-    morale: 1
-    intelligence: 1
+    power: 0
+    defense: 0
+    accuracy: 0
+    morale: 0
+    intelligence: 0

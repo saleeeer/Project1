@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class PlanetData : MonoBehaviour
 {
+    [Header("Type")]
+    public PlanetType planetType; // 🔥 NUEVO
+
     [Header("Connections")]
     public List<PlanetData> neighbors = new List<PlanetData>();
 
