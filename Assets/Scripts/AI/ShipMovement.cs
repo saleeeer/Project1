@@ -36,6 +36,8 @@ public class ShipMovement : MonoBehaviour
     ShipCombat combat;
 
     bool isFighting = false;
+    ShipMovement currentEnemy;
+
     bool isCapturing = false;
 
     void Awake()
@@ -74,8 +76,6 @@ public class ShipMovement : MonoBehaviour
                 combat.baseHealth *= 2f;
                 break;
         }
-
-        Debug.Log("Speed final: " + speed);
     }
 
     IEnumerator AssignStartingPlanet()
@@ -109,6 +109,8 @@ public class ShipMovement : MonoBehaviour
 
     void Update()
     {
+        HandleCombat();
+
         if (isFighting) return;
 
         if (isPlayerControlled)
@@ -118,6 +120,63 @@ public class ShipMovement : MonoBehaviour
             Orbit();
         else
             Move();
+    }
+
+    // ================= COMBATE =================
+
+    void HandleCombat()
+    {
+        if (isFighting) return;
+
+        ShipMovement[] ships = FindObjectsOfType<ShipMovement>();
+
+        foreach (ShipMovement other in ships)
+        {
+            if (other == this) continue;
+            if (other.empireIndex == empireIndex) continue;
+
+            float dist = Vector2.Distance(transform.position, other.transform.position);
+
+            if (dist < combat.attackRange)
+            {
+                Debug.Log(name + " entra en combate con " + other.name);
+                StartCoroutine(FightRoutine(other));
+                break;
+            }
+        }
+    }
+
+    IEnumerator FightRoutine(ShipMovement enemy)
+    {
+        isFighting = true;
+        currentEnemy = enemy;
+
+        ShipCombat enemyCombat = enemy.GetComponent<ShipCombat>();
+
+        while (enemy != null && enemyCombat != null && combat != null)
+        {
+            LookAt(enemy.transform.position);
+            enemy.LookAt(transform.position);
+
+            combat.TryAttack(enemyCombat);
+
+            if (enemyCombat != null)
+                enemyCombat.TryAttack(combat);
+
+            yield return null;
+        }
+
+        isFighting = false;
+        currentEnemy = null;
+    }
+
+    void LookAt(Vector3 target)
+    {
+        Vector3 dir = (target - transform.position).normalized;
+
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     // ================= INPUT =================
@@ -185,7 +244,6 @@ public class ShipMovement : MonoBehaviour
 
             SnapToOrbit(currentPlanet);
 
-            // 🔥 INICIAR CAPTURA
             if (!isCapturing)
                 StartCoroutine(CaptureRoutine());
         }
@@ -197,8 +255,6 @@ public class ShipMovement : MonoBehaviour
     {
         isCapturing = true;
 
-        Debug.Log("Intentando capturar " + currentPlanet.name);
-
         float timer = 0f;
 
         while (timer < captureTime)
@@ -207,10 +263,7 @@ public class ShipMovement : MonoBehaviour
             yield return null;
         }
 
-        // 🔥 YA NO BLOQUEAMOS POR ENEMIGOS
         currentPlanet.SetOwner(empireIndex);
-
-        Debug.Log("✅ Planeta conquistado por imperio " + empireIndex);
 
         isCapturing = false;
     }

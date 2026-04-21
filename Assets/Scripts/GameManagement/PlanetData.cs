@@ -5,7 +5,10 @@ using System.Collections.Generic;
 public class PlanetData : MonoBehaviour
 {
     [Header("Type")]
-    public PlanetType planetType; // 🔥 NUEVO
+    public PlanetType planetType;
+
+    [Header("Economy")]
+    public int baseIncome = 1; // 🔥 NUEVO
 
     [Header("Connections")]
     public List<PlanetData> neighbors = new List<PlanetData>();
@@ -32,7 +35,50 @@ public class PlanetData : MonoBehaviour
 
     void Start()
     {
+        AssignPlanetTypeData(); // 🔥 IMPORTANTE
         StartCoroutine(ProductionRoutine());
+    }
+
+    void AssignPlanetTypeData()
+    {
+        switch (planetType)
+        {
+            case PlanetType.AstraPrime:
+                baseIncome = 5;
+                break;
+
+            case PlanetType.Valkurion:
+                baseIncome = 4;
+                break;
+
+            case PlanetType.Novaeon:
+                baseIncome = 3;
+                break;
+
+            case PlanetType.HeliosIX:
+                baseIncome = 2;
+                break;
+
+            case PlanetType.Calystrum:
+                baseIncome = 2;
+                break;
+
+            case PlanetType.Orionis:
+                baseIncome = 1;
+                break;
+
+            case PlanetType.Dominia:
+                baseIncome = 1;
+                break;
+        }
+    }
+
+    public int GetIncome()
+    {
+        GameManager gm = FindObjectOfType<GameManager>();
+        if (gm == null) return 1;
+
+        return gm.GetPlanetIncome(this);
     }
 
     public void SetOwner(int index)
@@ -69,10 +115,7 @@ public class PlanetData : MonoBehaviour
             if (ownerEmpireIndex == -1) continue;
 
             if (units < maxUnits)
-            {
                 units++;
-                Debug.Log(name + " produce unidad. Total: " + units);
-            }
 
             if (units >= 1)
             {
@@ -109,9 +152,12 @@ public class PlanetData : MonoBehaviour
         }
     }
 
+    // SOLO TE PONGO EL MÉTODO MODIFICADO PARA NO ROMPER LO DEMÁS
+
     void SpawnShip(PlanetData target)
     {
         GameManager gm = FindObjectOfType<GameManager>();
+        if (gm == null) return;
 
         int playerEmpire = PlayerPrefs.GetInt("SelectedEmpire");
 
@@ -119,7 +165,24 @@ public class PlanetData : MonoBehaviour
 
         if (prefab == null)
         {
-            Debug.LogError("No hay prefabs asignados!");
+            Debug.LogError("No hay prefabs!");
+            return;
+        }
+
+        ShipMovement prefabShip = prefab.GetComponent<ShipMovement>();
+
+        if (prefabShip == null)
+        {
+            Debug.LogError("Prefab sin ShipMovement!");
+            return;
+        }
+
+        ShipType type = prefabShip.shipType;
+        int cost = gm.GetShipCost(type);
+
+        if (!gm.SpendCredits(ownerEmpireIndex, cost))
+        {
+            Debug.Log($"❌ No hay créditos para {type} (coste {cost})");
             return;
         }
 

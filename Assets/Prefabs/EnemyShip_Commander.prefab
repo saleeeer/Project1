@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shipType: 2
-  speed: 8
+  speed: 80
   isPlayerControlled: 0
   empireIndex: 0
   orbitDistance: 20
