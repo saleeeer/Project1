@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
 public class GameManager : MonoBehaviour
 {
     [Header("Ship Prefabs")]
-    public List<GameObject> playerShipPrefabs;
-    public List<GameObject> enemyShipPrefabs;
+    public List<ShipPrefabData> playerShips;
+    public List<ShipPrefabData> enemyShips;
 
     [Header("Empires")]
     public List<EmpireData> empires = new List<EmpireData>();
@@ -17,7 +18,6 @@ public class GameManager : MonoBehaviour
     [Header("Ship Costs")]
     public List<ShipCostData> shipCosts = new List<ShipCostData>();
 
-    // 🔥 NUEVO (NO BORRA NADA)
     [Header("Planet Income")]
     public List<PlanetIncomeData> planetIncomes = new List<PlanetIncomeData>();
 
@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour
     [Header("Economy")]
     public float incomeInterval = 2f;
 
+    [Header("Player Control")]
+    public ShipType selectedShipType = ShipType.Fighter;
+
     void Awake()
     {
         selectedEmpireIndex = PlayerPrefs.GetInt("SelectedEmpire", 0);
@@ -42,7 +45,6 @@ public class GameManager : MonoBehaviour
             empireCredits[i] = 0;
         }
 
-        // DEBUG costes
         foreach (var sc in shipCosts)
         {
             Debug.Log($"Coste {sc.shipType}: {sc.cost}");
@@ -121,7 +123,6 @@ public class GameManager : MonoBehaviour
             {
                 if (p.ownerEmpireIndex == i)
                 {
-                    // 🔥 CAMBIO: usar nuevo sistema
                     int income = GetPlanetIncome(p);
                     totalIncome += income;
                 }
@@ -133,7 +134,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // 🔥 NUEVO MÉTODO (NO ROMPE NADA)
     public int GetPlanetIncome(PlanetData planet)
     {
         int baseIncome = 1;
@@ -174,7 +174,7 @@ public class GameManager : MonoBehaviour
         return empireCredits[empireIndex];
     }
 
-    // 🔥 COSTE POR TIPO
+    // ================= SHIPS =================
 
     public int GetShipCost(ShipType type)
     {
@@ -186,6 +186,33 @@ public class GameManager : MonoBehaviour
 
         Debug.LogWarning("No cost definido para " + type);
         return 1;
+    }
+
+    public GameObject GetShipPrefab(ShipType type, bool isPlayer)
+    {
+        List<ShipPrefabData> list = isPlayer ? playerShips : enemyShips;
+
+        foreach (var s in list)
+        {
+            if (s.shipType == type)
+                return s.prefab;
+        }
+
+        Debug.LogError("No prefab para " + type);
+        return null;
+    }
+
+    public ShipType GetAIShipType(int empireIndex)
+    {
+        int credits = GetCredits(empireIndex);
+
+        if (credits > 15)
+            return ShipType.Commander;
+
+        if (credits > 8)
+            return ShipType.Bomber;
+
+        return ShipType.Fighter;
     }
 
     // ================= LIMITES =================

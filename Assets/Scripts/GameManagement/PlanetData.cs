@@ -160,29 +160,26 @@ public class PlanetData : MonoBehaviour
         if (gm == null) return;
 
         int playerEmpire = PlayerPrefs.GetInt("SelectedEmpire");
+        bool isPlayer = ownerEmpireIndex == playerEmpire;
 
-        GameObject prefab = GetRandomShipPrefab(gm, ownerEmpireIndex == playerEmpire);
+        // 🔥 NUEVO: elegir tipo
+        ShipType type = isPlayer
+            ? gm.selectedShipType
+            : gm.GetAIShipType(ownerEmpireIndex);
+
+        GameObject prefab = gm.GetShipPrefab(type, isPlayer);
 
         if (prefab == null)
         {
-            Debug.LogError("No hay prefabs!");
+            Debug.LogError("No prefab encontrado para " + type);
             return;
         }
 
-        ShipMovement prefabShip = prefab.GetComponent<ShipMovement>();
-
-        if (prefabShip == null)
-        {
-            Debug.LogError("Prefab sin ShipMovement!");
-            return;
-        }
-
-        ShipType type = prefabShip.shipType;
         int cost = gm.GetShipCost(type);
 
         if (!gm.SpendCredits(ownerEmpireIndex, cost))
         {
-            Debug.Log($"❌ No hay créditos para {type} (coste {cost})");
+            Debug.Log("❌ No hay créditos");
             return;
         }
 
@@ -198,11 +195,11 @@ public class PlanetData : MonoBehaviour
 
         m.currentPlanet = this;
         m.empireIndex = ownerEmpireIndex;
-        m.isPlayerControlled = (ownerEmpireIndex == playerEmpire);
+        m.isPlayerControlled = isPlayer;
 
         m.SetTarget(target);
 
-        if (!m.isPlayerControlled && ship.GetComponent<AIShipController>() == null)
+        if (!isPlayer && ship.GetComponent<AIShipController>() == null)
         {
             ship.AddComponent<AIShipController>();
         }
@@ -210,16 +207,6 @@ public class PlanetData : MonoBehaviour
         ApplyColor(ship);
 
         gm.RegisterShip(ownerEmpireIndex);
-    }
-
-    GameObject GetRandomShipPrefab(GameManager gm, bool isPlayer)
-    {
-        List<GameObject> list = isPlayer ? gm.playerShipPrefabs : gm.enemyShipPrefabs;
-
-        if (list == null || list.Count == 0)
-            return null;
-
-        return list[Random.Range(0, list.Count)];
     }
 
     void ApplyColor(GameObject ship)
