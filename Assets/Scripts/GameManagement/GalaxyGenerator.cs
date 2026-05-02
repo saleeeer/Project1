@@ -24,6 +24,15 @@ public class GalaxyGenerator : MonoBehaviour
 
     List<Vector3> planetPositions = new List<Vector3>();
 
+
+    public static GalaxyGenerator Instance;
+    
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         GenerateGalaxy();

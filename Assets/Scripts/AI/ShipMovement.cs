@@ -312,7 +312,7 @@ public class ShipMovement : MonoBehaviour
 
     void OnDestroy()
     {
-        GameManager gm = FindObjectOfType<GameManager>();
+        GameManager gm = GameManager.Instance;
 
         if (gm != null)
         {

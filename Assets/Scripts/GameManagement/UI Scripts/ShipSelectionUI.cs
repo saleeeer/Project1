@@ -2,33 +2,13 @@ using UnityEngine;
 
 public class ShipSelectionUI : MonoBehaviour
 {
-    GameManager gm;
-
-    void Start()
+    public void SelectShip(int typeIndex)
     {
-        gm = FindObjectOfType<GameManager>();
+        if (GameManager.Instance == null) return;
 
-        if (gm == null)
-        {
-            Debug.LogError("❌ No se encontró GameManager");
-        }
-    }
+        ShipType type = (ShipType)typeIndex;
+        GameManager.Instance.selectedShipType = type;
 
-    public void SelectFighter()
-    {
-        gm.selectedShipType = ShipType.Fighter;
-        Debug.Log("Jugador selecciona FIGHTER");
-    }
-
-    public void SelectBomber()
-    {
-        gm.selectedShipType = ShipType.Bomber;
-        Debug.Log("Jugador selecciona BOMBER");
-    }
-
-    public void SelectCommander()
-    {
-        gm.selectedShipType = ShipType.Commander;
-        Debug.Log("Jugador selecciona COMMANDER");
+        Debug.Log("Jugador selecciona " + type);
     }
 }

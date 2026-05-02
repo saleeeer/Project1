@@ -27,7 +27,7 @@ public class Bullet : MonoBehaviour
             speed * Time.deltaTime
         );
 
-        if (Vector3.Distance(transform.position, target.position) < 0.1f)
+        if ((transform.position - target.position).sqrMagnitude < 0.01f)
         {
             ShipCombat combat = target.GetComponent<ShipCombat>();
 

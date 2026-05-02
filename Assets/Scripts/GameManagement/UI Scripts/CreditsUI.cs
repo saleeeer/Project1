@@ -5,21 +5,32 @@ public class CreditsUI : MonoBehaviour
 {
     public TextMeshProUGUI creditsText;
 
-    GameManager gm;
     int playerEmpire;
+    float timer;
 
     void Start()
     {
-        gm = FindObjectOfType<GameManager>();
-        playerEmpire = PlayerPrefs.GetInt("SelectedEmpire", 0);
+        if (GameManager.Instance == null) return;
+
+        playerEmpire = GameManager.Instance.playerEmpireIndex;
+        Refresh();
     }
 
     void Update()
     {
-        if (gm == null) return;
+        if (GameManager.Instance == null) return;
 
-        int credits = gm.GetCredits(playerEmpire);
+        timer += Time.deltaTime;
 
+        if (timer < 0.25f) return;
+
+        timer = 0f;
+        Refresh();
+    }
+
+    void Refresh()
+    {
+        int credits = GameManager.Instance.GetCredits(playerEmpire);
         creditsText.text = "💰 Credits: " + credits;
     }
 }

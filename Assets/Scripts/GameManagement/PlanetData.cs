@@ -8,7 +8,7 @@ public class PlanetData : MonoBehaviour
     public PlanetType planetType;
 
     [Header("Economy")]
-    public int baseIncome = 1; // 🔥 NUEVO
+    public int baseIncome = 1;
 
     [Header("Connections")]
     public List<PlanetData> neighbors = new List<PlanetData>();
@@ -28,6 +28,8 @@ public class PlanetData : MonoBehaviour
 
     SpriteRenderer sr;
 
+    Coroutine productionCoroutine;
+
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -35,9 +37,12 @@ public class PlanetData : MonoBehaviour
 
     void Start()
     {
-        AssignPlanetTypeData(); // 🔥 IMPORTANTE
-        StartCoroutine(ProductionRoutine());
+        AssignPlanetTypeData();
+
+        productionCoroutine = StartCoroutine(ProductionRoutine());
     }
+
+    // ================= TYPE =================
 
     void AssignPlanetTypeData()
     {
@@ -75,11 +80,12 @@ public class PlanetData : MonoBehaviour
 
     public int GetIncome()
     {
-        GameManager gm = FindObjectOfType<GameManager>();
-        if (gm == null) return 1;
+        if (GameManager.Instance == null) return baseIncome;
 
-        return gm.GetPlanetIncome(this);
+        return GameManager.Instance.GetPlanetIncome(this);
     }
+
+    // ================= OWNER =================
 
     public void SetOwner(int index)
     {
@@ -92,8 +98,7 @@ public class PlanetData : MonoBehaviour
     void UpdateColor()
     {
         if (sr == null) return;
-
-        GameManager gm = FindObjectOfType<GameManager>();
+        if (GameManager.Instance == null) return;
 
         if (ownerEmpireIndex == -1)
         {
@@ -101,10 +106,10 @@ public class PlanetData : MonoBehaviour
             return;
         }
 
-        if (gm == null) return;
-
-        sr.color = gm.GetEmpireColor(ownerEmpireIndex);
+        sr.color = GameManager.Instance.GetEmpireColor(ownerEmpireIndex);
     }
+
+    // ================= PRODUCTION =================
 
     IEnumerator ProductionRoutine()
     {
@@ -129,19 +134,19 @@ public class PlanetData : MonoBehaviour
         }
     }
 
-    // ================= FLOTAS =================
+    // ================= FLEET =================
 
     public void SendFleet(PlanetData target)
     {
         if (target == null) return;
         if (units <= 0) return;
 
-        GameManager gm = FindObjectOfType<GameManager>();
+        GameManager gm = GameManager.Instance;
         if (gm == null) return;
 
         int amount = Mathf.Min(units, gm.maxFleetSize);
 
-        units -= amount;
+        int spawned = 0;
 
         for (int i = 0; i < amount; i++)
         {
@@ -149,20 +154,20 @@ public class PlanetData : MonoBehaviour
                 break;
 
             SpawnShip(target);
+            spawned++;
         }
-    }
 
-    // SOLO TE PONGO EL MÉTODO MODIFICADO PARA NO ROMPER LO DEMÁS
+        units -= spawned;
+    }
 
     void SpawnShip(PlanetData target)
     {
-        GameManager gm = FindObjectOfType<GameManager>();
+        GameManager gm = GameManager.Instance;
         if (gm == null) return;
 
-        int playerEmpire = PlayerPrefs.GetInt("SelectedEmpire");
+        int playerEmpire = gm.playerEmpireIndex;
         bool isPlayer = ownerEmpireIndex == playerEmpire;
 
-        // 🔥 NUEVO: elegir tipo
         ShipType type = isPlayer
             ? gm.selectedShipType
             : gm.GetAIShipType(ownerEmpireIndex);
@@ -179,7 +184,6 @@ public class PlanetData : MonoBehaviour
 
         if (!gm.SpendCredits(ownerEmpireIndex, cost))
         {
-            Debug.Log("❌ No hay créditos");
             return;
         }
 
@@ -211,10 +215,9 @@ public class PlanetData : MonoBehaviour
 
     void ApplyColor(GameObject ship)
     {
-        GameManager gm = FindObjectOfType<GameManager>();
-        if (gm == null) return;
+        if (GameManager.Instance == null) return;
 
-        Color color = gm.GetEmpireColor(ownerEmpireIndex);
+        Color color = GameManager.Instance.GetEmpireColor(ownerEmpireIndex);
 
         foreach (SpriteRenderer sr in ship.GetComponentsInChildren<SpriteRenderer>())
         {
@@ -222,12 +225,16 @@ public class PlanetData : MonoBehaviour
         }
     }
 
+    // ================= TARGET =================
+
     PlanetData GetRandomPlanet()
     {
-        PlanetData[] all = FindObjectsOfType<PlanetData>();
+        if (GalaxyGenerator.Instance == null) return null;
 
-        if (all.Length <= 1) return null;
+        var all = GalaxyGenerator.Instance.allPlanets;
 
-        return all[Random.Range(0, all.Length)];
+        if (all == null || all.Count <= 1) return null;
+
+        return all[Random.Range(0, all.Count)];
     }
 }
