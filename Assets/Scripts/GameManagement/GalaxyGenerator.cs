@@ -24,9 +24,7 @@ public class GalaxyGenerator : MonoBehaviour
 
     List<Vector3> planetPositions = new List<Vector3>();
 
-
     public static GalaxyGenerator Instance;
-    
 
     void Awake()
     {
@@ -36,6 +34,9 @@ public class GalaxyGenerator : MonoBehaviour
     void Start()
     {
         GenerateGalaxy();
+
+        // 🔥 NUEVO (CLAVE)
+        AssignStartingEmpires();
     }
 
     void GenerateGalaxy()
@@ -79,24 +80,74 @@ public class GalaxyGenerator : MonoBehaviour
         if (data == null)
             data = planet.AddComponent<PlanetData>();
 
-        // 🔥 NUEVO: asignar tipo de planeta
+        // 🔥 tipo de planeta
         data.planetType = GetRandomPlanetType();
 
-        // 🔥 NUEVO: aplicar buffs según tipo
+        // 🔥 buffs
         ApplyPlanetBuffs(data);
 
-        // 🔥 mantener sistema actual
+        // 🔥 sigue igual (sin dueño por ahora)
         data.SetOwner(-1);
 
         allPlanets.Add(data);
         planetPositions.Add(position);
     }
 
-    // ================= BUFFS AUTOMÁTICOS =================
+    // ================= 🔥 NUEVO: ASIGNACIÓN =================
+
+    void AssignStartingEmpires()
+    {
+        if (allPlanets == null || allPlanets.Count == 0)
+            return;
+
+        int playerEmpire = PlayerPrefs.GetInt("SelectedEmpire", 0);
+        int empireCount = GameManager.Instance.empires.Count;
+
+        List<PlanetData> available = new List<PlanetData>(allPlanets);
+
+        // 🔵 1. jugador SIEMPRE spawnea
+        PlanetData playerPlanet = GetRandomFromList(available);
+        available.Remove(playerPlanet);
+
+        playerPlanet.SetOwner(playerEmpire);
+        playerPlanet.units = 15;
+
+        // 🔴 2. enemigos (todos los demás imperios)
+        for (int i = 0; i < empireCount; i++)
+        {
+            if (i == playerEmpire) continue;
+
+            if (available.Count == 0) break;
+
+            PlanetData enemyPlanet = GetRandomFromList(available);
+            available.Remove(enemyPlanet);
+
+            enemyPlanet.SetOwner(i);
+            enemyPlanet.units = 12;
+        }
+
+        // ⚪ 3. resto neutrales
+        foreach (PlanetData p in available)
+        {
+            p.SetOwner(-1);
+            p.units = Random.Range(0, 5);
+        }
+
+        Debug.Log("Spawn de imperios completo (jugador + todos los enemigos + neutrales)");
+    }
+
+    PlanetData GetRandomFromList(List<PlanetData> list)
+    {
+        return list[Random.Range(0, list.Count)];
+    }
+
+    
+
+    // ================= BUFFS =================
 
     void ApplyPlanetBuffs(PlanetData planet)
     {
-        planet.statBuff = new EmpireStats(); // reset
+        planet.statBuff = new EmpireStats();
 
         switch (planet.planetType)
         {
@@ -152,7 +203,7 @@ public class GalaxyGenerator : MonoBehaviour
         return PlanetType.AstraPrime;
     }
 
-    // ================= LÓGICA EXISTENTE =================
+    // ================= EXISTENTE =================
 
     bool IsTooClose(Vector3 position)
     {

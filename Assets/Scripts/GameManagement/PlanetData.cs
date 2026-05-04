@@ -23,12 +23,17 @@ public class PlanetData : MonoBehaviour
     [Header("Production")]
     public float spawnInterval = 2f;
 
+    [Header("Fleet Sending")]
+    public float sendInterval = 3f;
+    public int minUnitsToSend = 5;
+
     [Header("Stat Buffs")]
     public EmpireStats statBuff = new EmpireStats();
 
     SpriteRenderer sr;
 
-    Coroutine productionCoroutine;
+    float sendTimer;
+    PlanetData lastTarget;
 
     void Awake()
     {
@@ -38,8 +43,7 @@ public class PlanetData : MonoBehaviour
     void Start()
     {
         AssignPlanetTypeData();
-
-        productionCoroutine = StartCoroutine(ProductionRoutine());
+        StartCoroutine(ProductionRoutine());
     }
 
     // ================= TYPE =================
@@ -48,40 +52,19 @@ public class PlanetData : MonoBehaviour
     {
         switch (planetType)
         {
-            case PlanetType.AstraPrime:
-                baseIncome = 5;
-                break;
-
-            case PlanetType.Valkurion:
-                baseIncome = 4;
-                break;
-
-            case PlanetType.Novaeon:
-                baseIncome = 3;
-                break;
-
-            case PlanetType.HeliosIX:
-                baseIncome = 2;
-                break;
-
-            case PlanetType.Calystrum:
-                baseIncome = 2;
-                break;
-
-            case PlanetType.Orionis:
-                baseIncome = 1;
-                break;
-
-            case PlanetType.Dominia:
-                baseIncome = 1;
-                break;
+            case PlanetType.AstraPrime: baseIncome = 5; break;
+            case PlanetType.Valkurion: baseIncome = 4; break;
+            case PlanetType.Novaeon: baseIncome = 3; break;
+            case PlanetType.HeliosIX: baseIncome = 2; break;
+            case PlanetType.Calystrum: baseIncome = 2; break;
+            case PlanetType.Orionis: baseIncome = 1; break;
+            case PlanetType.Dominia: baseIncome = 1; break;
         }
     }
 
     public int GetIncome()
     {
         if (GameManager.Instance == null) return baseIncome;
-
         return GameManager.Instance.GetPlanetIncome(this);
     }
 
@@ -98,18 +81,26 @@ public class PlanetData : MonoBehaviour
     void UpdateColor()
     {
         if (sr == null) return;
-        if (GameManager.Instance == null) return;
 
         if (ownerEmpireIndex == -1)
         {
-            sr.color = Color.white;
+            sr.color = Color.gray;
             return;
         }
 
-        sr.color = GameManager.Instance.GetEmpireColor(ownerEmpireIndex);
+        if (GameManager.Instance == null)
+        {
+            sr.color = Color.magenta;
+            return;
+        }
+
+        Color c = GameManager.Instance.GetEmpireColor(ownerEmpireIndex);
+        c.a = 1f;
+
+        sr.color = c;
     }
 
-    // ================= PRODUCTION =================
+    // ================= PRODUCTION + SPAWN =================
 
     IEnumerator ProductionRoutine()
     {
@@ -119,19 +110,68 @@ public class PlanetData : MonoBehaviour
 
             if (ownerEmpireIndex == -1) continue;
 
+            // PRODUCCIÓN
             if (units < maxUnits)
                 units++;
 
-            if (units >= 1)
-            {
-                PlanetData target = GetRandomPlanet();
+            // CONTROL DE ENVÍO
+            sendTimer += spawnInterval;
 
-                if (target != null && target != this)
-                {
-                    SendFleet(target);
-                }
+            if (sendTimer >= sendInterval)
+            {
+                sendTimer = 0f;
+                TrySendFleet();
             }
         }
+    }
+
+    void TrySendFleet()
+    {
+        if (units < minUnitsToSend) return;
+
+        PlanetData target = GetTargetFromNeighbors();
+
+        if (target == null) return;
+
+        if (target == lastTarget) return;
+
+        lastTarget = target;
+
+        SendFleet(target);
+    }
+
+    // ================= TARGET INTELIGENTE =================
+
+    PlanetData GetTargetFromNeighbors()
+    {
+        if (neighbors == null || neighbors.Count == 0)
+            return null;
+
+        List<PlanetData> enemies = new List<PlanetData>();
+        List<PlanetData> neutrals = new List<PlanetData>();
+
+        foreach (PlanetData n in neighbors)
+        {
+            if (n == null) continue;
+
+            if (n.ownerEmpireIndex == ownerEmpireIndex)
+                continue;
+
+            if (n.ownerEmpireIndex == -1)
+                neutrals.Add(n);
+            else
+                enemies.Add(n);
+        }
+
+        // prioridad enemigos
+        if (enemies.Count > 0)
+            return enemies[Random.Range(0, enemies.Count)];
+
+        // si no hay enemigos → neutrales
+        if (neutrals.Count > 0)
+            return neutrals[Random.Range(0, neutrals.Count)];
+
+        return null;
     }
 
     // ================= FLEET =================
@@ -183,9 +223,7 @@ public class PlanetData : MonoBehaviour
         int cost = gm.GetShipCost(type);
 
         if (!gm.SpendCredits(ownerEmpireIndex, cost))
-        {
             return;
-        }
 
         Vector2 offset = Random.insideUnitCircle.normalized * 2f;
 
@@ -223,18 +261,5 @@ public class PlanetData : MonoBehaviour
         {
             sr.color = color;
         }
-    }
-
-    // ================= TARGET =================
-
-    PlanetData GetRandomPlanet()
-    {
-        if (GalaxyGenerator.Instance == null) return null;
-
-        var all = GalaxyGenerator.Instance.allPlanets;
-
-        if (all == null || all.Count <= 1) return null;
-
-        return all[Random.Range(0, all.Count)];
     }
 }
