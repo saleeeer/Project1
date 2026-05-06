@@ -100,7 +100,7 @@ public class PlanetData : MonoBehaviour
         sr.color = c;
     }
 
-    // ================= PRODUCTION + SPAWN =================
+    // ================= PRODUCTION =================
 
     IEnumerator ProductionRoutine()
     {
@@ -110,11 +110,11 @@ public class PlanetData : MonoBehaviour
 
             if (ownerEmpireIndex == -1) continue;
 
-            // PRODUCCIÓN
+            // Producción
             if (units < maxUnits)
                 units++;
 
-            // CONTROL DE ENVÍO
+            // Control de envío
             sendTimer += spawnInterval;
 
             if (sendTimer >= sendInterval)
@@ -125,6 +125,8 @@ public class PlanetData : MonoBehaviour
         }
     }
 
+    // ================= IA =================
+
     void TrySendFleet()
     {
         if (units < minUnitsToSend) return;
@@ -133,6 +135,10 @@ public class PlanetData : MonoBehaviour
 
         if (target == null) return;
 
+        // Evitar ataques suicidas
+        if (target.units > units * 1.2f)
+            return;
+
         if (target == lastTarget) return;
 
         lastTarget = target;
@@ -140,38 +146,46 @@ public class PlanetData : MonoBehaviour
         SendFleet(target);
     }
 
-    // ================= TARGET INTELIGENTE =================
-
     PlanetData GetTargetFromNeighbors()
     {
         if (neighbors == null || neighbors.Count == 0)
             return null;
 
-        List<PlanetData> enemies = new List<PlanetData>();
-        List<PlanetData> neutrals = new List<PlanetData>();
+        PlanetData bestTarget = null;
+        float bestScore = float.MinValue;
 
         foreach (PlanetData n in neighbors)
         {
             if (n == null) continue;
+            if (n.ownerEmpireIndex == ownerEmpireIndex) continue;
 
-            if (n.ownerEmpireIndex == ownerEmpireIndex)
-                continue;
+            float score = 0f;
 
+            // Prioridad enemigo > neutral
             if (n.ownerEmpireIndex == -1)
-                neutrals.Add(n);
+                score += 5f;
             else
-                enemies.Add(n);
+                score += 10f;
+
+            // Preferir débiles
+            score += (maxUnits - n.units);
+
+            // Evitar suicidio
+            if (units < n.units)
+                score -= 20f;
+
+            // Bonus si es muy débil
+            if (n.units < units * 0.5f)
+                score += 10f;
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestTarget = n;
+            }
         }
 
-        // prioridad enemigos
-        if (enemies.Count > 0)
-            return enemies[Random.Range(0, enemies.Count)];
-
-        // si no hay enemigos → neutrales
-        if (neutrals.Count > 0)
-            return neutrals[Random.Range(0, neutrals.Count)];
-
-        return null;
+        return bestTarget;
     }
 
     // ================= FLEET =================
