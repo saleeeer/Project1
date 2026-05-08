@@ -11,62 +11,133 @@ public class GameManager : MonoBehaviour
     [Header("Player")]
     public int playerEmpireIndex;
 
+    [Header("Selection")]
+    public PlanetData selectedPlanet;
+
     [Header("Fleet")]
     public int maxFleetSize = 10;
 
+    [Header("Fleet Limit")]
+    public int maxShipsPerEmpire = 50;
+
+    Dictionary<int, int> empireShipCount = new Dictionary<int, int>();
+    Dictionary<int, int> empireCredits = new Dictionary<int, int>();
+
+    [Header("Economy")]
+    public float incomeInterval = 2f;
+
     [Header("Ships")]
     public ShipType selectedShipType = ShipType.Fighter;
+
+    [Header("Prefabs")]
+    public GameObject fighterPrefab;
+    public GameObject bomberPrefab;
+    public GameObject commanderPrefab;
+
+    [Header("Costs")]
+    public List<ShipCostData> shipCosts = new List<ShipCostData>();
 
     void Awake()
     {
         Instance = this;
 
-        // 🔥 cargar selección del jugador
         playerEmpireIndex = PlayerPrefs.GetInt("SelectedEmpire", 0);
+
+        InitEmpires();
+        InvokeRepeating(nameof(GenerateIncome), incomeInterval, incomeInterval);
     }
 
-    // ================= COLOR =================
-
-    public Color GetEmpireColor(int index)
+    void InitEmpires()
     {
-        if (index < 0 || index >= empires.Count)
-            return Color.white;
-
-        return empires[index].color;
+        for (int i = 0; i < empires.Count; i++)
+        {
+            empireShipCount[i] = 0;
+            empireCredits[i] = 50; // старт inicial
+        }
     }
 
-    // ================= STATS =================
+    // ================= ECONOMÍA =================
 
-    public EmpireStats GetEmpireTotalStats(int index)
+    void GenerateIncome()
     {
-        if (index < 0 || index >= empires.Count)
-            return new EmpireStats();
+        PlanetData[] planets = FindObjectsOfType<PlanetData>();
 
-        return empires[index].stats;
+        foreach (PlanetData p in planets)
+        {
+            if (p.ownerEmpireIndex == -1) continue;
+
+            int income = p.GetIncome();
+
+            empireCredits[p.ownerEmpireIndex] += income;
+        }
     }
 
-    // ================= ECONOMÍA (placeholder) =================
+    public int GetCredits(int empireIndex)
+    {
+        if (!empireCredits.ContainsKey(empireIndex))
+            return 0;
+
+        return empireCredits[empireIndex];
+    }
+
+    public bool SpendCredits(int empireIndex, int amount)
+    {
+        if (!empireCredits.ContainsKey(empireIndex))
+            return false;
+
+        if (empireCredits[empireIndex] < amount)
+            return false;
+
+        empireCredits[empireIndex] -= amount;
+        return true;
+    }
 
     public int GetPlanetIncome(PlanetData planet)
     {
         return planet.baseIncome;
     }
 
-    public int GetCredits(int empireIndex)
+    // ================= COSTOS =================
+
+    public int GetShipCost(ShipType type)
     {
-        return 9999; // temporal
+        foreach (var data in shipCosts)
+        {
+            if (data.shipType == type)
+                return data.cost;
+        }
+
+        return 0;
     }
 
-    public bool SpendCredits(int empireIndex, int amount)
+    // ================= SPAWN CONTROL =================
+
+    public bool CanSpawnShip(int empireIndex)
     {
-        return true; // temporal
+        if (!empireShipCount.ContainsKey(empireIndex))
+            return false;
+
+        return empireShipCount[empireIndex] < maxShipsPerEmpire;
     }
 
-    // ================= SHIPS =================
+    public void RegisterShip(int empireIndex)
+    {
+        if (!empireShipCount.ContainsKey(empireIndex))
+            empireShipCount[empireIndex] = 0;
 
-    public GameObject fighterPrefab;
-    public GameObject bomberPrefab;
-    public GameObject commanderPrefab;
+        empireShipCount[empireIndex]++;
+    }
+
+    public void UnregisterShip(int empireIndex)
+    {
+        if (!empireShipCount.ContainsKey(empireIndex))
+            return;
+
+        empireShipCount[empireIndex]--;
+        empireShipCount[empireIndex] = Mathf.Max(0, empireShipCount[empireIndex]);
+    }
+
+    // ================= PREFABS =================
 
     public GameObject GetShipPrefab(ShipType type, bool isPlayer)
     {
@@ -80,23 +151,32 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    public int GetShipCost(ShipType type)
-    {
-        return 0;
-    }
-
-    public bool CanSpawnShip(int empireIndex)
-    {
-        return true;
-    }
-
     public ShipType GetAIShipType(int empireIndex)
     {
-        return ShipType.Fighter;
+        // IA simple: mezcla
+        int r = Random.Range(0, 3);
+
+        if (r == 0) return ShipType.Fighter;
+        if (r == 1) return ShipType.Bomber;
+
+        return ShipType.Commander;
     }
 
-    // ================= REGISTRO =================
+    // ================= COLOR =================
 
-    public void RegisterShip(int empireIndex) { }
-    public void UnregisterShip(int empireIndex) { }
+    public Color GetEmpireColor(int index)
+    {
+        if (index < 0 || index >= empires.Count)
+            return Color.white;
+
+        return empires[index].color;
+    }
+
+    public EmpireStats GetEmpireTotalStats(int index)
+    {
+        if (index < 0 || index >= empires.Count)
+            return new EmpireStats();
+
+        return empires[index].stats;
+    }
 }

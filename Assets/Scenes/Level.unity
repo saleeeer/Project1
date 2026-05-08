@@ -395,9 +395,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 817479464}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91d2dfb9941f321469a1151bc7e657bf, type: 3}
+  m_Script: {fileID: 11500000, guid: 181b0f41b5f1db54e9ff034ace20e5e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manualTarget: {fileID: 0}
 --- !u!1 &1052138307
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,11 +462,21 @@ MonoBehaviour:
       morale: 1
       intelligence: 1
   playerEmpireIndex: 0
+  selectedPlanet: {fileID: 0}
   maxFleetSize: 5
+  maxShipsPerEmpire: 50
+  incomeInterval: 2
   selectedShipType: 0
   fighterPrefab: {fileID: 4912607222141858788, guid: 4e24e797b5c8f814bbe9170973baf304, type: 3}
   bomberPrefab: {fileID: 4912607222141858788, guid: fdcbab4c3f2c5964c8642c2109eaeb20, type: 3}
   commanderPrefab: {fileID: 4912607222141858788, guid: 903cb2b49c9df3d478c038713e46717b, type: 3}
+  shipCosts:
+  - shipType: 0
+    cost: 10
+  - shipType: 1
+    cost: 20
+  - shipType: 1
+    cost: 80
 --- !u!4 &1052138309
 Transform:
   m_ObjectHideFlags: 0
@@ -499,7 +510,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1077524988
 RectTransform:
   m_ObjectHideFlags: 0
@@ -564,7 +575,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 817479470}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ShipSelectionUI, Assembly-CSharp
         m_MethodName: SelectFighter
         m_Mode: 1
@@ -1007,7 +1018,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'BOMBER
+  m_text: 'SPAWN
 
 '
   m_isRightToLeft: 0
@@ -1170,8 +1181,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 817479470}
-        m_TargetAssemblyTypeName: ShipSelectionUI, Assembly-CSharp
-        m_MethodName: SelectBomber
+        m_TargetAssemblyTypeName: PlayerSpawnUI, Assembly-CSharp
+        m_MethodName: SpawnFleet
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1371,7 +1382,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2131661676
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1436,7 +1447,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 817479470}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ShipSelectionUI, Assembly-CSharp
         m_MethodName: SelectCommander
         m_Mode: 1

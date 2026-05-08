@@ -276,4 +276,18 @@ public class PlanetData : MonoBehaviour
             sr.color = color;
         }
     }
+
+    void OnMouseDown()
+    {
+        if (GameManager.Instance == null)
+            return;
+
+        // solo seleccionar planetas propios
+        if (ownerEmpireIndex != GameManager.Instance.playerEmpireIndex)
+            return;
+
+        GameManager.Instance.selectedPlanet = this;
+
+        Debug.Log("Planeta seleccionado: " + name);
+    }
 }
