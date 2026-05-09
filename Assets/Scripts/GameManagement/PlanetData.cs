@@ -108,13 +108,24 @@ public class PlanetData : MonoBehaviour
         {
             yield return new WaitForSeconds(spawnInterval);
 
-            if (ownerEmpireIndex == -1) continue;
+            // neutro
+            if (ownerEmpireIndex == -1)
+                continue;
 
-            // Producción
+            // producir unidades
             if (units < maxUnits)
                 units++;
 
-            // Control de envío
+            // verificar GameManager
+            if (GameManager.Instance == null)
+                continue;
+
+            // 🔥 SI ES JUGADOR → NO HACER NADA MÁS
+            if (ownerEmpireIndex == GameManager.Instance.playerEmpireIndex)
+                continue;
+
+            // ================= IA =================
+
             sendTimer += spawnInterval;
 
             if (sendTimer >= sendInterval)
@@ -289,5 +300,71 @@ public class PlanetData : MonoBehaviour
         GameManager.Instance.selectedPlanet = this;
 
         Debug.Log("Planeta seleccionado: " + name);
+    }
+
+
+    public void SpawnPlayerShip()
+    {
+        if (GameManager.Instance == null)
+            return;
+
+        if (ownerEmpireIndex != GameManager.Instance.playerEmpireIndex)
+            return;
+
+        if (units <= 0)
+        {
+            Debug.Log("No hay unidades disponibles");
+            return;
+        }
+
+        GameManager gm = GameManager.Instance;
+
+        if (!gm.CanSpawnShip(ownerEmpireIndex))
+        {
+            Debug.Log("Límite de naves alcanzado");
+            return;
+        }
+
+        ShipType type = gm.selectedShipType;
+
+        int cost = gm.GetShipCost(type);
+
+        if (!gm.SpendCredits(ownerEmpireIndex, cost))
+        {
+            Debug.Log("No hay créditos");
+            return;
+        }
+
+        GameObject prefab = gm.GetShipPrefab(type, true);
+
+        if (prefab == null)
+        {
+            Debug.LogError("Prefab nulo");
+            return;
+        }
+
+        units--;
+
+        Vector2 offset =
+            Random.insideUnitCircle.normalized * 2f;
+
+        GameObject ship = Instantiate(
+            prefab,
+            transform.position + (Vector3)offset,
+            Quaternion.identity
+        );
+
+        ShipMovement movement =
+            ship.GetComponent<ShipMovement>();
+
+        movement.currentPlanet = this;
+        movement.empireIndex = ownerEmpireIndex;
+        movement.isPlayerControlled = true;
+
+        ApplyColor(ship);
+
+        gm.RegisterShip(ownerEmpireIndex);
+
+        Debug.Log("Spawn manual de " + type);
     }
 }

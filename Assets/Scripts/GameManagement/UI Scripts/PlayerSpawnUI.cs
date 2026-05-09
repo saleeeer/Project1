@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class PlayerSpawnUI : MonoBehaviour
 {
-    public PlanetData manualTarget;
-
     public void SpawnFleet()
     {
         if (GameManager.Instance == null)
@@ -18,12 +16,6 @@ public class PlayerSpawnUI : MonoBehaviour
             return;
         }
 
-        if (manualTarget == null)
-        {
-            Debug.Log("No hay objetivo");
-            return;
-        }
-
-        selected.SendFleet(manualTarget);
+        selected.SpawnPlayerShip();
     }
 }
