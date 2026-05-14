@@ -45,6 +45,12 @@ public class ShipCombat : MonoBehaviour
 
         float damage = baseDamage;
 
+        if (EventManager.Instance != null)
+        {
+            damage *=
+                EventManager.Instance.globalDamageMultiplier;
+        }
+
         // 🔥 aplicar power
         damage *= attackerStats.power;
 
