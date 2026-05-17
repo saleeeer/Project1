@@ -35,9 +35,13 @@ public class PlanetData : MonoBehaviour
     float sendTimer;
     PlanetData lastTarget;
 
+    Color originalColor;
+    bool isSelected = false;
+
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        originalColor = sr.color;
     }
 
     void Start()
@@ -46,7 +50,33 @@ public class PlanetData : MonoBehaviour
         StartCoroutine(ProductionRoutine());
     }
 
+    private void Update()
+    {
+        HandleSelectionVisual();
+    }
+
     // ================= TYPE =================
+
+
+    void HandleSelectionVisual()
+    {
+        if (GameManager.Instance == null)
+            return;
+
+        bool selected =
+            GameManager.Instance.selectedOriginPlanet == this;
+
+        if (selected && !isSelected)
+        {
+            sr.color = Color.white;
+            isSelected = true;
+        }
+        else if (!selected && isSelected)
+        {
+            UpdateColor();
+            isSelected = false;
+        }
+    }
 
     void AssignPlanetTypeData()
     {
@@ -300,13 +330,39 @@ public class PlanetData : MonoBehaviour
         if (GameManager.Instance == null)
             return;
 
-        // solo seleccionar planetas propios
-        if (ownerEmpireIndex != GameManager.Instance.playerEmpireIndex)
+        int playerEmpire =
+            GameManager.Instance.playerEmpireIndex;
+
+        // ================= PRIMER CLICK =================
+
+        if (ownerEmpireIndex == playerEmpire)
+        {
+            GameManager.Instance.selectedOriginPlanet = this;
+
+            Debug.Log("Origen seleccionado: " + name);
+
+            return;
+        }
+
+        // ================= SEGUNDO CLICK =================
+
+        PlanetData origin =
+            GameManager.Instance.selectedOriginPlanet;
+
+        if (origin == null)
             return;
 
-        GameManager.Instance.selectedPlanet = this;
+        if (origin.ownerEmpireIndex != playerEmpire)
+            return;
 
-        Debug.Log("Planeta seleccionado: " + name);
+        // enviar flota
+        origin.SendFleet(this);
+
+        Debug.Log(
+            origin.name +
+            " ataca " +
+            name
+        );
     }
 
 

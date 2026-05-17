@@ -37,6 +37,9 @@ public class GameManager : MonoBehaviour
     [Header("Costs")]
     public List<ShipCostData> shipCosts = new List<ShipCostData>();
 
+    [Header("RTS Selection")]
+    public PlanetData selectedOriginPlanet;
+
     void Awake()
     {
         Instance = this;
