@@ -121,6 +121,25 @@ public class GameManager : MonoBehaviour
         return 0;
     }
 
+    public void AddCredits(int empire, int amount)
+    {
+        if (!empireCredits.ContainsKey(empire))
+            return;
+
+        empireCredits[empire] += amount;
+    }
+
+    public void RemoveCredits(int empire, int amount)
+    {
+        if (!empireCredits.ContainsKey(empire))
+            return;
+
+        empireCredits[empire] -= amount;
+
+        if (empireCredits[empire] < 0)
+            empireCredits[empire] = 0;
+    }
+
     // ================= SPAWN CONTROL =================
 
     public bool CanSpawnShip(int empireIndex)
