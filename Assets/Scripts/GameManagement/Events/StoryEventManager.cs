@@ -12,6 +12,14 @@ public class StoryEventManager : MonoBehaviour
         Instance = this;
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            TriggerRandomEvent();
+        }
+    }
+
     public void TriggerRandomEvent()
     {
         if (possibleEvents.Length == 0)
@@ -28,10 +36,13 @@ public class StoryEventManager : MonoBehaviour
 
     void ShowEvent(StoryEventData data)
     {
-        Debug.Log("EVENTO: " + data.eventTitle);
-        Debug.Log(data.description);
+        if (EventUIManager.Instance == null)
+        {
+            Debug.LogError("No EventUIManager");
+            return;
+        }
 
-        // después conectamos UI real
+        EventUIManager.Instance.ShowEvent(data);
     }
 
     public void ResolveChoice(EventChoiceData choice)
