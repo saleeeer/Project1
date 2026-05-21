@@ -121,4 +121,9 @@ public class EventUIManager : MonoBehaviour
 
         Time.timeScale = 1f;
     }
+
+    public void HideEvent()
+    {
+        gameObject.SetActive(false);
+    }
 }
