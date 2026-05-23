@@ -138,11 +138,6 @@ public class PlanetData : MonoBehaviour
         {
             float interval = spawnInterval;
 
-            if (EventManager.Instance != null)
-            {
-                interval /= EventManager.Instance.globalProductionMultiplier;
-            }
-
             yield return new WaitForSeconds(interval);
 
             // neutro

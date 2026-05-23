@@ -71,14 +71,6 @@ public class GameManager : MonoBehaviour
 
             int income = p.GetIncome();
 
-            if (EventManager.Instance != null)
-            {
-                income = Mathf.RoundToInt(
-                    income *
-                    EventManager.Instance.globalIncomeMultiplier
-                );
-            }
-
             empireCredits[p.ownerEmpireIndex] += income;
         }
     }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 public class EventUIManager : MonoBehaviour
@@ -44,10 +45,10 @@ public class EventUIManager : MonoBehaviour
         foreach (EventChoiceData choice in data.choices)
         {
             GameObject obj =
-     Instantiate(
-         choiceButtonPrefab,
-         choicesParent
-     );
+                Instantiate(
+                    choiceButtonPrefab,
+                    choicesParent
+                );
 
             RectTransform rt =
                 obj.GetComponent<RectTransform>();
@@ -98,6 +99,12 @@ public class EventUIManager : MonoBehaviour
                 choice.rewardCredits
             );
 
+            stats.power += choice.rewardPower;
+            stats.defense += choice.rewardDefense;
+            stats.accuracy += choice.rewardAccuracy;
+            stats.morale += choice.rewardMorale;
+            stats.intelligence += choice.rewardIntelligence;
+
             resultText.text =
                 choice.successMessage;
         }
@@ -108,11 +115,24 @@ public class EventUIManager : MonoBehaviour
                 choice.penaltyCredits
             );
 
+            stats.power -= choice.penaltyPower;
+            stats.defense -= choice.penaltyDefense;
+            stats.accuracy -= choice.penaltyAccuracy;
+            stats.morale -= choice.penaltyMorale;
+            stats.intelligence -= choice.penaltyIntelligence;
+
             resultText.text =
                 choice.failureMessage;
         }
 
-        Invoke(nameof(CloseEvent), 2f);
+        StartCoroutine(CloseAfterDelay());
+    }
+
+    IEnumerator CloseAfterDelay()
+    {
+        yield return new WaitForSecondsRealtime(2f);
+
+        CloseEvent();
     }
 
     void CloseEvent()

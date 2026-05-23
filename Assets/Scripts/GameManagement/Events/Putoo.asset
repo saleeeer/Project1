@@ -16,11 +16,40 @@ MonoBehaviour:
   description: SOS GAY
   choices:
   - choiceText: SOS RE TROLO
-    requiredPower: 1
+    requiredPower: 20
     requiredDefense: 1
     requiredIntelligence: 1
     requiredMorale: 1
     rewardCredits: 1
+    rewardPower: 0
+    rewardDefense: 0
+    rewardAccuracy: 0
+    rewardMorale: 0
+    rewardIntelligence: 0
     penaltyCredits: 1
+    penaltyPower: 0
+    penaltyDefense: 0
+    penaltyAccuracy: 0
+    penaltyMorale: 0
+    penaltyIntelligence: 0
+    successMessage: BIEN POR SER BIEN PUTO
+    failureMessage: JAJAJ SOS HETERO
+  - choiceText: SOS RE TROLO
+    requiredPower: 20
+    requiredDefense: 1
+    requiredIntelligence: 1
+    requiredMorale: 1
+    rewardCredits: 1
+    rewardPower: 0
+    rewardDefense: 0
+    rewardAccuracy: 0
+    rewardMorale: 0
+    rewardIntelligence: 0
+    penaltyCredits: 1
+    penaltyPower: 0
+    penaltyDefense: 0
+    penaltyAccuracy: 0
+    penaltyMorale: 0
+    penaltyIntelligence: 0
     successMessage: BIEN POR SER BIEN PUTO
     failureMessage: JAJAJ SOS HETERO

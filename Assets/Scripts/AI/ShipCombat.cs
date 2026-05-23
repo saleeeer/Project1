@@ -45,20 +45,14 @@ public class ShipCombat : MonoBehaviour
 
         float damage = baseDamage;
 
-        if (EventManager.Instance != null)
-        {
-            damage *=
-                EventManager.Instance.globalDamageMultiplier;
-        }
-
-        // 🔥 aplicar power
+        //aplicar power
         damage *= attackerStats.power;
 
-        // 🔥 aplicar defense
+        //aplicar defense
         float defenseFactor = 1f / Mathf.Max(0.1f, defenderStats.defense);
         damage *= defenseFactor;
 
-        // 🔥 morale como multiplicador global
+        //morale como multiplicador global
         damage *= attackerStats.GetGlobalMultiplier();
 
         return damage;
