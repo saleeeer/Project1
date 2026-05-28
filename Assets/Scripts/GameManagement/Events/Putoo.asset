@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 310ffd4cfbe15914fb9a7c0c9d00aca4, type: 3}
   m_Name: Putoo
   m_EditorClassIdentifier: 
-  eventTitle: PUTOOOO
+  eventTitle: PUTO
   description: SOS GAY
   choices:
   - choiceText: SOS RE TROLO
