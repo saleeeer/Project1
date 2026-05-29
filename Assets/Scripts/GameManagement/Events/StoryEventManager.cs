@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class StoryEventManager : MonoBehaviour
 {
@@ -7,22 +8,53 @@ public class StoryEventManager : MonoBehaviour
     [Header("Events")]
     public StoryEventData[] possibleEvents;
 
+    [Header("Random Timing")]
+    public float minEventTime = 20f;
+    public float maxEventTime = 40f;
+
+    bool eventRunning = false;
+
     void Awake()
     {
         Instance = this;
     }
 
+    void Start()
+    {
+        StartCoroutine(EventLoop());
+    }
+
     void Update()
     {
+        // TEST MANUAL
         if (Input.GetKeyDown(KeyCode.E))
         {
-            TriggerRandomEvent();
+            if (!eventRunning)
+            {
+                TriggerRandomEvent();
+            }
+        }
+    }
+
+    IEnumerator EventLoop()
+    {
+        while (true)
+        {
+            float wait =
+                Random.Range(minEventTime, maxEventTime);
+
+            yield return new WaitForSeconds(wait);
+
+            if (!eventRunning)
+            {
+                TriggerRandomEvent();
+            }
         }
     }
 
     public void TriggerRandomEvent()
     {
-        if (possibleEvents.Length == 0)
+        if (possibleEvents == null || possibleEvents.Length == 0)
             return;
 
         int random =
@@ -42,43 +74,20 @@ public class StoryEventManager : MonoBehaviour
             return;
         }
 
+        eventRunning = true;
+
         EventUIManager.Instance.ShowEvent(data);
+
+        StartCoroutine(WaitUntilClosed());
     }
 
-    public void ResolveChoice(EventChoiceData choice)
+    IEnumerator WaitUntilClosed()
     {
-        if (GameManager.Instance == null)
-            return;
-
-        int player =
-            GameManager.Instance.playerEmpireIndex;
-
-        EmpireStats stats =
-            GameManager.Instance.GetEmpireTotalStats(player);
-
-        bool success =
-            stats.power >= choice.requiredPower &&
-            stats.defense >= choice.requiredDefense &&
-            stats.intelligence >= choice.requiredIntelligence &&
-            stats.morale >= choice.requiredMorale;
-
-        if (success)
+        while (Time.timeScale == 0f)
         {
-            GameManager.Instance.AddCredits(
-                player,
-                choice.rewardCredits
-            );
-
-            Debug.Log(choice.successMessage);
+            yield return null;
         }
-        else
-        {
-            GameManager.Instance.RemoveCredits(
-                player,
-                choice.penaltyCredits
-            );
 
-            Debug.Log(choice.failureMessage);
-        }
+        eventRunning = false;
     }
 }
