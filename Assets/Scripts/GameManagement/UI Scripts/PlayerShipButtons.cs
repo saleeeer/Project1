@@ -23,7 +23,7 @@ public class PlayerShipButtons : MonoBehaviour
             return;
 
         PlanetData selectedPlanet =
-            GameManager.Instance.selectedPlanet;
+            GameManager.Instance.selectedOriginPlanet;
 
         if (selectedPlanet == null)
         {
@@ -31,12 +31,10 @@ public class PlayerShipButtons : MonoBehaviour
             return;
         }
 
-        // seleccionar tipo
         GameManager.Instance.selectedShipType = type;
 
-        // crear nave
-        selectedPlanet.SpawnPlayerShip();
+        Debug.Log("BOTON PRESIONADO");
 
-        Debug.Log("Spawn manual de " + type);
+        selectedPlanet.SpawnPlayerShip();
     }
 }

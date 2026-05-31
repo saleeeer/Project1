@@ -134,11 +134,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetType: 0
+  baseIncome: 1
   neighbors: []
   ownerEmpireIndex: -1
   units: 0
   maxUnits: 20
   spawnInterval: 5
+  sendInterval: 3
+  minUnitsToSend: 5
   statBuff:
     power: 0
     defense: 0

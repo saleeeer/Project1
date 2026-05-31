@@ -172,6 +172,13 @@ public class PlanetData : MonoBehaviour
 
     void TrySendFleet()
     {
+        Debug.Log(
+    "TrySendFleet -> " +
+    name +
+    " Owner=" +
+    ownerEmpireIndex +
+    " Player=" +
+    GameManager.Instance.playerEmpireIndex);
         if (units < minUnitsToSend) return;
 
         PlanetData target = GetTargetFromNeighbors();
@@ -259,6 +266,10 @@ public class PlanetData : MonoBehaviour
 
     void SpawnShip(PlanetData target)
     {
+        Debug.Log(
+    "SPAWN IA -> "
+    + name
+    + " Empire=" + ownerEmpireIndex);
         GameManager gm = GameManager.Instance;
         if (gm == null) return;
 
@@ -363,6 +374,11 @@ public class PlanetData : MonoBehaviour
 
     public void SpawnPlayerShip()
     {
+        Debug.Log(
+     "SPAWN PLAYER SHIP -> "
+     + name
+     + " ID="
+     + GetInstanceID());
         if (GameManager.Instance == null)
             return;
 

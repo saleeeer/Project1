@@ -34,9 +34,8 @@ public class ShipMovement : MonoBehaviour
     float orbitAngle;
 
     ShipCombat combat;
-
-    bool isFighting = false;
-    ShipMovement currentEnemy;
+    ShipMovement currentTarget;
+    float combatSpeedMultiplier = 0.5f;
 
     bool isCapturing = false;
 
@@ -111,8 +110,6 @@ public class ShipMovement : MonoBehaviour
     {
         HandleCombat();
 
-        if (isFighting) return;
-
         if (isPlayerControlled)
             HandleInput();
 
@@ -126,7 +123,9 @@ public class ShipMovement : MonoBehaviour
 
     void HandleCombat()
     {
-        if (isFighting) return;
+        currentTarget = null;
+
+        float closestDistance = Mathf.Infinity;
 
         ShipMovement[] ships = FindObjectsOfType<ShipMovement>();
 
@@ -135,48 +134,46 @@ public class ShipMovement : MonoBehaviour
             if (other == this) continue;
             if (other.empireIndex == empireIndex) continue;
 
-            float dist = Vector2.Distance(transform.position, other.transform.position);
+            float dist =
+                Vector2.Distance(
+                    transform.position,
+                    other.transform.position
+                );
 
-            if (dist < combat.attackRange)
+            if (dist <= combat.attackRange)
             {
-                Debug.Log(name + " entra en combate con " + other.name);
-                StartCoroutine(FightRoutine(other));
-                break;
+                if (dist < closestDistance)
+                {
+                    closestDistance = dist;
+                    currentTarget = other;
+                }
+
+                ShipCombat enemyCombat =
+                    other.GetComponent<ShipCombat>();
+
+                if (enemyCombat != null)
+                {
+                    combat.TryAttack(enemyCombat);
+                }
             }
         }
-    }
 
-    IEnumerator FightRoutine(ShipMovement enemy)
-    {
-        isFighting = true;
-        currentEnemy = enemy;
-
-        ShipCombat enemyCombat = enemy.GetComponent<ShipCombat>();
-
-        while (enemy != null && enemyCombat != null && combat != null)
+        if (currentTarget != null)
         {
-            LookAt(enemy.transform.position);
-            enemy.LookAt(transform.position);
-
-            combat.TryAttack(enemyCombat);
-
-            if (enemyCombat != null)
-                enemyCombat.TryAttack(combat);
-
-            yield return null;
+            LookAt(currentTarget.transform.position);
         }
-
-        isFighting = false;
-        currentEnemy = null;
     }
 
     void LookAt(Vector3 target)
     {
-        Vector3 dir = (target - transform.position).normalized;
+        Vector3 dir =
+            (target - transform.position).normalized;
 
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        float angle =
+            Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        transform.rotation =
+            Quaternion.Euler(0, 0, angle);
     }
 
     // ================= INPUT =================
@@ -221,18 +218,29 @@ public class ShipMovement : MonoBehaviour
 
         Vector3 targetPos = targetNode.transform.position;
 
-        Vector3 direction = (targetPos - transform.position).normalized;
+        Vector3 direction =
+            (targetPos - transform.position).normalized;
 
-        if (direction != Vector3.zero)
+        if (direction != Vector3.zero && currentTarget == null)
         {
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
+            float angle =
+                Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            transform.rotation =
+                Quaternion.Euler(0, 0, angle);
+        }
+
+        float currentSpeed = speed;
+
+        if (currentTarget != null)
+        {
+            currentSpeed *= combatSpeedMultiplier;
         }
 
         transform.position = Vector3.MoveTowards(
             transform.position,
             targetPos,
-            speed * Time.deltaTime
+            currentSpeed * Time.deltaTime
         );
 
         if (Vector3.Distance(transform.position, targetPos) < 0.1f)
@@ -274,7 +282,14 @@ public class ShipMovement : MonoBehaviour
     {
         if (currentPlanet == null) return;
 
-        orbitAngle += orbitSpeed * Time.deltaTime;
+        float currentOrbitSpeed = orbitSpeed;
+
+        if (currentTarget != null)
+        {
+            currentOrbitSpeed *= combatSpeedMultiplier;
+        }
+
+        orbitAngle += currentOrbitSpeed * Time.deltaTime;
 
         float rad = orbitAngle * Mathf.Deg2Rad;
 
@@ -284,16 +299,27 @@ public class ShipMovement : MonoBehaviour
             0
         ) * orbitDistance;
 
-        transform.position = currentPlanet.transform.position + offset;
+        transform.position =
+            currentPlanet.transform.position + offset;
 
-        Vector3 direction = new Vector3(
-            -Mathf.Sin(rad),
-            Mathf.Cos(rad),
-            0
-        );
+        if (currentTarget != null)
+        {
+            LookAt(currentTarget.transform.position);
+        }
+        else
+        {
+            Vector3 direction = new Vector3(
+                -Mathf.Sin(rad),
+                Mathf.Cos(rad),
+                0
+            );
 
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+            float angle =
+                Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            transform.rotation =
+                Quaternion.Euler(0, 0, angle);
+        }
     }
 
     void SnapToOrbit(PlanetData planet)

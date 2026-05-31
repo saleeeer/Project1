@@ -956,6 +956,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   possibleEvents:
   - {fileID: 11400000, guid: 7e2bb397415121044aa62cfd25e80cf3, type: 2}
+  minEventTime: 20
+  maxEventTime: 40
 --- !u!4 &1123045091
 Transform:
   m_ObjectHideFlags: 0
