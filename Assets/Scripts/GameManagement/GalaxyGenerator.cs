@@ -180,6 +180,10 @@ public class GalaxyGenerator : MonoBehaviour
                 planet.statBuff.power = 3;
                 planet.statBuff.morale = 3;
                 break;
+
+            case PlanetType.NeutralPlanet:
+                // sin bonus
+                break;
         }
 
         Debug.Log($"🌍 {planet.name} tipo {planet.planetType} → Buff aplicado");
@@ -187,9 +191,16 @@ public class GalaxyGenerator : MonoBehaviour
 
     PlanetType GetRandomPlanetType()
     {
-        int value = Random.Range(0, 7);
+        int roll = Random.Range(0, 100);
 
-        switch (value)
+        // 60% neutrales
+        if (roll < 60)
+            return PlanetType.NeutralPlanet;
+
+        // 40% especiales
+        int special = Random.Range(0, 7);
+
+        switch (special)
         {
             case 0: return PlanetType.AstraPrime;
             case 1: return PlanetType.Valkurion;
@@ -200,7 +211,7 @@ public class GalaxyGenerator : MonoBehaviour
             case 6: return PlanetType.Dominia;
         }
 
-        return PlanetType.AstraPrime;
+        return PlanetType.NeutralPlanet;
     }
 
     // ================= EXISTENTE =================

@@ -1,5 +1,7 @@
 public enum PlanetType
 {
+    NeutralPlanet,
+
     AstraPrime,
     Valkurion,
     Novaeon,

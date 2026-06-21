@@ -148,3 +148,11 @@ MonoBehaviour:
     accuracy: 0
     morale: 0
     intelligence: 0
+  astraPrimeSprite: {fileID: 21300000, guid: 73f754b910879b94599e3101ef9066a2, type: 3}
+  valkurionSprite: {fileID: 21300000, guid: de64e8cab89009f47a465319168a822f, type: 3}
+  novaeonSprite: {fileID: 21300000, guid: 63388433039159a4abe0aa4e69b47020, type: 3}
+  heliosIXSprite: {fileID: 21300000, guid: 9cfd2d94b9d4d5a44864b1a4a920c6c3, type: 3}
+  calystrumSprite: {fileID: 21300000, guid: ac973ef63d30fdf428a94a8b03cd83b7, type: 3}
+  orionisSprite: {fileID: 21300000, guid: 27c779c52658ed2459630fbc94d413c9, type: 3}
+  dominiaSprite: {fileID: 21300000, guid: 76670aefa26a5f041be12b5ee8b5303d, type: 3}
+  SpriteneutralPlanetSprite: {fileID: 21300000, guid: f1176db6c42d21b479a38da84fe2ead2, type: 3}

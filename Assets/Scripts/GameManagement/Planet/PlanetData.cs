@@ -38,6 +38,16 @@ public class PlanetData : MonoBehaviour
     Color originalColor;
     bool isSelected = false;
 
+    [Header("Visuals")]
+    public Sprite astraPrimeSprite;
+    public Sprite valkurionSprite;
+    public Sprite novaeonSprite;
+    public Sprite heliosIXSprite;
+    public Sprite calystrumSprite;
+    public Sprite orionisSprite;
+    public Sprite dominiaSprite;
+    public Sprite SpriteneutralPlanetSprite;
+
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -47,6 +57,7 @@ public class PlanetData : MonoBehaviour
     void Start()
     {
         AssignPlanetTypeData();
+        ApplyPlanetSprite();
         StartCoroutine(ProductionRoutine());
     }
 
@@ -89,6 +100,7 @@ public class PlanetData : MonoBehaviour
             case PlanetType.Calystrum: baseIncome = 2; break;
             case PlanetType.Orionis: baseIncome = 1; break;
             case PlanetType.Dominia: baseIncome = 1; break;
+            case PlanetType.NeutralPlanet:baseIncome = 1; break;
         }
     }
 
@@ -440,5 +452,46 @@ public class PlanetData : MonoBehaviour
         gm.RegisterShip(ownerEmpireIndex);
 
         Debug.Log("Spawn manual de " + type);
+    }
+
+    void ApplyPlanetSprite()
+    {
+        if (sr == null)
+            sr = GetComponent<SpriteRenderer>();
+
+        switch (planetType)
+        {
+            case PlanetType.AstraPrime:
+                sr.sprite = astraPrimeSprite;
+                break;
+
+            case PlanetType.Valkurion:
+                sr.sprite = valkurionSprite;
+                break;
+
+            case PlanetType.Novaeon:
+                sr.sprite = novaeonSprite;
+                break;
+
+            case PlanetType.HeliosIX:
+                sr.sprite = heliosIXSprite;
+                break;
+
+            case PlanetType.Calystrum:
+                sr.sprite = calystrumSprite;
+                break;
+
+            case PlanetType.Orionis:
+                sr.sprite = orionisSprite;
+                break;
+
+            case PlanetType.Dominia:
+                sr.sprite = dominiaSprite;
+                break;
+
+            case PlanetType.NeutralPlanet:
+                sr.sprite = SpriteneutralPlanetSprite;
+                break;
+        }
     }
 }
