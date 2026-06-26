@@ -1753,12 +1753,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 1923545522}
   sfxSource: {fileID: 568736382}
-  menuMusic: {fileID: 0}
-  gameplayMusic: {fileID: 0}
-  buttonClick: {fileID: 0}
-  shipSpawn: {fileID: 0}
-  shipDestroyed: {fileID: 0}
-  planetCaptured: {fileID: 0}
+  menuMusic: {fileID: 8300000, guid: dd5d437b137abc342a13a11280438233, type: 3}
+  gameplayMusic: {fileID: 8300000, guid: e59ca6199d2df40428e6df99b2bcbc2b, type: 3}
+  buttonClick: {fileID: 8300000, guid: d231cd6d0a9b9034caeca965afabfdfb, type: 3}
+  shipSpawn: {fileID: 8300000, guid: 61231d94acc77044db957cb38635f79b, type: 3}
+  shipDestroyed: {fileID: 8300000, guid: e8cf546474c88404e8b640830dec8d43, type: 3}
+  planetCaptured: {fileID: 8300000, guid: 694dea765e2ae0740bacbb86292e0078, type: 3}
 --- !u!4 &1148733654
 Transform:
   m_ObjectHideFlags: 0
