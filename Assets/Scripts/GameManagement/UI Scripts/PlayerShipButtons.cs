@@ -19,6 +19,7 @@ public class PlayerShipButtons : MonoBehaviour
 
     void SpawnShip(ShipType type)
     {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.buttonClick);
         if (GameManager.Instance == null)
             return;
 

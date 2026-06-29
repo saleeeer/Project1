@@ -307,6 +307,8 @@ public class PlanetData : MonoBehaviour
 
         Vector2 offset = Random.insideUnitCircle.normalized * 2f;
 
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.shipSpawn);
+
         GameObject ship = Instantiate(
             prefab,
             transform.position + (Vector3)offset,
@@ -433,6 +435,8 @@ public class PlanetData : MonoBehaviour
 
         Vector2 offset =
             Random.insideUnitCircle.normalized * 2f;
+
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.shipSpawn);
 
         GameObject ship = Instantiate(
             prefab,

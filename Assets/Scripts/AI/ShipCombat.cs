@@ -70,8 +70,17 @@ public class ShipCombat : MonoBehaviour
         }
     }
 
+
+
     void Die()
     {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.shipDestroyed
+            );
+        }
+
         Destroy(gameObject);
     }
 

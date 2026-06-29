@@ -19,6 +19,8 @@ public class EventChoiceButton : MonoBehaviour
         if (EventUIManager.Instance == null)
             return;
 
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.buttonClick);
+
         EventUIManager.Instance.ResolveChoice(
             currentChoice
         );

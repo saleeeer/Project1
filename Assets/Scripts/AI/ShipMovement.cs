@@ -273,6 +273,13 @@ public class ShipMovement : MonoBehaviour
 
         currentPlanet.SetOwner(empireIndex);
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.planetCaptured
+            );
+        }
+
         isCapturing = false;
     }
 
