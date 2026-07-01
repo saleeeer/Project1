@@ -19,6 +19,13 @@ public class AudioManager : MonoBehaviour
     public AudioClip shipDestroyed;
     public AudioClip planetCaptured;
 
+    [Header("Volume")]
+    [Range(0f, 1f)]
+    public float musicVolume = 1f;
+
+    [Range(0f, 1f)]
+    public float sfxVolume = 1f;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -32,6 +39,12 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+
+        musicSource.volume = musicVolume;
+        sfxSource.volume = sfxVolume;
     }
 
     void Start()
@@ -78,5 +91,25 @@ public class AudioManager : MonoBehaviour
             return;
 
         sfxSource.PlayOneShot(clip);
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        musicVolume = volume;
+
+        musicSource.volume = volume;
+
+        PlayerPrefs.SetFloat("MusicVolume", volume);
+        PlayerPrefs.Save();
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        sfxVolume = volume;
+
+        sfxSource.volume = volume;
+
+        PlayerPrefs.SetFloat("SFXVolume", volume);
+        PlayerPrefs.Save();
     }
 }
