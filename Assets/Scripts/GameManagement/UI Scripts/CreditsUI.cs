@@ -31,6 +31,6 @@ public class CreditsUI : MonoBehaviour
     void Refresh()
     {
         int credits = GameManager.Instance.GetCredits(playerEmpire);
-        creditsText.text = "💰 Credits: " + credits;
+        creditsText.text = "Credits: " + credits;
     }
 }
