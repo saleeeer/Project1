@@ -201,4 +201,17 @@ public class GameManager : MonoBehaviour
 
         return empires[index].stats;
     }
+
+    public bool IsEmpireAlive(int empireIndex)
+    {
+        PlanetData[] planets = FindObjectsOfType<PlanetData>();
+
+        foreach (PlanetData planet in planets)
+        {
+            if (planet.ownerEmpireIndex == empireIndex)
+                return true;
+        }
+
+        return false;
+    }
 }
