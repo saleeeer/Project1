@@ -33,13 +33,13 @@ RectTransform:
   m_LocalScale: {x: 0.21060207, y: 0.21060207, z: 0.21060207}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 737781697035940206}
+  - {fileID: 7438503749810517089}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 669, y: 241}
+  m_AnchoredPosition: {x: 24.0398, y: -10.0546}
+  m_SizeDelta: {x: 440.7033, y: 145.5155}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3863006537304875928
 CanvasRenderer:
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3432cff5211e83d4ebbbc8116f9cfd56, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5b701dda341687b4383853867202dd9a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 563a924ae91dcdc44ab6753ae365b212, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonText: {fileID: 7760660049133087979}
+  buttonText: {fileID: 8267968179726132618}
 --- !u!114 &2779199481021574764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 119
---- !u!1 &5192296929473478559
+--- !u!1 &4882482844183155196
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,9 +176,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 737781697035940206}
-  - component: {fileID: 6366851339974686684}
-  - component: {fileID: 7760660049133087979}
+  - component: {fileID: 7438503749810517089}
+  - component: {fileID: 3480860805279990193}
+  - component: {fileID: 8267968179726132618}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -186,40 +186,40 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &737781697035940206
+--- !u!224 &7438503749810517089
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5192296929473478559}
+  m_GameObject: {fileID: 4882482844183155196}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.9149153, y: 1.273835, z: 1.2158192}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 186205050547805504}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 9, y: 6}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0.000049811555, y: 0.0000004931353}
+  m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &6366851339974686684
+--- !u!222 &3480860805279990193
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5192296929473478559}
+  m_GameObject: {fileID: 4882482844183155196}
   m_CullTransparentMesh: 1
---- !u!114 &7760660049133087979
+--- !u!114 &8267968179726132618
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5192296929473478559}
+  m_GameObject: {fileID: 4882482844183155196}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 62ad3a13d6424984ba3fcfdb11ccbf6c, type: 2}
   m_sharedMaterial: {fileID: -1710559813990243957, guid: 62ad3a13d6424984ba3fcfdb11ccbf6c, type: 2}
@@ -242,8 +242,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -260,8 +260,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
