@@ -1,13 +1,41 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class VictoryManager : MonoBehaviour
 {
+    public GameObject victoryPanel;
+    public GameObject defeatPanel;
+
     bool gameEnded = false;
+
+    void Start()
+    {
+        victoryPanel.SetActive(false);
+        defeatPanel.SetActive(false);
+    }
 
     void Update()
     {
         if (gameEnded)
             return;
+
+        // ================= TEST =================
+
+#if UNITY_EDITOR
+if (Input.GetKeyDown(KeyCode.V))
+{
+    Win();
+    return;
+}
+
+if (Input.GetKeyDown(KeyCode.D))
+{
+    Lose();
+    return;
+}
+#endif
+
+        // ================= NORMAL =================
 
         CheckGameState();
     }
@@ -53,7 +81,7 @@ public class VictoryManager : MonoBehaviour
     {
         gameEnded = true;
 
-        Debug.Log("¡Victoria!");
+        victoryPanel.SetActive(true);
 
         Time.timeScale = 0f;
     }
@@ -62,8 +90,27 @@ public class VictoryManager : MonoBehaviour
     {
         gameEnded = true;
 
-        Debug.Log("¡Derrota!");
+        defeatPanel.SetActive(true);
 
         Time.timeScale = 0f;
+    }
+
+    public void Retry()
+    {
+        Time.timeScale = 1f;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void MainMenu()
+    {
+        Time.timeScale = 1f;
+
+        SceneManager.LoadScene("Menu");
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
