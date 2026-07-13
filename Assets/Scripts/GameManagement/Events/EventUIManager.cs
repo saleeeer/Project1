@@ -84,7 +84,7 @@ public class EventUIManager : MonoBehaviour
             GameManager.Instance.playerEmpireIndex;
 
         EmpireStats stats =
-            GameManager.Instance.GetEmpireTotalStats(player);
+            GameManager.Instance.GetEmpireBaseStats(player);
 
         bool success =
             stats.power >= choice.requiredPower &&

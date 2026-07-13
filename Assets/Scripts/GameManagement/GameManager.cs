@@ -199,7 +199,33 @@ public class GameManager : MonoBehaviour
         if (index < 0 || index >= empires.Count)
             return new EmpireStats();
 
-        return empires[index].stats;
+        // Copia de las estadísticas base del imperio
+        EmpireStats total = new EmpireStats();
+
+        EmpireStats baseStats = empires[index].stats;
+
+        total.power = baseStats.power;
+        total.defense = baseStats.defense;
+        total.accuracy = baseStats.accuracy;
+        total.morale = baseStats.morale;
+        total.intelligence = baseStats.intelligence;
+
+        // Sumar buffs de todos los planetas conquistados
+        PlanetData[] planets = FindObjectsOfType<PlanetData>();
+
+        foreach (PlanetData planet in planets)
+        {
+            if (planet.ownerEmpireIndex != index)
+                continue;
+
+            total.power += planet.statBuff.power;
+            total.defense += planet.statBuff.defense;
+            total.accuracy += planet.statBuff.accuracy;
+            total.morale += planet.statBuff.morale;
+            total.intelligence += planet.statBuff.intelligence;
+        }
+
+        return total;
     }
 
     public bool IsEmpireAlive(int empireIndex)
@@ -213,5 +239,13 @@ public class GameManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public EmpireStats GetEmpireBaseStats(int index)
+    {
+        if (index < 0 || index >= empires.Count)
+            return null;
+
+        return empires[index].stats;
     }
 }
