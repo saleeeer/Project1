@@ -49,11 +49,12 @@ public class ShipMovement : MonoBehaviour
 
     void Start()
     {
-        ApplyShipTypeStats();
+        //ApplyShipTypeStats();
         StartCoroutine(AssignStartingPlanet());
+        GameManager.Instance.RegisterShip(this);
     }
 
-    void ApplyShipTypeStats()
+    /*void ApplyShipTypeStats()
     {
         switch (shipType)
         {
@@ -61,21 +62,25 @@ public class ShipMovement : MonoBehaviour
                 speed *= 1.5f;
                 combat.baseDamage *= 0.8f;
                 combat.baseHealth *= 0.8f;
+                combat.attackRange = 45f;
                 break;
 
             case ShipType.Bomber:
                 speed *= 0.7f;
                 combat.baseDamage *= 2f;
                 combat.baseHealth *= 1.5f;
+                combat.attackRange = 60f;
                 break;
 
             case ShipType.Commander:
                 speed *= 0.9f;
                 combat.baseDamage *= 0.5f;
                 combat.baseHealth *= 2f;
+                combat.attackRange = 80f;
                 break;
         }
     }
+    */
 
     IEnumerator AssignStartingPlanet()
     {
@@ -127,9 +132,7 @@ public class ShipMovement : MonoBehaviour
 
         float closestDistance = Mathf.Infinity;
 
-        ShipMovement[] ships = FindObjectsOfType<ShipMovement>();
-
-        foreach (ShipMovement other in ships)
+        foreach (ShipMovement other in GameManager.Instance.allShips)
         {
             if (other == this) continue;
             if (other.empireIndex == empireIndex) continue;
@@ -345,11 +348,7 @@ public class ShipMovement : MonoBehaviour
 
     void OnDestroy()
     {
-        GameManager gm = GameManager.Instance;
-
-        if (gm != null)
-        {
-            gm.UnregisterShip(empireIndex);
-        }
+        if (GameManager.Instance != null)
+            GameManager.Instance.UnregisterShip(this);
     }
 }

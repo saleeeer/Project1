@@ -13,6 +13,10 @@ public class ShipCombat : MonoBehaviour
 
     ShipMovement movement;
 
+    [Header("Bullet")]
+    public Bullet bulletPrefab;
+    public Transform firePoint;
+
     void Awake()
     {
         movement = GetComponent<ShipMovement>();
@@ -32,7 +36,17 @@ public class ShipCombat : MonoBehaviour
 
         float damage = CalculateDamage(target);
 
-        target.TakeDamage(damage);
+        Transform spawnPoint = firePoint != null ? firePoint : transform;
+
+        Bullet b = Instantiate(
+            bulletPrefab,
+            spawnPoint.position,
+            spawnPoint.rotation
+        );
+
+        Debug.Log($"{name} dispara a {target.name}");
+
+        b.Init(target.transform, damage);
     }
 
     float CalculateDamage(ShipCombat target)

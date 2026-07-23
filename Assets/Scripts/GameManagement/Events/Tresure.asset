@@ -21,11 +21,11 @@ MonoBehaviour:
   - choiceText: Usarlo
     requiredPower: 0
     requiredDefense: 0
-    requiredIntelligence: 5
-    requiredMorale: 10
+    requiredIntelligence: 2
+    requiredMorale: 1
     rewardCredits: 40
-    rewardPower: 10
-    rewardDefense: 5
+    rewardPower: 1
+    rewardDefense: 3
     rewardAccuracy: 2
     rewardMorale: 0
     rewardIntelligence: 0
@@ -33,24 +33,24 @@ MonoBehaviour:
     penaltyPower: 0
     penaltyDefense: 0
     penaltyAccuracy: 0
-    penaltyMorale: 10
-    penaltyIntelligence: 20
+    penaltyMorale: 1
+    penaltyIntelligence: 2
     successMessage: El tesoro a aumentado la moral de tu ejercito
     failureMessage: La avaricia a condenado a parte de tu civilizacion
   - choiceText: Destruir
-    requiredPower: 10
-    requiredDefense: 5
+    requiredPower: 2
+    requiredDefense: 3
     requiredIntelligence: 0
     requiredMorale: 0
     rewardCredits: 0
     rewardPower: 0
     rewardDefense: 0
     rewardAccuracy: 0
-    rewardMorale: 20
-    rewardIntelligence: 10
+    rewardMorale: 2
+    rewardIntelligence: 4
     penaltyCredits: 0
-    penaltyPower: 10
-    penaltyDefense: 5
+    penaltyPower: 2
+    penaltyDefense: 3
     penaltyAccuracy: 1
     penaltyMorale: 0
     penaltyIntelligence: 0

@@ -40,6 +40,8 @@ public class GameManager : MonoBehaviour
     [Header("RTS Selection")]
     public PlanetData selectedOriginPlanet;
 
+    public List<ShipMovement> allShips = new List<ShipMovement>();
+
     void Awake()
     {
         Instance = this;
@@ -247,5 +249,29 @@ public class GameManager : MonoBehaviour
             return null;
 
         return empires[index].stats;
+    }
+
+    public void RegisterShip(ShipMovement ship)
+    {
+        if (!allShips.Contains(ship))
+            allShips.Add(ship);
+
+        if (!empireShipCount.ContainsKey(ship.empireIndex))
+            empireShipCount[ship.empireIndex] = 0;
+
+        empireShipCount[ship.empireIndex]++;
+    }
+
+    public void UnregisterShip(ShipMovement ship)
+    {
+        allShips.Remove(ship);
+
+        if (!empireShipCount.ContainsKey(ship.empireIndex))
+            return;
+
+        empireShipCount[ship.empireIndex]--;
+
+        empireShipCount[ship.empireIndex] =
+            Mathf.Max(0, empireShipCount[ship.empireIndex]);
     }
 }
