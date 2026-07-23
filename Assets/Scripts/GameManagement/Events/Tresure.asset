@@ -19,8 +19,8 @@ MonoBehaviour:
 '
   choices:
   - choiceText: Usarlo
-    requiredPower: 0
-    requiredDefense: 0
+    requiredPower: 3
+    requiredDefense: 4
     requiredIntelligence: 2
     requiredMorale: 1
     rewardCredits: 40

@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class EventUIManager : MonoBehaviour
 {
@@ -54,9 +53,7 @@ public class EventUIManager : MonoBehaviour
                 obj.GetComponent<RectTransform>();
 
             rt.localScale = Vector3.one;
-
-            rt.sizeDelta =
-                new Vector2(500, 80);
+            rt.sizeDelta = new Vector2(500, 80);
 
             EventChoiceButton button =
                 obj.GetComponent<EventChoiceButton>();
@@ -80,17 +77,21 @@ public class EventUIManager : MonoBehaviour
         if (GameManager.Instance == null)
             return;
 
-        int player =
-            GameManager.Instance.playerEmpireIndex;
+        int player = GameManager.Instance.playerEmpireIndex;
 
-        EmpireStats stats =
+        // Estadísticas BASE (para guardar cambios permanentes)
+        EmpireStats baseStats =
             GameManager.Instance.GetEmpireBaseStats(player);
 
+        // Estadísticas TOTALES (base + buffs de planetas)
+        EmpireStats totalStats =
+            GameManager.Instance.GetEmpireTotalStats(player);
+
         bool success =
-            stats.power >= choice.requiredPower &&
-            stats.defense >= choice.requiredDefense &&
-            stats.intelligence >= choice.requiredIntelligence &&
-            stats.morale >= choice.requiredMorale;
+            totalStats.power >= choice.requiredPower &&
+            totalStats.defense >= choice.requiredDefense &&
+            totalStats.intelligence >= choice.requiredIntelligence &&
+            totalStats.morale >= choice.requiredMorale;
 
         if (success)
         {
@@ -99,14 +100,13 @@ public class EventUIManager : MonoBehaviour
                 choice.rewardCredits
             );
 
-            stats.power += choice.rewardPower;
-            stats.defense += choice.rewardDefense;
-            stats.accuracy += choice.rewardAccuracy;
-            stats.morale += choice.rewardMorale;
-            stats.intelligence += choice.rewardIntelligence;
+            baseStats.power += choice.rewardPower;
+            baseStats.defense += choice.rewardDefense;
+            baseStats.accuracy += choice.rewardAccuracy;
+            baseStats.morale += choice.rewardMorale;
+            baseStats.intelligence += choice.rewardIntelligence;
 
-            resultText.text =
-                choice.successMessage;
+            resultText.text = choice.successMessage;
         }
         else
         {
@@ -115,14 +115,13 @@ public class EventUIManager : MonoBehaviour
                 choice.penaltyCredits
             );
 
-            stats.power -= choice.penaltyPower;
-            stats.defense -= choice.penaltyDefense;
-            stats.accuracy -= choice.penaltyAccuracy;
-            stats.morale -= choice.penaltyMorale;
-            stats.intelligence -= choice.penaltyIntelligence;
+            baseStats.power -= choice.penaltyPower;
+            baseStats.defense -= choice.penaltyDefense;
+            baseStats.accuracy -= choice.penaltyAccuracy;
+            baseStats.morale -= choice.penaltyMorale;
+            baseStats.intelligence -= choice.penaltyIntelligence;
 
-            resultText.text =
-                choice.failureMessage;
+            resultText.text = choice.failureMessage;
         }
 
         StartCoroutine(CloseAfterDelay());
