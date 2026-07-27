@@ -2776,6 +2776,7 @@ MonoBehaviour:
   - shipType: 2
     cost: 80
   selectedOriginPlanet: {fileID: 0}
+  allShips: []
 --- !u!4 &1052138309
 Transform:
   m_ObjectHideFlags: 0

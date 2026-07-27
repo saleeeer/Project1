@@ -142,6 +142,7 @@ MonoBehaviour:
   attackRange: 60
   bulletPrefab: {fileID: -28086653702286906, guid: 9d1485c2d151dfc429c7686bb4933e63, type: 3}
   firePoint: {fileID: 978503715216705597}
+  explosionPrefab: {fileID: 630356623249911478, guid: 91e0888fed94995498546e71db88ae99, type: 3}
 --- !u!1 &8786595284511393644
 GameObject:
   m_ObjectHideFlags: 0

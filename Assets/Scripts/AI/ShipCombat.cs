@@ -17,6 +17,8 @@ public class ShipCombat : MonoBehaviour
     public Bullet bulletPrefab;
     public Transform firePoint;
 
+    public GameObject explosionPrefab;
+
     void Awake()
     {
         movement = GetComponent<ShipMovement>();
@@ -94,6 +96,11 @@ public class ShipCombat : MonoBehaviour
                 AudioManager.Instance.shipDestroyed
             );
         }
+
+        Instantiate(
+    explosionPrefab,
+    transform.position,
+    Quaternion.identity);
 
         Destroy(gameObject);
     }
