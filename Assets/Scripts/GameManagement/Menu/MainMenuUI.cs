@@ -46,7 +46,7 @@ public class MainMenuUI : MonoBehaviour
             );
         }
 
-        PlayVideo(MenuCanvas, OptionCanvas);
+        PlayVideo(SelectionCanvas_1, OptionCanvas);
     }
 
     void PlayVideo(VideoClip clip, GameObject canvasToOpen)
