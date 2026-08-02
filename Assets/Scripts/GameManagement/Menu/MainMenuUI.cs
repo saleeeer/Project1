@@ -34,7 +34,7 @@ public class MainMenuUI : MonoBehaviour
                 AudioManager.Instance.buttonClick
             );
         }
-        PlayVideo(MenuCanvas, selectionCanvas);
+        PlayVideo(SelectionCanvas_1, selectionCanvas);
     }
 
     public void PlayOptions()
@@ -46,7 +46,7 @@ public class MainMenuUI : MonoBehaviour
             );
         }
 
-        PlayVideo(SelectionCanvas_1, OptionCanvas);
+        PlayVideo(MenuCanvas, OptionCanvas);
     }
 
     void PlayVideo(VideoClip clip, GameObject canvasToOpen)
@@ -69,7 +69,7 @@ public class MainMenuUI : MonoBehaviour
 
     void OnVideoFinished(VideoPlayer vp)
     {
-        CloseVideo();
+        //CloseVideo();
 
         if (currentCanvas != null)
             currentCanvas.SetActive(false);
@@ -78,7 +78,7 @@ public class MainMenuUI : MonoBehaviour
             nextCanvas.SetActive(true);
     }
 
-    public void CloseVideo()
+    /*public void CloseVideo()
     {
         videoPlayer.Stop();
         videoPanel.SetActive(false);
@@ -89,7 +89,7 @@ public class MainMenuUI : MonoBehaviour
                 AudioManager.Instance.buttonClick
             );
         }
-    }
+    }*/
 
     public void ExitGame()
     {
