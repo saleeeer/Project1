@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 310ffd4cfbe15914fb9a7c0c9d00aca4, type: 3}
+  m_Name: Primal Tribe
+  m_EditorClassIdentifier: 
+  eventTitle: Tribu Desconocida
+  description: Una tribu antigua fue encontrada en uno de tus planetas.
+  choices:
+  - choiceText: Robarle
+    requiredPower: 3
+    requiredDefense: 2
+    requiredIntelligence: 0
+    requiredMorale: 0
+    rewardCredits: 100
+    rewardPower: 3
+    rewardDefense: 4
+    rewardAccuracy: 1
+    rewardMorale: 2
+    rewardIntelligence: 0
+    penaltyCredits: 0
+    penaltyPower: 3
+    penaltyDefense: 2
+    penaltyAccuracy: 2
+    penaltyMorale: 2
+    penaltyIntelligence: 0
+    successMessage: Has robado los recursos
+    failureMessage: Tu intento es aplastado, fallaste.
+  - choiceText: Trabajar junto a ellos
+    requiredPower: 0
+    requiredDefense: 0
+    requiredIntelligence: 2
+    requiredMorale: 2
+    rewardCredits: 0
+    rewardPower: 3
+    rewardDefense: 1
+    rewardAccuracy: 0
+    rewardMorale: 5
+    rewardIntelligence: 4
+    penaltyCredits: 0
+    penaltyPower: 4
+    penaltyDefense: 1
+    penaltyAccuracy: 1
+    penaltyMorale: 3
+    penaltyIntelligence: 2
+    successMessage: Estan contentos de trabajar contigo.
+    failureMessage: Te traicionaron.
