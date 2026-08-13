@@ -66,8 +66,7 @@ public class PlanetData : MonoBehaviour
         HandleSelectionVisual();
     }
 
-    // ================= TYPE =================
-
+    // ================= SELECCIÓN VISUAL =================
 
     void HandleSelectionVisual()
     {
@@ -89,24 +88,51 @@ public class PlanetData : MonoBehaviour
         }
     }
 
+    // ================= TYPE =================
+
     void AssignPlanetTypeData()
     {
         switch (planetType)
         {
-            case PlanetType.AstraPrime: baseIncome = 5; break;
-            case PlanetType.Valkurion: baseIncome = 4; break;
-            case PlanetType.Novaeon: baseIncome = 3; break;
-            case PlanetType.HeliosIX: baseIncome = 2; break;
-            case PlanetType.Calystrum: baseIncome = 2; break;
-            case PlanetType.Orionis: baseIncome = 1; break;
-            case PlanetType.Dominia: baseIncome = 1; break;
-            case PlanetType.NeutralPlanet:baseIncome = 1; break;
+            case PlanetType.AstraPrime:
+                baseIncome = 5;
+                break;
+
+            case PlanetType.Valkurion:
+                baseIncome = 4;
+                break;
+
+            case PlanetType.Novaeon:
+                baseIncome = 3;
+                break;
+
+            case PlanetType.HeliosIX:
+                baseIncome = 2;
+                break;
+
+            case PlanetType.Calystrum:
+                baseIncome = 2;
+                break;
+
+            case PlanetType.Orionis:
+                baseIncome = 1;
+                break;
+
+            case PlanetType.Dominia:
+                baseIncome = 1;
+                break;
+
+            case PlanetType.NeutralPlanet:
+                baseIncome = 1;
+                break;
         }
     }
 
     public int GetIncome()
     {
-        if (GameManager.Instance == null) return baseIncome;
+        if (GameManager.Instance == null)
+            return baseIncome;
+
         return GameManager.Instance.GetPlanetIncome(this);
     }
 
@@ -122,7 +148,8 @@ public class PlanetData : MonoBehaviour
 
     void UpdateColor()
     {
-        if (sr == null) return;
+        if (sr == null)
+            return;
 
         if (ownerEmpireIndex == -1)
         {
@@ -136,7 +163,9 @@ public class PlanetData : MonoBehaviour
             return;
         }
 
-        Color c = GameManager.Instance.GetEmpireColor(ownerEmpireIndex);
+        Color c =
+            GameManager.Instance.GetEmpireColor(ownerEmpireIndex);
+
         c.a = 1f;
 
         sr.color = c;
@@ -152,19 +181,19 @@ public class PlanetData : MonoBehaviour
 
             yield return new WaitForSeconds(interval);
 
-            // neutro
+            // Neutro
             if (ownerEmpireIndex == -1)
                 continue;
 
-            // producir unidades
+            // Producir unidades
             if (units < maxUnits)
                 units++;
 
-            // verificar GameManager
+            // Verificar GameManager
             if (GameManager.Instance == null)
                 continue;
 
-            // 🔥 SI ES JUGADOR → NO HACER NADA MÁS
+            // Si es jugador → no hacer nada más
             if (ownerEmpireIndex == GameManager.Instance.playerEmpireIndex)
                 continue;
 
@@ -185,23 +214,28 @@ public class PlanetData : MonoBehaviour
     void TrySendFleet()
     {
         Debug.Log(
-    "TrySendFleet -> " +
-    name +
-    " Owner=" +
-    ownerEmpireIndex +
-    " Player=" +
-    GameManager.Instance.playerEmpireIndex);
-        if (units < minUnitsToSend) return;
+            "TrySendFleet -> " +
+            name +
+            " Owner=" +
+            ownerEmpireIndex +
+            " Player=" +
+            GameManager.Instance.playerEmpireIndex
+        );
+
+        if (units < minUnitsToSend)
+            return;
 
         PlanetData target = GetTargetFromNeighbors();
 
-        if (target == null) return;
+        if (target == null)
+            return;
 
         // Evitar ataques suicidas
         if (target.units > units * 1.2f)
             return;
 
-        if (target == lastTarget) return;
+        if (target == lastTarget)
+            return;
 
         lastTarget = target;
 
@@ -218,8 +252,11 @@ public class PlanetData : MonoBehaviour
 
         foreach (PlanetData n in neighbors)
         {
-            if (n == null) continue;
-            if (n.ownerEmpireIndex == ownerEmpireIndex) continue;
+            if (n == null)
+                continue;
+
+            if (n.ownerEmpireIndex == ownerEmpireIndex)
+                continue;
 
             float score = 0f;
 
@@ -229,7 +266,7 @@ public class PlanetData : MonoBehaviour
             else
                 score += 10f;
 
-            // Preferir débiles
+            // Preferir planetas débiles
             score += (maxUnits - n.units);
 
             // Evitar suicidio
@@ -254,13 +291,19 @@ public class PlanetData : MonoBehaviour
 
     public void SendFleet(PlanetData target)
     {
-        if (target == null) return;
-        if (units <= 0) return;
+        if (target == null)
+            return;
+
+        if (units <= 0)
+            return;
 
         GameManager gm = GameManager.Instance;
-        if (gm == null) return;
 
-        int amount = Mathf.Min(units, gm.maxFleetSize);
+        if (gm == null)
+            return;
+
+        int amount =
+            Mathf.Min(units, gm.maxFleetSize);
 
         int spawned = 0;
 
@@ -279,43 +322,64 @@ public class PlanetData : MonoBehaviour
     void SpawnShip(PlanetData target)
     {
         Debug.Log(
-    "SPAWN IA -> "
-    + name
-    + " Empire=" + ownerEmpireIndex);
+            "SPAWN IA -> " +
+            name +
+            " Empire=" +
+            ownerEmpireIndex
+        );
+
         GameManager gm = GameManager.Instance;
-        if (gm == null) return;
+
+        if (gm == null)
+            return;
 
         int playerEmpire = gm.playerEmpireIndex;
-        bool isPlayer = ownerEmpireIndex == playerEmpire;
 
-        ShipType type = isPlayer
+        bool isPlayer =
+            ownerEmpireIndex == playerEmpire;
+
+        ShipType type =
+            isPlayer
             ? gm.selectedShipType
             : gm.GetAIShipType(ownerEmpireIndex);
 
-        GameObject prefab = gm.GetShipPrefab(type, isPlayer);
+        GameObject prefab =
+            gm.GetShipPrefab(type, isPlayer);
 
         if (prefab == null)
         {
-            Debug.LogError("No prefab encontrado para " + type);
+            Debug.LogError(
+                "No prefab encontrado para " + type
+            );
+
             return;
         }
 
-        int cost = gm.GetShipCost(type);
+        int cost =
+            gm.GetShipCost(type);
 
         if (!gm.SpendCredits(ownerEmpireIndex, cost))
             return;
 
-        Vector2 offset = Random.insideUnitCircle.normalized * 2f;
+        Vector2 offset =
+            Random.insideUnitCircle.normalized * 2f;
 
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.shipSpawn);
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.shipSpawn
+            );
+        }
 
-        GameObject ship = Instantiate(
-            prefab,
-            transform.position + (Vector3)offset,
-            Quaternion.identity
-        );
+        GameObject ship =
+            Instantiate(
+                prefab,
+                transform.position + (Vector3)offset,
+                Quaternion.identity
+            );
 
-        ShipMovement m = ship.GetComponent<ShipMovement>();
+        ShipMovement m =
+            ship.GetComponent<ShipMovement>();
 
         m.currentPlanet = this;
         m.empireIndex = ownerEmpireIndex;
@@ -323,7 +387,8 @@ public class PlanetData : MonoBehaviour
 
         m.SetTarget(target);
 
-        if (!isPlayer && ship.GetComponent<AIShipController>() == null)
+        if (!isPlayer &&
+            ship.GetComponent<AIShipController>() == null)
         {
             ship.AddComponent<AIShipController>();
         }
@@ -333,17 +398,7 @@ public class PlanetData : MonoBehaviour
         gm.RegisterShip(ownerEmpireIndex);
     }
 
-    void ApplyColor(GameObject ship)
-    {
-        if (GameManager.Instance == null) return;
-
-        Color color = GameManager.Instance.GetEmpireColor(ownerEmpireIndex);
-
-        foreach (SpriteRenderer sr in ship.GetComponentsInChildren<SpriteRenderer>())
-        {
-            sr.color = color;
-        }
-    }
+    // ================= CLICK CONTROL =================
 
     void OnMouseDown()
     {
@@ -353,81 +408,142 @@ public class PlanetData : MonoBehaviour
         int playerEmpire =
             GameManager.Instance.playerEmpireIndex;
 
-        // ================= PRIMER CLICK =================
+        // ============================================
+        // CLICK IZQUIERDO
+        // Seleccionar planeta propio como ORIGEN
+        // ============================================
 
-        if (ownerEmpireIndex == playerEmpire)
+        if (Input.GetMouseButtonDown(0))
         {
+            if (ownerEmpireIndex != playerEmpire)
+                return;
+
             GameManager.Instance.selectedOriginPlanet = this;
 
-            Debug.Log("Origen seleccionado: " + name);
+            Debug.Log(
+                "Planeta origen seleccionado: " +
+                name
+            );
 
             return;
         }
 
-        // ================= SEGUNDO CLICK =================
+        // ============================================
+        // CLICK DERECHO
+        // Enviar flota al planeta seleccionado
+        // ============================================
 
-        PlanetData origin =
-            GameManager.Instance.selectedOriginPlanet;
+        if (Input.GetMouseButtonDown(1))
+        {
+            PlanetData origin =
+                GameManager.Instance.selectedOriginPlanet;
 
-        if (origin == null)
-            return;
+            if (origin == null)
+            {
+                Debug.Log(
+                    "Primero seleccioná un planeta propio como origen."
+                );
 
-        if (origin.ownerEmpireIndex != playerEmpire)
-            return;
+                return;
+            }
 
-        // enviar flota
-        origin.SendFleet(this);
+            if (origin.ownerEmpireIndex != playerEmpire)
+            {
+                GameManager.Instance.selectedOriginPlanet = null;
 
-        Debug.Log(
-            origin.name +
-            " ataca " +
-            name
-        );
+                Debug.Log(
+                    "El planeta de origen ya no pertenece al jugador."
+                );
+
+                return;
+            }
+
+            if (origin == this)
+            {
+                Debug.Log(
+                    "No podés enviar una flota al mismo planeta."
+                );
+
+                return;
+            }
+
+            origin.SendFleet(this);
+
+            Debug.Log(
+                origin.name +
+                " envía flota hacia " +
+                name
+            );
+        }
     }
 
+    // ================= PLAYER SHIP =================
 
     public void SpawnPlayerShip()
     {
         Debug.Log(
-     "SPAWN PLAYER SHIP -> "
-     + name
-     + " ID="
-     + GetInstanceID());
+            "SPAWN PLAYER SHIP -> " +
+            name +
+            " ID=" +
+            GetInstanceID()
+        );
+
         if (GameManager.Instance == null)
             return;
 
-        if (ownerEmpireIndex != GameManager.Instance.playerEmpireIndex)
+        if (ownerEmpireIndex !=
+            GameManager.Instance.playerEmpireIndex)
+        {
             return;
+        }
 
         if (units <= 0)
         {
-            Debug.Log("No hay unidades disponibles");
+            Debug.Log(
+                "No hay unidades disponibles"
+            );
+
             return;
         }
 
-        GameManager gm = GameManager.Instance;
+        GameManager gm =
+            GameManager.Instance;
 
         if (!gm.CanSpawnShip(ownerEmpireIndex))
         {
-            Debug.Log("Límite de naves alcanzado");
+            Debug.Log(
+                "Límite de naves alcanzado"
+            );
+
             return;
         }
 
-        ShipType type = gm.selectedShipType;
+        ShipType type =
+            gm.selectedShipType;
 
-        int cost = gm.GetShipCost(type);
+        int cost =
+            gm.GetShipCost(type);
 
-        if (!gm.SpendCredits(ownerEmpireIndex, cost))
+        if (!gm.SpendCredits(
+            ownerEmpireIndex,
+            cost))
         {
-            Debug.Log("No hay créditos");
+            Debug.Log(
+                "No hay créditos"
+            );
+
             return;
         }
 
-        GameObject prefab = gm.GetShipPrefab(type, true);
+        GameObject prefab =
+            gm.GetShipPrefab(type, true);
 
         if (prefab == null)
         {
-            Debug.LogError("Prefab nulo");
+            Debug.LogError(
+                "Prefab nulo"
+            );
+
             return;
         }
 
@@ -436,13 +552,19 @@ public class PlanetData : MonoBehaviour
         Vector2 offset =
             Random.insideUnitCircle.normalized * 2f;
 
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.shipSpawn);
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.shipSpawn
+            );
+        }
 
-        GameObject ship = Instantiate(
-            prefab,
-            transform.position + (Vector3)offset,
-            Quaternion.identity
-        );
+        GameObject ship =
+            Instantiate(
+                prefab,
+                transform.position + (Vector3)offset,
+                Quaternion.identity
+            );
 
         ShipMovement movement =
             ship.GetComponent<ShipMovement>();
@@ -455,8 +577,32 @@ public class PlanetData : MonoBehaviour
 
         gm.RegisterShip(ownerEmpireIndex);
 
-        Debug.Log("Spawn manual de " + type);
+        Debug.Log(
+            "Spawn manual de " + type
+        );
     }
+
+    // ================= COLOR =================
+
+    void ApplyColor(GameObject ship)
+    {
+        if (GameManager.Instance == null)
+            return;
+
+        Color color =
+            GameManager.Instance.GetEmpireColor(
+                ownerEmpireIndex
+            );
+
+        foreach (
+            SpriteRenderer sr
+            in ship.GetComponentsInChildren<SpriteRenderer>())
+        {
+            sr.color = color;
+        }
+    }
+
+    // ================= SPRITE =================
 
     void ApplyPlanetSprite()
     {
