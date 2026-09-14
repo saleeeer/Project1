@@ -43,7 +43,6 @@ public class PlanetData : MonoBehaviour
     public Sprite valkurionSprite;
     public Sprite novaeonSprite;
     public Sprite heliosIXSprite;
-    public Sprite calystrumSprite;
     public Sprite orionisSprite;
     public Sprite dominiaSprite;
     public Sprite SpriteneutralPlanetSprite;
@@ -625,10 +624,6 @@ public class PlanetData : MonoBehaviour
 
             case PlanetType.HeliosIX:
                 sr.sprite = heliosIXSprite;
-                break;
-
-            case PlanetType.Calystrum:
-                sr.sprite = calystrumSprite;
                 break;
 
             case PlanetType.Orionis:

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 487869575144108108}
   - component: {fileID: 134915304051466174}
   - component: {fileID: 3311151885715015514}
+  - component: {fileID: -6418557985855903680}
+  - component: {fileID: -7193226609098413750}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -152,7 +154,38 @@ MonoBehaviour:
   valkurionSprite: {fileID: 21300000, guid: de64e8cab89009f47a465319168a822f, type: 3}
   novaeonSprite: {fileID: 21300000, guid: 63388433039159a4abe0aa4e69b47020, type: 3}
   heliosIXSprite: {fileID: 21300000, guid: 9cfd2d94b9d4d5a44864b1a4a920c6c3, type: 3}
-  calystrumSprite: {fileID: 21300000, guid: ac973ef63d30fdf428a94a8b03cd83b7, type: 3}
   orionisSprite: {fileID: 21300000, guid: 27c779c52658ed2459630fbc94d413c9, type: 3}
   dominiaSprite: {fileID: 21300000, guid: 76670aefa26a5f041be12b5ee8b5303d, type: 3}
   SpriteneutralPlanetSprite: {fileID: 21300000, guid: f1176db6c42d21b479a38da84fe2ead2, type: 3}
+--- !u!114 &-6418557985855903680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728102551231298994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d35c0e33bf2b24485f5d938da67466, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 6820642359529729597, guid: 43c098658d2000a44a83c7e8cc7c101e, type: 3}
+  distanceFromPlanet: 3
+  moveAmount: 0.15
+  moveSpeed: 2
+--- !u!114 &-7193226609098413750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728102551231298994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a572c8f60b54bf45b9b01f7c1afba47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 2174157770511422477, guid: 7b17e54f45a8288448f14707c6ecfd0b, type: 3}
+  distanceFromPlanet: 3
+  moveAmount: 0.15
+  moveSpeed: 2
