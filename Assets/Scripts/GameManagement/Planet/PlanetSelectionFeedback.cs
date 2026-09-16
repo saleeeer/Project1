@@ -103,21 +103,40 @@ public class PlanetSelectionFeedback : MonoBehaviour
         if (arrows == null)
             return;
 
+        float offset =
+            Mathf.Sin(Time.time * moveSpeed) * moveAmount;
+
         for (int i = 0; i < arrows.Length; i++)
         {
             if (arrows[i] == null)
                 continue;
 
-            float offset =
-                Mathf.Sin(
-                    Time.time * moveSpeed + i * 0.5f
-                ) * moveAmount;
-
             Vector3 newPosition =
                 originalPositions[i];
 
-            // Movimiento vertical local
-            newPosition.y += offset;
+            // Arriba: hacia arriba / hacia el planeta
+            if (i == 0)
+            {
+                newPosition.y += offset;
+            }
+
+            // Derecha: hacia derecha / hacia el planeta
+            else if (i == 1)
+            {
+                newPosition.x += offset;
+            }
+
+            // Abajo: dirección inversa
+            else if (i == 2)
+            {
+                newPosition.y -= offset;
+            }
+
+            // Izquierda: dirección inversa
+            else if (i == 3)
+            {
+                newPosition.x -= offset;
+            }
 
             arrows[i].transform.localPosition =
                 newPosition;
