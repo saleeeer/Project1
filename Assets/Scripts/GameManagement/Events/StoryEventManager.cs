@@ -33,6 +33,10 @@ public class StoryEventManager : MonoBehaviour
         {
             eventVideoPlayer.playOnAwake = false;
             eventVideoPlayer.isLooping = false;
+
+            // El video sigue avanzando aunque el juego esté pausado.
+            eventVideoPlayer.timeUpdateMode =
+                VideoTimeUpdateMode.UnscaledGameTime;
         }
     }
 
@@ -42,6 +46,8 @@ public class StoryEventManager : MonoBehaviour
         {
             eventVideoPlayer.loopPointReached += OnVideoFinished;
             eventVideoPlayer.prepareCompleted += OnVideoPrepared;
+            eventVideoPlayer.errorReceived += OnVideoError;
+            eventVideoPlayer.started += OnVideoStarted;
         }
 
         StartCoroutine(EventLoop());
@@ -104,11 +110,9 @@ public class StoryEventManager : MonoBehaviour
     {
         eventRunning = true;
 
-        // Pausar gameplay
+        // Pausar el gameplay.
         Time.timeScale = 0f;
 
-        // Si falta alguna referencia,
-        // mostrar directamente el evento.
         if (eventVideoPanel == null ||
             eventVideoPlayer == null ||
             eventIntroVideo == null)
@@ -124,7 +128,8 @@ public class StoryEventManager : MonoBehaviour
         eventVideoPlayer.clip =
             eventIntroVideo;
 
-        // Preparar el video antes de reproducirlo
+        Debug.Log("Preparando video del evento...");
+
         eventVideoPlayer.Prepare();
     }
 
@@ -133,11 +138,32 @@ public class StoryEventManager : MonoBehaviour
         if (vp != eventVideoPlayer)
             return;
 
+        Debug.Log("Video preparado. Reproduciendo...");
+
         eventVideoPlayer.Play();
+    }
+
+    void OnVideoStarted(VideoPlayer vp)
+    {
+        Debug.Log("Video del evento iniciado correctamente.");
     }
 
     void OnVideoFinished(VideoPlayer vp)
     {
+        Debug.Log("Video del evento terminado.");
+
+        if (eventVideoPanel != null)
+            eventVideoPanel.SetActive(false);
+
+        ShowPendingEvent();
+    }
+
+    void OnVideoError(VideoPlayer vp, string message)
+    {
+        Debug.LogError(
+            "Error en VideoPlayer del evento: " + message
+        );
+
         if (eventVideoPanel != null)
             eventVideoPanel.SetActive(false);
 
@@ -157,9 +183,7 @@ public class StoryEventManager : MonoBehaviour
 
         if (EventUIManager.Instance == null)
         {
-            Debug.LogError(
-                "No EventUIManager"
-            );
+            Debug.LogError("No EventUIManager");
 
             Time.timeScale = 1f;
             eventRunning = false;
@@ -170,9 +194,7 @@ public class StoryEventManager : MonoBehaviour
             pendingEvent
         );
 
-        StartCoroutine(
-            WaitUntilClosed()
-        );
+        StartCoroutine(WaitUntilClosed());
     }
 
     IEnumerator WaitUntilClosed()
@@ -197,6 +219,12 @@ public class StoryEventManager : MonoBehaviour
 
             eventVideoPlayer.prepareCompleted -=
                 OnVideoPrepared;
+
+            eventVideoPlayer.errorReceived -=
+                OnVideoError;
+
+            eventVideoPlayer.started -=
+                OnVideoStarted;
         }
     }
 }
