@@ -2969,46 +2969,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   empires:
   - name: Blue
-    color: {r: 0, g: 0.16855001, b: 1, a: 1}
+    color: {r: 0, g: 0.74262595, b: 1, a: 1}
     stats:
-      power: 1
-      defense: 1
-      accuracy: 1
-      morale: 1
+      power: 2
+      defense: 5
+      accuracy: 2
+      morale: 2
       intelligence: 1
   - name: Red
-    color: {r: 1, g: 0, b: 0.06054926, a: 1}
+    color: {r: 0.7264151, g: 0, b: 0.04273034, a: 1}
     stats:
-      power: 1
+      power: 4
       defense: 1
-      accuracy: 1
-      morale: 1
-      intelligence: 1
-  - name: Green
-    color: {r: 0.21680237, g: 0.6981132, b: 0, a: 1}
-    stats:
-      power: 1
-      defense: 1
-      accuracy: 1
-      morale: 1
-      intelligence: 1
-  - name: Black
-    color: {r: 0, g: 0.99020815, b: 1, a: 1}
-    stats:
-      power: 1
-      defense: 1
-      accuracy: 1
-      morale: 1
-      intelligence: 1
+      accuracy: 3
+      morale: 2
+      intelligence: 2
   playerEmpireIndex: 0
   selectedPlanet: {fileID: 0}
   maxFleetSize: 5
   maxShipsPerEmpire: 50
   incomeInterval: 2
   selectedShipType: 0
-  fighterPrefab: {fileID: 4912607222141858788, guid: 4e24e797b5c8f814bbe9170973baf304, type: 3}
-  bomberPrefab: {fileID: 4912607222141858788, guid: fdcbab4c3f2c5964c8642c2109eaeb20, type: 3}
-  commanderPrefab: {fileID: 4912607222141858788, guid: 903cb2b49c9df3d478c038713e46717b, type: 3}
+  empire0FighterPrefab: {fileID: 4912607222141858788, guid: 4e24e797b5c8f814bbe9170973baf304, type: 3}
+  empire0BomberPrefab: {fileID: 4912607222141858788, guid: fdcbab4c3f2c5964c8642c2109eaeb20, type: 3}
+  empire0CommanderPrefab: {fileID: 4912607222141858788, guid: 903cb2b49c9df3d478c038713e46717b, type: 3}
+  empire1FighterPrefab: {fileID: 8197212717312797383, guid: c564e45b008fec6479e9af8f73ef1f26, type: 3}
+  empire1BomberPrefab: {fileID: 8197212717312797383, guid: 5f466bc9f7092ff488f916da7293271a, type: 3}
+  empire1CommanderPrefab: {fileID: 8197212717312797383, guid: b9312ce62f0625f46b04e83038522b0d, type: 3}
   shipCosts:
   - shipType: 0
     cost: 10

@@ -29,10 +29,15 @@ public class GameManager : MonoBehaviour
     [Header("Ships")]
     public ShipType selectedShipType = ShipType.Fighter;
 
-    [Header("Prefabs")]
-    public GameObject fighterPrefab;
-    public GameObject bomberPrefab;
-    public GameObject commanderPrefab;
+    [Header("Empire 0 Ship Prefabs")]
+    public GameObject empire0FighterPrefab;
+    public GameObject empire0BomberPrefab;
+    public GameObject empire0CommanderPrefab;
+
+    [Header("Empire 1 Ship Prefabs")]
+    public GameObject empire1FighterPrefab;
+    public GameObject empire1BomberPrefab;
+    public GameObject empire1CommanderPrefab;
 
     [Header("Costs")]
     public List<ShipCostData> shipCosts = new List<ShipCostData>();
@@ -46,10 +51,16 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
 
-        playerEmpireIndex = PlayerPrefs.GetInt("SelectedEmpire", 0);
+        playerEmpireIndex =
+            PlayerPrefs.GetInt("SelectedEmpire", 0);
 
         InitEmpires();
-        InvokeRepeating(nameof(GenerateIncome), incomeInterval, incomeInterval);
+
+        InvokeRepeating(
+            nameof(GenerateIncome),
+            incomeInterval,
+            incomeInterval
+        );
     }
 
     void InitEmpires()
@@ -57,7 +68,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < empires.Count; i++)
         {
             empireShipCount[i] = 0;
-            empireCredits[i] = 50; // старт inicial
+            empireCredits[i] = 50;
         }
     }
 
@@ -65,13 +76,16 @@ public class GameManager : MonoBehaviour
 
     void GenerateIncome()
     {
-        PlanetData[] planets = FindObjectsOfType<PlanetData>();
+        PlanetData[] planets =
+            FindObjectsOfType<PlanetData>();
 
         foreach (PlanetData p in planets)
         {
-            if (p.ownerEmpireIndex == -1) continue;
+            if (p.ownerEmpireIndex == -1)
+                continue;
 
-            int income = p.GetIncome();
+            int income =
+                p.GetIncome();
 
             empireCredits[p.ownerEmpireIndex] += income;
         }
@@ -85,7 +99,10 @@ public class GameManager : MonoBehaviour
         return empireCredits[empireIndex];
     }
 
-    public bool SpendCredits(int empireIndex, int amount)
+    public bool SpendCredits(
+        int empireIndex,
+        int amount
+    )
     {
         if (!empireCredits.ContainsKey(empireIndex))
             return false;
@@ -94,6 +111,7 @@ public class GameManager : MonoBehaviour
             return false;
 
         empireCredits[empireIndex] -= amount;
+
         return true;
     }
 
@@ -115,7 +133,10 @@ public class GameManager : MonoBehaviour
         return 0;
     }
 
-    public void AddCredits(int empire, int amount)
+    public void AddCredits(
+        int empire,
+        int amount
+    )
     {
         if (!empireCredits.ContainsKey(empire))
             return;
@@ -123,7 +144,10 @@ public class GameManager : MonoBehaviour
         empireCredits[empire] += amount;
     }
 
-    public void RemoveCredits(int empire, int amount)
+    public void RemoveCredits(
+        int empire,
+        int amount
+    )
     {
         if (!empireCredits.ContainsKey(empire))
             return;
@@ -141,7 +165,8 @@ public class GameManager : MonoBehaviour
         if (!empireShipCount.ContainsKey(empireIndex))
             return false;
 
-        return empireShipCount[empireIndex] < maxShipsPerEmpire;
+        return empireShipCount[empireIndex] <
+               maxShipsPerEmpire;
     }
 
     public void RegisterShip(int empireIndex)
@@ -158,30 +183,80 @@ public class GameManager : MonoBehaviour
             return;
 
         empireShipCount[empireIndex]--;
-        empireShipCount[empireIndex] = Mathf.Max(0, empireShipCount[empireIndex]);
+
+        empireShipCount[empireIndex] =
+            Mathf.Max(
+                0,
+                empireShipCount[empireIndex]
+            );
     }
 
     // ================= PREFABS =================
 
-    public GameObject GetShipPrefab(ShipType type, bool isPlayer)
+    public GameObject GetShipPrefab(
+        ShipType type,
+        int empireIndex
+    )
     {
-        switch (type)
+        switch (empireIndex)
         {
-            case ShipType.Fighter: return fighterPrefab;
-            case ShipType.Bomber: return bomberPrefab;
-            case ShipType.Commander: return commanderPrefab;
+            // ================= IMPERIO 0 =================
+
+            case 0:
+
+                switch (type)
+                {
+                    case ShipType.Fighter:
+                        return empire0FighterPrefab;
+
+                    case ShipType.Bomber:
+                        return empire0BomberPrefab;
+
+                    case ShipType.Commander:
+                        return empire0CommanderPrefab;
+                }
+
+                break;
+
+            // ================= IMPERIO 1 =================
+
+            case 1:
+
+                switch (type)
+                {
+                    case ShipType.Fighter:
+                        return empire1FighterPrefab;
+
+                    case ShipType.Bomber:
+                        return empire1BomberPrefab;
+
+                    case ShipType.Commander:
+                        return empire1CommanderPrefab;
+                }
+
+                break;
         }
+
+        Debug.LogError(
+            "No existe un prefab para Empire " +
+            empireIndex +
+            " y ShipType " +
+            type
+        );
 
         return null;
     }
 
     public ShipType GetAIShipType(int empireIndex)
     {
-        // IA simple: mezcla
-        int r = Random.Range(0, 3);
+        int r =
+            Random.Range(0, 3);
 
-        if (r == 0) return ShipType.Fighter;
-        if (r == 1) return ShipType.Bomber;
+        if (r == 0)
+            return ShipType.Fighter;
+
+        if (r == 1)
+            return ShipType.Bomber;
 
         return ShipType.Commander;
     }
@@ -190,41 +265,68 @@ public class GameManager : MonoBehaviour
 
     public Color GetEmpireColor(int index)
     {
-        if (index < 0 || index >= empires.Count)
+        if (index < 0 ||
+            index >= empires.Count)
+        {
             return Color.white;
+        }
 
         return empires[index].color;
     }
 
+    // ================= STATS =================
+
     public EmpireStats GetEmpireTotalStats(int index)
     {
-        if (index < 0 || index >= empires.Count)
+        if (index < 0 ||
+            index >= empires.Count)
+        {
             return new EmpireStats();
+        }
 
-        // Copia de las estadísticas base del imperio
-        EmpireStats total = new EmpireStats();
+        EmpireStats total =
+            new EmpireStats();
 
-        EmpireStats baseStats = empires[index].stats;
+        EmpireStats baseStats =
+            empires[index].stats;
 
-        total.power = baseStats.power;
-        total.defense = baseStats.defense;
-        total.accuracy = baseStats.accuracy;
-        total.morale = baseStats.morale;
-        total.intelligence = baseStats.intelligence;
+        total.power =
+            baseStats.power;
 
-        // Sumar buffs de todos los planetas conquistados
-        PlanetData[] planets = FindObjectsOfType<PlanetData>();
+        total.defense =
+            baseStats.defense;
+
+        total.accuracy =
+            baseStats.accuracy;
+
+        total.morale =
+            baseStats.morale;
+
+        total.intelligence =
+            baseStats.intelligence;
+
+        PlanetData[] planets =
+            FindObjectsOfType<PlanetData>();
 
         foreach (PlanetData planet in planets)
         {
             if (planet.ownerEmpireIndex != index)
                 continue;
 
-            total.power += planet.statBuff.power;
-            total.defense += planet.statBuff.defense;
-            total.accuracy += planet.statBuff.accuracy;
-            total.morale += planet.statBuff.morale;
-            total.intelligence += planet.statBuff.intelligence;
+            total.power +=
+                planet.statBuff.power;
+
+            total.defense +=
+                planet.statBuff.defense;
+
+            total.accuracy +=
+                planet.statBuff.accuracy;
+
+            total.morale +=
+                planet.statBuff.morale;
+
+            total.intelligence +=
+                planet.statBuff.intelligence;
         }
 
         return total;
@@ -232,12 +334,16 @@ public class GameManager : MonoBehaviour
 
     public bool IsEmpireAlive(int empireIndex)
     {
-        PlanetData[] planets = FindObjectsOfType<PlanetData>();
+        PlanetData[] planets =
+            FindObjectsOfType<PlanetData>();
 
         foreach (PlanetData planet in planets)
         {
-            if (planet.ownerEmpireIndex == empireIndex)
+            if (planet.ownerEmpireIndex ==
+                empireIndex)
+            {
                 return true;
+            }
         }
 
         return false;
@@ -245,19 +351,27 @@ public class GameManager : MonoBehaviour
 
     public EmpireStats GetEmpireBaseStats(int index)
     {
-        if (index < 0 || index >= empires.Count)
+        if (index < 0 ||
+            index >= empires.Count)
+        {
             return null;
+        }
 
         return empires[index].stats;
     }
+
+    // ================= SHIPS =================
 
     public void RegisterShip(ShipMovement ship)
     {
         if (!allShips.Contains(ship))
             allShips.Add(ship);
 
-        if (!empireShipCount.ContainsKey(ship.empireIndex))
+        if (!empireShipCount.ContainsKey(
+            ship.empireIndex))
+        {
             empireShipCount[ship.empireIndex] = 0;
+        }
 
         empireShipCount[ship.empireIndex]++;
     }
@@ -266,12 +380,18 @@ public class GameManager : MonoBehaviour
     {
         allShips.Remove(ship);
 
-        if (!empireShipCount.ContainsKey(ship.empireIndex))
+        if (!empireShipCount.ContainsKey(
+            ship.empireIndex))
+        {
             return;
+        }
 
         empireShipCount[ship.empireIndex]--;
 
         empireShipCount[ship.empireIndex] =
-            Mathf.Max(0, empireShipCount[ship.empireIndex]);
+            Mathf.Max(
+                0,
+                empireShipCount[ship.empireIndex]
+            );
     }
 }
