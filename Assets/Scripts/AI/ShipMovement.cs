@@ -40,8 +40,15 @@ public class ShipMovement : MonoBehaviour
 
     bool isCapturing = false;
 
+    ShipAbility ability;
 
-    // ================= UNITY =================
+    public bool HasCombatTarget
+    {
+        get
+        {
+            return currentTarget != null;
+        }
+    }
 
     void Awake()
     {
@@ -49,8 +56,9 @@ public class ShipMovement : MonoBehaviour
 
         if (combat == null)
             combat = gameObject.AddComponent<ShipCombat>();
-    }
 
+        ability = GetComponent<ShipAbility>();
+    }
 
     void Start()
     {
@@ -60,14 +68,16 @@ public class ShipMovement : MonoBehaviour
             GameManager.Instance.RegisterShip(this);
     }
 
-
     IEnumerator AssignStartingPlanet()
     {
         yield return null;
 
-        PlanetData[] planets = FindObjectsOfType<PlanetData>();
+        PlanetData[] planets =
+            FindObjectsOfType<PlanetData>();
 
-        float minDist = Mathf.Infinity;
+        float minDist =
+            Mathf.Infinity;
+
         PlanetData closest = null;
 
         foreach (PlanetData p in planets)
@@ -94,7 +104,6 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
-
     void Update()
     {
         HandleCombat();
@@ -108,19 +117,21 @@ public class ShipMovement : MonoBehaviour
             Move();
     }
 
-
     // ================= COMBATE =================
 
     void HandleCombat()
     {
         currentTarget = null;
 
-        float closestDistance = Mathf.Infinity;
+        float closestDistance =
+            Mathf.Infinity;
 
         if (GameManager.Instance == null)
             return;
 
-        foreach (ShipMovement other in GameManager.Instance.allShips)
+        foreach (
+            ShipMovement other
+            in GameManager.Instance.allShips)
         {
             if (other == this)
                 continue;
@@ -154,32 +165,39 @@ public class ShipMovement : MonoBehaviour
 
         if (currentTarget != null)
         {
-            LookAt(currentTarget.transform.position);
+            LookAt(
+                currentTarget.transform.position
+            );
         }
     }
-
 
     void LookAt(Vector3 target)
     {
         Vector3 dir =
-            (target - transform.position).normalized;
+            (target - transform.position)
+            .normalized;
 
         if (dir == Vector3.zero)
             return;
 
         float angle =
-            Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            Mathf.Atan2(
+                dir.y,
+                dir.x
+            ) * Mathf.Rad2Deg;
 
         transform.rotation =
-            Quaternion.Euler(0, 0, angle);
+            Quaternion.Euler(
+                0,
+                0,
+                angle
+            );
     }
-
 
     // ================= INPUT =================
 
     void HandleInput()
     {
-        // CLICK DERECHO
         if (Input.GetMouseButtonDown(1))
         {
             if (Camera.main == null)
@@ -205,7 +223,8 @@ public class ShipMovement : MonoBehaviour
             if (planet == null)
             {
                 planet =
-                    hit.collider.GetComponentInParent<PlanetData>();
+                    hit.collider
+                    .GetComponentInParent<PlanetData>();
             }
 
             if (planet != null)
@@ -215,10 +234,11 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
-
     // ================= MOVIMIENTO =================
 
-    public void SetTarget(PlanetData newTarget)
+    public void SetTarget(
+        PlanetData newTarget
+    )
     {
         if (currentPlanet == null)
             return;
@@ -235,20 +255,23 @@ public class ShipMovement : MonoBehaviour
 
         isOrbiting = false;
 
-        // Si estaba capturando otro planeta,
-        // cancelamos esa captura.
         if (isCapturing)
         {
-            StopCoroutine(nameof(CaptureRoutine));
+            StopCoroutine(
+                nameof(CaptureRoutine)
+            );
+
             isCapturing = false;
         }
     }
 
-
     void Move()
     {
-        if (path == null || path.Count == 0)
+        if (path == null ||
+            path.Count == 0)
+        {
             return;
+        }
 
         if (currentIndex >= path.Count)
             return;
@@ -263,7 +286,8 @@ public class ShipMovement : MonoBehaviour
             targetNode.transform.position;
 
         Vector3 direction =
-            (targetPos - transform.position).normalized;
+            (targetPos - transform.position)
+            .normalized;
 
         if (direction != Vector3.zero &&
             currentTarget == null)
@@ -275,28 +299,43 @@ public class ShipMovement : MonoBehaviour
                 ) * Mathf.Rad2Deg;
 
             transform.rotation =
-                Quaternion.Euler(0, 0, angle);
+                Quaternion.Euler(
+                    0,
+                    0,
+                    angle
+                );
         }
 
-        float currentSpeed = speed;
+        float currentSpeed =
+            speed;
 
         if (currentTarget != null)
         {
-            currentSpeed *= combatSpeedMultiplier;
+            currentSpeed *=
+                combatSpeedMultiplier;
+        }
+
+        if (ability != null)
+        {
+            currentSpeed *=
+                ability.GetSpeedMultiplier();
         }
 
         transform.position =
             Vector3.MoveTowards(
                 transform.position,
                 targetPos,
-                currentSpeed * Time.deltaTime
+                currentSpeed *
+                Time.deltaTime
             );
 
         if (Vector3.Distance(
                 transform.position,
-                targetPos) < 0.1f)
+                targetPos
+            ) < 0.1f)
         {
-            currentPlanet = targetNode;
+            currentPlanet =
+                targetNode;
 
             isOrbiting = true;
 
@@ -304,15 +343,18 @@ public class ShipMovement : MonoBehaviour
 
             path.Clear();
 
-            SnapToOrbit(currentPlanet);
+            SnapToOrbit(
+                currentPlanet
+            );
 
             if (!isCapturing)
             {
-                StartCoroutine(CaptureRoutine());
+                StartCoroutine(
+                    CaptureRoutine()
+                );
             }
         }
     }
-
 
     // ================= CAPTURA =================
 
@@ -327,8 +369,6 @@ public class ShipMovement : MonoBehaviour
 
         while (timer < captureTime)
         {
-            // Si la nave dejó el planeta,
-            // cancelamos la captura.
             if (currentPlanet == null)
             {
                 isCapturing = false;
@@ -342,19 +382,21 @@ public class ShipMovement : MonoBehaviour
 
         if (currentPlanet != null)
         {
-            currentPlanet.SetOwner(empireIndex);
+            currentPlanet.SetOwner(
+                empireIndex
+            );
 
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlaySFX(
-                    AudioManager.Instance.planetCaptured
+                    AudioManager.Instance
+                    .planetCaptured
                 );
             }
         }
 
         isCapturing = false;
     }
-
 
     // ================= ORBITA =================
 
@@ -421,10 +463,11 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
-
     // ================= ORBITA INICIAL =================
 
-    void SnapToOrbit(PlanetData planet)
+    void SnapToOrbit(
+        PlanetData planet
+    )
     {
         if (planet == null)
             return;
@@ -441,7 +484,8 @@ public class ShipMovement : MonoBehaviour
         }
         else
         {
-            dir = dir.normalized;
+            dir =
+                dir.normalized;
         }
 
         orbitAngle =
@@ -452,9 +496,11 @@ public class ShipMovement : MonoBehaviour
 
         transform.position =
             planet.transform.position +
-            (Vector3)(dir * orbitDistance);
+            (Vector3)(
+                dir *
+                orbitDistance
+            );
     }
-
 
     // ================= DESTROY =================
 
@@ -462,7 +508,8 @@ public class ShipMovement : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.UnregisterShip(this);
+            GameManager.Instance
+                .UnregisterShip(this);
         }
     }
 }

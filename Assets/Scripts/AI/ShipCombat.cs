@@ -11,74 +11,134 @@ public class ShipCombat : MonoBehaviour
     float currentHealth;
     float lastAttackTime;
 
-    ShipMovement movement;
-
-    [Header("Bullet")]
-    public Bullet bulletPrefab;
-    public Transform firePoint;
-
     public GameObject explosionPrefab;
+
+    ShipMovement movement;
+    ShipAbility ability;
 
     void Awake()
     {
-        movement = GetComponent<ShipMovement>();
-        currentHealth = baseHealth;
+        movement =
+            GetComponent<ShipMovement>();
+
+        ability =
+            GetComponent<ShipAbility>();
+
+        currentHealth =
+            baseHealth;
     }
 
     // ================= COMBAT =================
 
-    public void TryAttack(ShipCombat target)
+    public void TryAttack(
+        ShipCombat target
+    )
     {
-        if (target == null) return;
-
-        if (Time.time < lastAttackTime + (1f / attackRate))
+        if (target == null)
             return;
 
-        lastAttackTime = Time.time;
+        float effectiveAttackRate =
+            attackRate;
 
-        float damage = CalculateDamage(target);
+        if (ability != null)
+        {
+            effectiveAttackRate *=
+                ability.GetAttackRateMultiplier();
+        }
 
-        Transform spawnPoint = firePoint != null ? firePoint : transform;
+        if (effectiveAttackRate <= 0f)
+            return;
 
-        Bullet b = Instantiate(
-            bulletPrefab,
-            spawnPoint.position,
-            spawnPoint.rotation
-        );
+        float attackCooldown =
+            1f / effectiveAttackRate;
 
-        Debug.Log($"{name} dispara a {target.name}");
+        if (Time.time <
+            lastAttackTime +
+            attackCooldown)
+        {
+            return;
+        }
 
-        b.Init(target.transform, damage);
+        lastAttackTime =
+            Time.time;
+
+        float damage =
+            CalculateDamage(target);
+
+        target.TakeDamage(damage);
     }
 
-    float CalculateDamage(ShipCombat target)
+    float CalculateDamage(
+        ShipCombat target
+    )
     {
-        if (movement == null || GameManager.Instance == null)
+        if (movement == null ||
+            GameManager.Instance == null)
+        {
             return baseDamage;
+        }
 
-        EmpireStats attackerStats = GameManager.Instance.GetEmpireTotalStats(movement.empireIndex);
-        EmpireStats defenderStats = GameManager.Instance.GetEmpireTotalStats(target.movement.empireIndex);
+        EmpireStats attackerStats =
+            GameManager.Instance
+            .GetEmpireTotalStats(
+                movement.empireIndex
+            );
 
-        float damage = baseDamage;
+        EmpireStats defenderStats =
+            GameManager.Instance
+            .GetEmpireTotalStats(
+                target.movement.empireIndex
+            );
 
-        //aplicar power
-        damage *= attackerStats.power;
+        float damage =
+            baseDamage;
 
-        //aplicar defense
-        float defenseFactor = 1f / Mathf.Max(0.1f, defenderStats.defense);
-        damage *= defenseFactor;
+        // Power
+        damage *=
+            attackerStats.power;
 
-        //morale como multiplicador global
-        damage *= attackerStats.GetGlobalMultiplier();
+        // Defense
+        float defenseFactor =
+            1f /
+            Mathf.Max(
+                0.1f,
+                defenderStats.defense
+            );
+
+        damage *=
+            defenseFactor;
+
+        // Morale
+        damage *=
+            attackerStats
+            .GetGlobalMultiplier();
+
+        // Habilidad de la nave
+        if (ability != null)
+        {
+            damage *=
+                ability.GetDamageMultiplier();
+        }
 
         return damage;
     }
 
     // ================= DAMAGE =================
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(
+        float amount
+    )
     {
-        currentHealth -= amount;
+        // Habilidad de evasión
+        if (ability != null &&
+            ability.TryEvadeDamage(
+                amount))
+        {
+            return;
+        }
+
+        currentHealth -=
+            amount;
 
         if (currentHealth <= 0f)
         {
@@ -86,7 +146,7 @@ public class ShipCombat : MonoBehaviour
         }
     }
 
-
+    // ================= DEATH =================
 
     void Die()
     {
@@ -97,10 +157,14 @@ public class ShipCombat : MonoBehaviour
             );
         }
 
-        Instantiate(
-    explosionPrefab,
-    transform.position,
-    Quaternion.identity);
+        if (explosionPrefab != null)
+        {
+            Instantiate(
+                explosionPrefab,
+                transform.position,
+                Quaternion.identity
+            );
+        }
 
         Destroy(gameObject);
     }
@@ -109,7 +173,10 @@ public class ShipCombat : MonoBehaviour
 
     public float GetHealthPercent()
     {
-        if (baseHealth <= 0) return 0f;
-        return currentHealth / baseHealth;
+        if (baseHealth <= 0)
+            return 0f;
+
+        return currentHealth /
+               baseHealth;
     }
 }

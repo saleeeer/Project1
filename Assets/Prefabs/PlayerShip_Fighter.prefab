@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4314488078900066055}
   - component: {fileID: -5803167263839452437}
   - component: {fileID: -4548499013200262932}
-  - component: {fileID: -2876925718588709078}
+  - component: {fileID: -5844843072821870488}
+  - component: {fileID: -2837111918783582847}
   m_Layer: 0
   m_Name: PlayerShip_Fighter
   m_TagString: Untagged
@@ -127,10 +128,23 @@ MonoBehaviour:
   baseHealth: 20
   attackRate: 1
   attackRange: 90
-  bulletPrefab: {fileID: -28086653702286906, guid: 9d1485c2d151dfc429c7686bb4933e63, type: 3}
-  firePoint: {fileID: 8697048683274694585}
   explosionPrefab: {fileID: 630356623249911478, guid: 91e0888fed94995498546e71db88ae99, type: 3}
---- !u!95 &-2876925718588709078
+--- !u!114 &-5844843072821870488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4912607222141858788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77355baf8cb678b49893cd3ddd31db36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedMultiplier: 1.35
+  attackRateMultiplier: 1.2
+  damageMultiplier: 1.15
+--- !u!95 &-2837111918783582847
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -140,7 +154,7 @@ Animator:
   m_GameObject: {fileID: 4912607222141858788}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 167d1fc32b5a71844a3dc114f7a75f17, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

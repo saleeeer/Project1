@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: -2989238954956042805}
   - component: {fileID: -2453881214356160206}
   - component: {fileID: -7222383176043160371}
+  - component: {fileID: 4374854847454113367}
   m_Layer: 0
   m_Name: EnemyShip_Fighter
   m_TagString: Untagged
@@ -171,6 +172,17 @@ MonoBehaviour:
   baseHealth: 20
   attackRate: 1
   attackRange: 90
-  bulletPrefab: {fileID: -28086653702286906, guid: 9d1485c2d151dfc429c7686bb4933e63, type: 3}
-  firePoint: {fileID: 4357146266728668981}
-  explosionPrefab: {fileID: 630356623249911478, guid: 91e0888fed94995498546e71db88ae99, type: 3}
+  explosionPrefab: {fileID: 0}
+--- !u!114 &4374854847454113367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8197212717312797383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c00954ecc5a650a44b7618d15151a570, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  evadeChance: 0.143

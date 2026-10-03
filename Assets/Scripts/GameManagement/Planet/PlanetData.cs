@@ -207,6 +207,14 @@ public class PlanetData : MonoBehaviour
             if (units < maxUnits)
                 units++;
 
+            Debug.Log(
+    "PRODUCCIÓN | Imperio: " +
+    ownerEmpireIndex +
+    " | Planeta: " +
+    name +
+    " | Units: " +
+    units);
+
             if (GameManager.Instance == null)
                 continue;
 
@@ -470,9 +478,7 @@ public class PlanetData : MonoBehaviour
 
         ApplyColor(ship);
 
-        gm.RegisterShip(
-            ownerEmpireIndex
-        );
+       
     }
 
     // ================= COLOR =================
@@ -702,9 +708,6 @@ public class PlanetData : MonoBehaviour
 
         ApplyColor(ship);
 
-        gm.RegisterShip(
-            ownerEmpireIndex
-        );
 
         Debug.Log(
             "Spawn manual de " +
