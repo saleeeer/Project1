@@ -312,7 +312,7 @@ public class ShipMovement : MonoBehaviour
         if (currentTarget != null)
         {
             currentSpeed *=
-                combatSpeedMultiplier;
+         combat.GetExternalSpeedMultiplier();
         }
 
         if (ability != null)
@@ -411,7 +411,7 @@ public class ShipMovement : MonoBehaviour
         if (currentTarget != null)
         {
             currentOrbitSpeed *=
-                combatSpeedMultiplier;
+        combat.GetExternalSpeedMultiplier();
         }
 
         orbitAngle +=

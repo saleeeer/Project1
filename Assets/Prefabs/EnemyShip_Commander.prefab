@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -2989238954956042805}
   - component: {fileID: -2453881214356160206}
   - component: {fileID: -7222383176043160371}
+  - component: {fileID: -1184345414969474726}
   m_Layer: 0
   m_Name: EnemyShip_Commander
   m_TagString: Untagged
@@ -143,6 +144,20 @@ MonoBehaviour:
   bulletPrefab: {fileID: -28086653702286906, guid: 9d1485c2d151dfc429c7686bb4933e63, type: 3}
   firePoint: {fileID: 978503715216705597}
   explosionPrefab: {fileID: 630356623249911478, guid: 91e0888fed94995498546e71db88ae99, type: 3}
+--- !u!114 &-1184345414969474726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8197212717312797383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2e69fb2094bcf43857c1fe48016936, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shieldRadius: 6
+  incomingDamageMultiplier: 0.65
 --- !u!1 &8786595284511393644
 GameObject:
   m_ObjectHideFlags: 0

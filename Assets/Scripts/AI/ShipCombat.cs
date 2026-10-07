@@ -8,13 +8,22 @@ public class ShipCombat : MonoBehaviour
     public float attackRate = 1f;
     public float attackRange = 2f;
 
+    [Header("Bullet")]
+    public Bullet bulletPrefab;
+    public Transform firePoint;
+
+    [Header("Death")]
+    public GameObject explosionPrefab;
+
     float currentHealth;
     float lastAttackTime;
 
-    public GameObject explosionPrefab;
-
     ShipMovement movement;
     ShipAbility ability;
+
+    float empEndTime;
+    float empSpeedMultiplier = 1f;
+    float empAttackRateMultiplier = 1f;
 
     void Awake()
     {
@@ -31,8 +40,7 @@ public class ShipCombat : MonoBehaviour
     // ================= COMBAT =================
 
     public void TryAttack(
-        ShipCombat target
-    )
+        ShipCombat target)
     {
         if (target == null)
             return;
@@ -46,15 +54,20 @@ public class ShipCombat : MonoBehaviour
                 ability.GetAttackRateMultiplier();
         }
 
+        effectiveAttackRate *=
+            GetAllyAttackRateMultiplier();
+
+        effectiveAttackRate *=
+            GetExternalAttackRateMultiplier();
+
         if (effectiveAttackRate <= 0f)
             return;
 
-        float attackCooldown =
+        float cooldown =
             1f / effectiveAttackRate;
 
         if (Time.time <
-            lastAttackTime +
-            attackCooldown)
+            lastAttackTime + cooldown)
         {
             return;
         }
@@ -65,12 +78,52 @@ public class ShipCombat : MonoBehaviour
         float damage =
             CalculateDamage(target);
 
-        target.TakeDamage(damage);
+        // Habilidad especial.
+        if (ability != null &&
+            ability.TrySpecialAttack(
+                target,
+                damage))
+        {
+            return;
+        }
+
+        SpawnBullet(
+            target,
+            damage
+        );
+    }
+
+    public void SpawnBullet(
+        ShipCombat target,
+        float damage)
+    {
+        if (bulletPrefab == null ||
+            target == null)
+        {
+            return;
+        }
+
+        Transform spawnPoint =
+            firePoint != null
+            ? firePoint
+            : transform;
+
+        Bullet bullet =
+            Instantiate(
+                bulletPrefab,
+                spawnPoint.position,
+                spawnPoint.rotation
+            );
+
+        bullet.Init(
+            target.transform,
+            damage,
+            this
+        );
     }
 
     float CalculateDamage(
-        ShipCombat target
-    )
+        ShipCombat target)
     {
         if (movement == null ||
             GameManager.Instance == null)
@@ -93,11 +146,9 @@ public class ShipCombat : MonoBehaviour
         float damage =
             baseDamage;
 
-        // Power
         damage *=
             attackerStats.power;
 
-        // Defense
         float defenseFactor =
             1f /
             Mathf.Max(
@@ -108,17 +159,17 @@ public class ShipCombat : MonoBehaviour
         damage *=
             defenseFactor;
 
-        // Morale
         damage *=
-            attackerStats
-            .GetGlobalMultiplier();
+            attackerStats.GetGlobalMultiplier();
 
-        // Habilidad de la nave
         if (ability != null)
         {
             damage *=
                 ability.GetDamageMultiplier();
         }
+
+        damage *=
+            GetAllyDamageMultiplier();
 
         return damage;
     }
@@ -126,16 +177,16 @@ public class ShipCombat : MonoBehaviour
     // ================= DAMAGE =================
 
     public void TakeDamage(
-        float amount
-    )
+        float amount)
     {
-        // Habilidad de evasión
         if (ability != null &&
-            ability.TryEvadeDamage(
-                amount))
+            ability.TryEvadeDamage(amount))
         {
             return;
         }
+
+        amount *=
+            GetIncomingDamageMultiplier();
 
         currentHealth -=
             amount;
@@ -144,6 +195,195 @@ public class ShipCombat : MonoBehaviour
         {
             Die();
         }
+    }
+
+    // ================= ALLY BUFFS =================
+
+    float GetAllyDamageMultiplier()
+    {
+        if (GameManager.Instance == null)
+            return 1f;
+
+        float bestMultiplier = 1f;
+
+        foreach (
+            ShipMovement ship
+            in GameManager.Instance.allShips)
+        {
+            if (ship == null ||
+                ship == movement)
+            {
+                continue;
+            }
+
+            if (ship.empireIndex !=
+                movement.empireIndex)
+            {
+                continue;
+            }
+
+            ShipAbility allyAbility =
+                ship.GetComponent<ShipAbility>();
+
+            if (allyAbility == null)
+                continue;
+
+            float multiplier =
+                allyAbility
+                .GetAllyDamageMultiplier(
+                    transform.position
+                );
+
+            bestMultiplier =
+                Mathf.Max(
+                    bestMultiplier,
+                    multiplier
+                );
+        }
+
+        return bestMultiplier;
+    }
+
+    float GetAllyAttackRateMultiplier()
+    {
+        if (GameManager.Instance == null)
+            return 1f;
+
+        float bestMultiplier = 1f;
+
+        foreach (
+            ShipMovement ship
+            in GameManager.Instance.allShips)
+        {
+            if (ship == null ||
+                ship == movement)
+            {
+                continue;
+            }
+
+            if (ship.empireIndex !=
+                movement.empireIndex)
+            {
+                continue;
+            }
+
+            ShipAbility allyAbility =
+                ship.GetComponent<ShipAbility>();
+
+            if (allyAbility == null)
+                continue;
+
+            float multiplier =
+                allyAbility
+                .GetAllyAttackRateMultiplier(
+                    transform.position
+                );
+
+            bestMultiplier =
+                Mathf.Max(
+                    bestMultiplier,
+                    multiplier
+                );
+        }
+
+        return bestMultiplier;
+    }
+
+    float GetIncomingDamageMultiplier()
+    {
+        if (GameManager.Instance == null)
+            return 1f;
+
+        float bestMultiplier = 1f;
+
+        foreach (
+            ShipMovement ship
+            in GameManager.Instance.allShips)
+        {
+            if (ship == null ||
+                ship == movement)
+            {
+                continue;
+            }
+
+            if (ship.empireIndex !=
+                movement.empireIndex)
+            {
+                continue;
+            }
+
+            ShipAbility allyAbility =
+                ship.GetComponent<ShipAbility>();
+
+            if (allyAbility == null)
+                continue;
+
+            float multiplier =
+                allyAbility
+                .GetIncomingDamageMultiplier(
+                    transform.position
+                );
+
+            bestMultiplier =
+                Mathf.Min(
+                    bestMultiplier,
+                    multiplier
+                );
+        }
+
+        return bestMultiplier;
+    }
+
+    // ================= EMP =================
+
+    public void ApplyEMP(
+        float duration,
+        float speedMultiplier,
+        float attackRateMultiplier)
+    {
+        empEndTime =
+            Mathf.Max(
+                empEndTime,
+                Time.time + duration
+            );
+
+        empSpeedMultiplier =
+            Mathf.Min(
+                empSpeedMultiplier,
+                speedMultiplier
+            );
+
+        empAttackRateMultiplier =
+            Mathf.Min(
+                empAttackRateMultiplier,
+                attackRateMultiplier
+            );
+    }
+
+    public float GetExternalSpeedMultiplier()
+    {
+        if (Time.time >= empEndTime)
+        {
+            empSpeedMultiplier = 1f;
+            empAttackRateMultiplier = 1f;
+
+            return 1f;
+        }
+
+        return empSpeedMultiplier;
+    }
+
+    float GetExternalAttackRateMultiplier()
+    {
+        if (Time.time >= empEndTime)
+        {
+            empSpeedMultiplier = 1f;
+            empAttackRateMultiplier = 1f;
+
+            return 1f;
+        }
+
+        return empAttackRateMultiplier;
     }
 
     // ================= DEATH =================

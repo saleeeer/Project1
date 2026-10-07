@@ -172,7 +172,9 @@ MonoBehaviour:
   baseHealth: 20
   attackRate: 1
   attackRange: 90
-  explosionPrefab: {fileID: 0}
+  bulletPrefab: {fileID: -28086653702286906, guid: 9d1485c2d151dfc429c7686bb4933e63, type: 3}
+  firePoint: {fileID: 4357146266728668981}
+  explosionPrefab: {fileID: 630356623249911478, guid: 91e0888fed94995498546e71db88ae99, type: 3}
 --- !u!114 &4374854847454113367
 MonoBehaviour:
   m_ObjectHideFlags: 0

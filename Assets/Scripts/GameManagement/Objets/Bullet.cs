@@ -6,11 +6,21 @@ public class Bullet : MonoBehaviour
     public float damage = 5f;
 
     Transform target;
+    ShipCombat shooter;
 
-    public void Init(Transform targetTransform, float dmg)
+    public void Init(
+        Transform targetTransform,
+        float dmg,
+        ShipCombat shooterCombat)
     {
-        target = targetTransform;
-        damage = dmg;
+        target =
+            targetTransform;
+
+        damage =
+            dmg;
+
+        shooter =
+            shooterCombat;
     }
 
     void Update()
@@ -21,18 +31,40 @@ public class Bullet : MonoBehaviour
             return;
         }
 
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            target.position,
-            speed * Time.deltaTime
-        );
+        transform.position =
+            Vector3.MoveTowards(
+                transform.position,
+                target.position,
+                speed *
+                Time.deltaTime
+            );
 
-        if ((transform.position - target.position).sqrMagnitude < 0.01f)
+        if ((transform.position -
+             target.position).sqrMagnitude <
+            0.01f)
         {
-            ShipCombat combat = target.GetComponent<ShipCombat>();
+            ShipCombat combat =
+                target.GetComponent<ShipCombat>();
 
             if (combat != null)
-                combat.TakeDamage(damage);
+            {
+                ShipAbility shooterAbility =
+                    shooter != null
+                    ? shooter.GetComponent<ShipAbility>()
+                    : null;
+
+                if (shooterAbility != null)
+                {
+                    shooterAbility.OnBulletHit(
+                        combat,
+                        damage
+                    );
+                }
+
+                combat.TakeDamage(
+                    damage
+                );
+            }
 
             Destroy(gameObject);
         }
