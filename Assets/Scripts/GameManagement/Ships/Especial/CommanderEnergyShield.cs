@@ -8,8 +8,22 @@ public class CommanderEnergyShield : ShipAbility
     [Range(0.1f, 1f)]
     public float incomingDamageMultiplier = 0.65f;
 
+    AbilityFeedback feedback;
+
+    void Awake()
+    {
+        feedback =
+            GetComponent<AbilityFeedback>();
+
+        if (feedback != null)
+        {
+            feedback.SetPersistent(true);
+        }
+    }
+
     public override float GetIncomingDamageMultiplier(
-        Vector3 allyPosition)
+        Vector3 allyPosition
+    )
     {
         float distance =
             Vector2.Distance(

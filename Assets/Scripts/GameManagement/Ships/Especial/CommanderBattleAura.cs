@@ -8,8 +8,22 @@ public class CommanderBattleAura : ShipAbility
     public float damageMultiplier = 1.20f;
     public float attackRateMultiplier = 1.15f;
 
+    AbilityFeedback feedback;
+
+    void Awake()
+    {
+        feedback =
+            GetComponent<AbilityFeedback>();
+
+        if (feedback != null)
+        {
+            feedback.SetPersistent(true);
+        }
+    }
+
     public override float GetAllyDamageMultiplier(
-        Vector3 allyPosition)
+        Vector3 allyPosition
+    )
     {
         float distance =
             Vector2.Distance(
@@ -24,7 +38,8 @@ public class CommanderBattleAura : ShipAbility
     }
 
     public override float GetAllyAttackRateMultiplier(
-        Vector3 allyPosition)
+        Vector3 allyPosition
+    )
     {
         float distance =
             Vector2.Distance(

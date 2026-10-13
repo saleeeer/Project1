@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: -2453881214356160206}
   - component: {fileID: -7222383176043160371}
   - component: {fileID: 4374854847454113367}
+  - component: {fileID: -9121264542758312376}
   m_Layer: 0
   m_Name: EnemyShip_Fighter
   m_TagString: Untagged
@@ -188,3 +189,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   evadeChance: 0.143
+--- !u!114 &-9121264542758312376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8197212717312797383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4142ea2673af8334abd41fa1496853c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oneShotPrefab: {fileID: 0}
+  persistentPrefab: {fileID: 0}
+  effectAnchor: {fileID: 0}

@@ -7,6 +7,8 @@ public class FighterOverdrive : ShipAbility
     public float attackRateMultiplier = 1.20f;
     public float damageMultiplier = 1.15f;
 
+    AbilityFeedback feedback;
+
     ShipMovement movement;
 
     bool wasInCombat = false;
@@ -14,6 +16,7 @@ public class FighterOverdrive : ShipAbility
     void Awake()
     {
         movement = GetComponent<ShipMovement>();
+        feedback = GetComponent<AbilityFeedback>();
     }
 
     void Update()
@@ -23,6 +26,11 @@ public class FighterOverdrive : ShipAbility
 
         bool inCombat =
             movement.HasCombatTarget;
+
+        if (feedback != null)
+        {
+            feedback.SetPersistent(inCombat);
+        }
 
         if (inCombat && !wasInCombat)
         {

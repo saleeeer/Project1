@@ -10,6 +10,14 @@ public class BomberMissileBarrage : ShipAbility
 
     public float attackRateMultiplier = 0.8f;
 
+    AbilityFeedback feedback;
+
+    void Awake()
+    {
+        feedback =
+            GetComponent<AbilityFeedback>();
+    }
+
     public override float GetAttackRateMultiplier()
     {
         return attackRateMultiplier;
@@ -17,32 +25,34 @@ public class BomberMissileBarrage : ShipAbility
 
     public override bool TrySpecialAttack(
         ShipCombat target,
-        float damage)
+        float damage
+    )
     {
         if (target == null)
             return false;
 
-        for (int i = 0; i < missileCount; i++)
+        if (feedback != null)
         {
-            combatFallback(target, damage * damagePerMissile);
+            feedback.PlayOneShot();
+        }
+
+        for (int i = 0;
+            i < missileCount;
+            i++)
+        {
+            ShipCombat combat =
+                GetComponent<ShipCombat>();
+
+            if (combat != null)
+            {
+                combat.SpawnBullet(
+                    target,
+                    damage *
+                    damagePerMissile
+                );
+            }
         }
 
         return true;
-    }
-
-    void combatFallback(
-        ShipCombat target,
-        float damage)
-    {
-        ShipCombat combat =
-            GetComponent<ShipCombat>();
-
-        if (combat != null)
-        {
-            combat.SpawnBullet(
-                target,
-                damage
-            );
-        }
     }
 }
