@@ -174,7 +174,7 @@ public class TutorialManager : MonoBehaviour
                         TutorialStep.CaptureNeutral,
                         "¡Orden de movimiento recibida!\n\n" +
                         "Tus naves viajaran al planeta neutral. " +
-                        "Cuando lleguen, comenzarán a capturarlo. " +
+                        "Cuando lleguen, comenzaran a capturarlo. " +
                         "Espera a que el planeta pase a ser tuyo.",
                         false
                     );
@@ -198,11 +198,11 @@ public class TutorialManager : MonoBehaviour
                 {
                     ShowStep(
                         TutorialStep.Combat,
-                        "¡La flota está en camino!\n\n" +
+                        "¡La flota esta en camino!\n\n" +
                         "Cuando las naves enemigas estén dentro " +
                         "del rango de ataque, comenzarán a dispararse " +
-                        "automáticamente.\n\n" +
-                        "Destruí la nave defensora del otro imperio. " +
+                        "automaticamente.\n\n" +
+                        "Destru la nave defensora del otro imperio. " +
                         "Si necesitás refuerzos, podés construir más " +
                         "naves y volver a dar la orden de ataque.",
                         false
