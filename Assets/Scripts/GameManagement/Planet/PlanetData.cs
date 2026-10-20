@@ -33,6 +33,13 @@ public class PlanetData : MonoBehaviour
         new EmpireStats();
 
     SpriteRenderer sr;
+    Collider2D[] planetColliders;
+    bool[] originalColliderStates;
+
+    // Estos valores se usan para bloquear el planeta rival durante
+    // el tutorial sin desactivar el objeto ni sus demás sistemas.
+    bool isTutorialVisible = true;
+    bool interactionEnabled = true;
 
     float sendTimer;
     PlanetData lastTarget;
@@ -55,8 +62,14 @@ public class PlanetData : MonoBehaviour
         sr =
             GetComponent<SpriteRenderer>();
 
-        originalColor =
-            sr.color;
+        if (sr != null)
+            originalColor = sr.color;
+
+        planetColliders = GetComponents<Collider2D>();
+        originalColliderStates = new bool[planetColliders.Length];
+
+        for (int i = 0; i < planetColliders.Length; i++)
+            originalColliderStates[i] = planetColliders[i].enabled;
     }
 
     void Start()
@@ -95,6 +108,41 @@ public class PlanetData : MonoBehaviour
             UpdateColor();
             isSelected = false;
         }
+    }
+
+    // ================= TUTORIAL VISIBILITY =================
+
+    /// <summary>
+    /// Muestra u oculta el planeta y controla si el jugador puede
+    /// interactuar con él. No desactiva el GameObject.
+    /// </summary>
+    public void SetTutorialVisibility(bool visible, bool canInteract)
+    {
+        isTutorialVisible = visible;
+        interactionEnabled = canInteract;
+
+        if (sr != null)
+        {
+            sr.enabled = visible;
+
+            if (visible)
+                UpdateColor();
+        }
+
+        if (planetColliders == null)
+            return;
+
+        for (int i = 0; i < planetColliders.Length; i++)
+        {
+            if (planetColliders[i] != null)
+            {
+                planetColliders[i].enabled =
+                    visible && canInteract && originalColliderStates[i];
+            }
+        }
+
+        if (!visible)
+            isSelected = false;
     }
 
     // ================= TYPE =================
@@ -335,6 +383,11 @@ public class PlanetData : MonoBehaviour
         if (target == null)
             return;
 
+        // Impide enviar flotas a un planeta bloqueado por el tutorial,
+        // incluso si SendFleet se llama desde otro script.
+        if (!target.interactionEnabled || !target.isTutorialVisible)
+            return;
+
         if (units <= 0)
             return;
 
@@ -478,7 +531,7 @@ public class PlanetData : MonoBehaviour
 
         ApplyColor(ship);
 
-       
+
     }
 
     // ================= COLOR =================
@@ -509,6 +562,9 @@ public class PlanetData : MonoBehaviour
 
     void OnMouseDown()
     {
+        if (!interactionEnabled || !isTutorialVisible)
+            return;
+
         if (GameManager.Instance == null)
             return;
 

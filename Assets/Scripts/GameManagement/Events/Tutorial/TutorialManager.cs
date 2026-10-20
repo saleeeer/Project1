@@ -145,6 +145,10 @@ public class TutorialManager : MonoBehaviour
         // durante el tutorial.
         enemyPlanet.minUnitsToSend = int.MaxValue;
 
+        // Mantener oculto y bloqueado el planeta rival hasta
+        // que el jugador capture el planeta neutral.
+        enemyPlanet.SetTutorialVisibility(false, false);
+
         // El tutorial empieza sin ningún planeta seleccionado.
         gm.selectedOriginPlanet = null;
         gm.selectedPlanet = null;
@@ -275,6 +279,10 @@ public class TutorialManager : MonoBehaviour
 
             return;
         }
+
+        // El planeta rival recién aparece y se habilita cuando
+        // el tutorial llega al objetivo de ataque.
+        enemyPlanet.SetTutorialVisibility(true, true);
 
         ShowStep(
             TutorialStep.OrderAttack,

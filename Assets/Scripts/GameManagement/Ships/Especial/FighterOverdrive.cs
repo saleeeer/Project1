@@ -7,6 +7,11 @@ public class FighterOverdrive : ShipAbility
     public float attackRateMultiplier = 1.20f;
     public float damageMultiplier = 1.15f;
 
+    [Header("Sprite Feedback")]
+    public Color overdriveColor = Color.cyan;
+    [Range(0f, 1f)]
+    public float overdriveAlpha = 1f;
+
     AbilityFeedback feedback;
 
     ShipMovement movement;
@@ -27,9 +32,13 @@ public class FighterOverdrive : ShipAbility
         bool inCombat =
             movement.HasCombatTarget;
 
-        if (feedback != null)
+        if (feedback != null && inCombat != wasInCombat)
         {
-            feedback.SetPersistent(inCombat);
+            feedback.SetSpriteFeedback(
+                inCombat,
+                overdriveColor,
+                overdriveAlpha
+            );
         }
 
         if (inCombat && !wasInCombat)
