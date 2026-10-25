@@ -12,27 +12,37 @@ public class CommanderEnergyShield : ShipAbility
 
     void Awake()
     {
-        feedback =
-            GetComponent<AbilityFeedback>();
+        feedback = GetComponent<AbilityFeedback>();
+
+        Debug.Log(
+            "[ESCUDO] " + name +
+            " | AbilityFeedback encontrado: " +
+            (feedback != null)
+        );
 
         if (feedback != null)
         {
             feedback.SetPersistent(true);
+            Debug.Log("[ESCUDO] Activando feedback persistente");
         }
     }
 
-    public override float GetIncomingDamageMultiplier(
-        Vector3 allyPosition
-    )
+    public override float GetIncomingDamageMultiplier(Vector3 allyPosition)
     {
-        float distance =
-            Vector2.Distance(
-                transform.position,
-                allyPosition
-            );
+        float distance = Vector2.Distance(transform.position, allyPosition);
 
         if (distance <= shieldRadius)
+        {
+            Debug.Log(
+                "[ESCUDO] " + name +
+                " protege a un aliado. Distancia: " +
+                distance.ToString("F2") +
+                " | Multiplicador: " +
+                incomingDamageMultiplier
+            );
+
             return incomingDamageMultiplier;
+        }
 
         return 1f;
     }

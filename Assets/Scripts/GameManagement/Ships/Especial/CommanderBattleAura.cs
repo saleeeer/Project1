@@ -37,18 +37,22 @@ public class CommanderBattleAura : ShipAbility
         return 1f;
     }
 
-    public override float GetAllyAttackRateMultiplier(
-        Vector3 allyPosition
-    )
+    public override float GetAllyAttackRateMultiplier(Vector3 allyPosition)
     {
-        float distance =
-            Vector2.Distance(
-                transform.position,
-                allyPosition
-            );
+        float distance = Vector2.Distance(transform.position, allyPosition);
 
         if (distance <= auraRadius)
+        {
+            Debug.Log(
+                "[AURA] " + name +
+                " aumenta la velocidad de ataque de un aliado. Distancia: " +
+                distance.ToString("F2") +
+                " | Multiplicador: " +
+                attackRateMultiplier
+            );
+
             return attackRateMultiplier;
+        }
 
         return 1f;
     }

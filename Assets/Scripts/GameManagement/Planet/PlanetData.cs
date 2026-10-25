@@ -201,12 +201,6 @@ public class PlanetData : MonoBehaviour
         ownerEmpireIndex = index;
 
         UpdateColor();
-
-        Debug.Log(
-            name +
-            " ahora pertenece al imperio " +
-            index
-        );
     }
 
     void UpdateColor()
@@ -255,14 +249,6 @@ public class PlanetData : MonoBehaviour
             if (units < maxUnits)
                 units++;
 
-            Debug.Log(
-    "PRODUCCIÓN | Imperio: " +
-    ownerEmpireIndex +
-    " | Planeta: " +
-    name +
-    " | Units: " +
-    units);
-
             if (GameManager.Instance == null)
                 continue;
 
@@ -289,15 +275,6 @@ public class PlanetData : MonoBehaviour
 
     void TrySendFleet()
     {
-        Debug.Log(
-            "TrySendFleet -> " +
-            name +
-            " Owner=" +
-            ownerEmpireIndex +
-            " Player=" +
-            GameManager.Instance.playerEmpireIndex
-        );
-
         if (units < minUnitsToSend)
             return;
 
@@ -427,13 +404,7 @@ public class PlanetData : MonoBehaviour
         PlanetData target
     )
     {
-        Debug.Log(
-            "SPAWN IA -> " +
-            name +
-            " Empire=" +
-            ownerEmpireIndex
-        );
-
+       
         GameManager gm =
             GameManager.Instance;
 

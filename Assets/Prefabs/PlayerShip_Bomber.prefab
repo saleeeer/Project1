@@ -137,7 +137,7 @@ MonoBehaviour:
   empireIndex: 0
   orbitDistance: 20
   orbitSpeed: 50
-  captureTime: 3
+  captureTime: 1
   currentPlanet: {fileID: 0}
   targetPlanet: {fileID: 0}
   path: []
@@ -154,8 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2f2199ca684ae4a83ea21b929b7902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseDamage: 5
-  baseHealth: 20
+  baseDamage: 20
+  baseHealth: 400
   attackRate: 1
   attackRange: 80
   bulletPrefab: {fileID: -28086653702286906, guid: 9d1485c2d151dfc429c7686bb4933e63, type: 3}

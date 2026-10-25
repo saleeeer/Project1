@@ -51,10 +51,21 @@ public class AbilityFeedback : MonoBehaviour
 
     public void SetPersistent(bool active)
     {
+        Debug.Log("[FEEDBACK] SetPersistent llamado: " + active);
+
         if (persistentInstance == null)
+        {
+            Debug.LogWarning("[FEEDBACK] persistentInstance es NULL");
             return;
+        }
 
         persistentInstance.SetActive(active);
+
+        Debug.Log(
+            "[FEEDBACK] Estado final: " +
+            persistentInstance.activeSelf +
+            " | Objeto: " + persistentInstance.name
+        );
     }
 
     public void PlayOneShot()
