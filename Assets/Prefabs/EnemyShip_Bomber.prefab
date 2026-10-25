@@ -190,3 +190,4 @@ MonoBehaviour:
   duration: 3
   speedMultiplier: 0.5
   attackRateMultiplier: 0.5
+  empImpactPrefab: {fileID: 3384161045260824682, guid: b1fff5768c41e1d42a15e1391685e722, type: 3}

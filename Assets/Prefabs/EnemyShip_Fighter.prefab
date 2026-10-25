@@ -188,7 +188,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c00954ecc5a650a44b7618d15151a570, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  evadeChance: 0.143
+  evadeChance: 1
+  evadeColor: {r: 0.9696431, g: 1, b: 0, a: 1}
+  evadeAlpha: 0.698
+  feedbackDuration: 0.25
 --- !u!114 &-9121264542758312376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,3 +207,4 @@ MonoBehaviour:
   oneShotPrefab: {fileID: 0}
   persistentPrefab: {fileID: 0}
   effectAnchor: {fileID: 0}
+  spriteRenderer: {fileID: 0}

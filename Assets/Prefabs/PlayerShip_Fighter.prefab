@@ -145,6 +145,8 @@ MonoBehaviour:
   speedMultiplier: 1.35
   attackRateMultiplier: 1.2
   damageMultiplier: 1.15
+  overdriveColor: {r: 0, g: 0.01790699, b: 0.6603774, a: 1}
+  overdriveAlpha: 1
 --- !u!1 &7335127511500774236
 GameObject:
   m_ObjectHideFlags: 0

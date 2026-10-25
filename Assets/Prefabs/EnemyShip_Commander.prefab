@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -2453881214356160206}
   - component: {fileID: -7222383176043160371}
   - component: {fileID: -1184345414969474726}
+  - component: {fileID: -3223249053630127986}
   m_Layer: 0
   m_Name: EnemyShip_Commander
   m_TagString: Untagged
@@ -158,6 +159,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shieldRadius: 6
   incomingDamageMultiplier: 0.65
+--- !u!114 &-3223249053630127986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8197212717312797383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4142ea2673af8334abd41fa1496853c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oneShotPrefab: {fileID: 0}
+  persistentPrefab: {fileID: 8260544273311851502, guid: cab7d025e148c82498e4edc34916004c, type: 3}
+  effectAnchor: {fileID: 5022218383635143687}
+  spriteRenderer: {fileID: 0}
 --- !u!1 &8786595284511393644
 GameObject:
   m_ObjectHideFlags: 0
