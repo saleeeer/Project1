@@ -39,59 +39,49 @@ public class ShipCombat : MonoBehaviour
 
     // ================= COMBAT =================
 
-    public void TryAttack(
-        ShipCombat target)
+
+    public void TryAttack(ShipCombat target)
     {
         if (target == null)
             return;
 
-        float effectiveAttackRate =
-            attackRate;
+        float rate = attackRate;
 
         if (ability != null)
-        {
-            effectiveAttackRate *=
-                ability.GetAttackRateMultiplier();
-        }
+            rate *= ability.GetAttackRateMultiplier();
 
-        effectiveAttackRate *=
-            GetAllyAttackRateMultiplier();
+        rate *= GetAllyAttackRateMultiplier();
+        rate *= GetExternalAttackRateMultiplier();
 
-        effectiveAttackRate *=
-            GetExternalAttackRateMultiplier();
+        // Evitar divisiones por cero o cadencias negativas.
+        rate = Mathf.Max(0.01f, rate);
 
-        if (effectiveAttackRate <= 0f)
+        // Esperar el intervalo de ataque correspondiente.
+        if (Time.time - lastAttackTime < 1f / rate)
             return;
 
-        float cooldown =
-            1f / effectiveAttackRate;
+        lastAttackTime = Time.time;
 
-        if (Time.time <
-            lastAttackTime + cooldown)
-        {
-            return;
-        }
+        float damage = CalculateDamage(target);
 
-        lastAttackTime =
-            Time.time;
-
-        float damage =
-            CalculateDamage(target);
-
-        // Habilidad especial.
+        // Mantener las habilidades de ataque especial existentes.
         if (ability != null &&
-            ability.TrySpecialAttack(
-                target,
-                damage))
+            ability.TrySpecialAttack(target, damage))
         {
             return;
         }
 
-        SpawnBullet(
-            target,
-            damage
-        );
+        // Ataque normal: un solo proyectil.
+        SpawnBullet(target, damage);
+
+        // El Bomber puede activar aleatoriamente su cadencia rápida.
+        BomberMissileBarrage bomberAbility =
+            GetComponent<BomberMissileBarrage>();
+
+        if (bomberAbility != null)
+            bomberAbility.TryActivateRapidFire();
     }
+
 
     public void SpawnBullet(
         ShipCombat target,

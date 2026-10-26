@@ -13,18 +13,13 @@ public class CommanderEnergyShield : ShipAbility
     void Awake()
     {
         feedback = GetComponent<AbilityFeedback>();
+        Debug.Log("[SHIELD] AbilityFeedback encontrado: " + (feedback != null));
+    }
 
-        Debug.Log(
-            "[ESCUDO] " + name +
-            " | AbilityFeedback encontrado: " +
-            (feedback != null)
-        );
-
+    void Start()
+    {
         if (feedback != null)
-        {
             feedback.SetPersistent(true);
-            Debug.Log("[ESCUDO] Activando feedback persistente");
-        }
     }
 
     public override float GetIncomingDamageMultiplier(Vector3 allyPosition)

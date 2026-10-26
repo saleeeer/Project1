@@ -12,13 +12,14 @@ public class CommanderBattleAura : ShipAbility
 
     void Awake()
     {
-        feedback =
-            GetComponent<AbilityFeedback>();
+        feedback = GetComponent<AbilityFeedback>();
+        Debug.Log("[AURA] AbilityFeedback encontrado: " + (feedback != null));
+    }
 
+    void Start()
+    {
         if (feedback != null)
-        {
             feedback.SetPersistent(true);
-        }
     }
 
     public override float GetAllyDamageMultiplier(

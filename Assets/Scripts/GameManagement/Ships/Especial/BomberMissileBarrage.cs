@@ -1,58 +1,58 @@
+
 using UnityEngine;
+using System.Collections;
 
 public class BomberMissileBarrage : ShipAbility
 {
-    [Header("Missile Barrage")]
-    public int missileCount = 3;
+    [Header("Rapid Fire")]
+    [Range(0f, 1f)]
+    public float activationChance = 0.25f;
 
-    [Range(0.1f, 1f)]
-    public float damagePerMissile = 0.45f;
+    public float attackRateMultiplier = 1.5f;
+    public float duration = 2f;
 
-    public float attackRateMultiplier = 0.8f;
-
-    AbilityFeedback feedback;
+    private bool rapidFireActive = false;
+    private Coroutine rapidFireCoroutine;
+    private AbilityFeedback feedback;
 
     void Awake()
     {
-        feedback =
-            GetComponent<AbilityFeedback>();
+        feedback = GetComponent<AbilityFeedback>();
     }
 
     public override float GetAttackRateMultiplier()
     {
-        return attackRateMultiplier;
+        return rapidFireActive ? attackRateMultiplier : 1f;
     }
 
-    public override bool TrySpecialAttack(
-        ShipCombat target,
-        float damage
-    )
+    public override void OnBulletHit(ShipCombat target, float damage)
     {
-        if (target == null)
+        // No uso el impacto para activar la habilidad.
+        // La activación se decide al iniciar cada ataque.
+    }
+
+    public bool TryActivateRapidFire()
+    {
+        if (rapidFireActive || Random.value > activationChance)
             return false;
 
-        if (feedback != null)
-        {
-            feedback.PlayOneShot();
-        }
+        if (rapidFireCoroutine != null)
+            StopCoroutine(rapidFireCoroutine);
 
-        for (int i = 0;
-            i < missileCount;
-            i++)
-        {
-            ShipCombat combat =
-                GetComponent<ShipCombat>();
-
-            if (combat != null)
-            {
-                combat.SpawnBullet(
-                    target,
-                    damage *
-                    damagePerMissile
-                );
-            }
-        }
-
+        rapidFireCoroutine = StartCoroutine(RapidFireRoutine());
         return true;
+    }
+
+    private IEnumerator RapidFireRoutine()
+    {
+        rapidFireActive = true;
+
+        if (feedback != null)
+            feedback.PlayOneShot();
+
+        yield return new WaitForSeconds(duration);
+
+        rapidFireActive = false;
+        rapidFireCoroutine = null;
     }
 }
