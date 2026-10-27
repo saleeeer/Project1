@@ -1,10 +1,15 @@
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class VictoryManager : MonoBehaviour
 {
     public GameObject victoryPanel;
     public GameObject defeatPanel;
+
+    [Header("Pop Out Animation")]
+    public float popDuration = 0.45f;
 
     bool gameEnded = false;
 
@@ -14,31 +19,29 @@ public class VictoryManager : MonoBehaviour
         defeatPanel.SetActive(false);
     }
 
+
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            Debug.Log("Se presionó V: VictoryManager recibió la tecla");
+            Win();
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Debug.Log("Se presionó D: VictoryManager recibió la tecla");
+            Lose();
+            return;
+        }
+
         if (gameEnded)
             return;
 
-        // ================= TEST =================
-
-#if UNITY_EDITOR
-if (Input.GetKeyDown(KeyCode.V))
-{
-    Win();
-    return;
-}
-
-if (Input.GetKeyDown(KeyCode.D))
-{
-    Lose();
-    return;
-}
-#endif
-
-        // ================= NORMAL =================
-
         CheckGameState();
     }
+
 
     void CheckGameState()
     {
@@ -79,33 +82,69 @@ if (Input.GetKeyDown(KeyCode.D))
 
     void Win()
     {
+        if (gameEnded)
+            return;
+
         gameEnded = true;
 
         victoryPanel.SetActive(true);
-
         Time.timeScale = 0f;
+
+        StartCoroutine(PopOut(victoryPanel));
     }
 
     void Lose()
     {
+        if (gameEnded)
+            return;
+
         gameEnded = true;
 
         defeatPanel.SetActive(true);
-
         Time.timeScale = 0f;
+
+        StartCoroutine(PopOut(defeatPanel));
+    }
+
+    IEnumerator PopOut(GameObject panel)
+    {
+        RectTransform rect = panel.GetComponent<RectTransform>();
+
+        if (rect == null)
+            yield break;
+
+        float elapsed = 0f;
+        rect.localScale = Vector3.zero;
+
+        while (elapsed < popDuration)
+        {
+            // UnscaledDeltaTime funciona aunque el juego esté pausado.
+            elapsed += Time.unscaledDeltaTime;
+
+            float t = Mathf.Clamp01(elapsed / popDuration);
+
+            // Curva Back Out: aparece y rebota ligeramente.
+            float eased = 1f
+                + 2.70158f * Mathf.Pow(t - 1f, 3f)
+                + 1.70158f * Mathf.Pow(t - 1f, 2f);
+
+            rect.localScale = Vector3.one * eased;
+
+            yield return null;
+        }
+
+        rect.localScale = Vector3.one;
     }
 
     public void Retry()
     {
         Time.timeScale = 1f;
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void MainMenu()
     {
         Time.timeScale = 1f;
-
         SceneManager.LoadScene("Menu");
     }
 

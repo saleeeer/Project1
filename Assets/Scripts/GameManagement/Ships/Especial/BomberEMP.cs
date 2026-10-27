@@ -23,17 +23,16 @@ public class BomberEMP : ShipAbility
 
         if (empImpactPrefab != null)
         {
-            GameObject effect =
-                Instantiate(
-                    empImpactPrefab,
-                    target.transform.position,
-                    Quaternion.identity
-                );
-
-            Destroy(
-                effect,
-                3f
+            GameObject effect = Instantiate(
+                empImpactPrefab,
+                target.transform.position,
+                Quaternion.identity
             );
+
+            // El efecto acompaña a la nave impactada.
+            effect.transform.SetParent(target.transform, true);
+
+            Destroy(effect, duration);
         }
 
         target.ApplyEMP(
