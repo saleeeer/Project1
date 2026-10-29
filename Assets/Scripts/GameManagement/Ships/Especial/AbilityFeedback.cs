@@ -60,12 +60,6 @@ public class AbilityFeedback : MonoBehaviour
         }
 
         persistentInstance.SetActive(active);
-
-        Debug.Log(
-            "[FEEDBACK] Estado final: " +
-            persistentInstance.activeSelf +
-            " | Objeto: " + persistentInstance.name
-        );
     }
 
     public void PlayOneShot()

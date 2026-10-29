@@ -13,9 +13,6 @@ public class EmpireSelectionUI : MonoBehaviour
 
     void Start()
     {
-        //if (videoPanel != null)
-            //videoPanel.SetActive(false);
-
         videoPlayer.loopPointReached += OnVideoFinished;
     }
 
@@ -34,8 +31,6 @@ public class EmpireSelectionUI : MonoBehaviour
         PlayerPrefs.Save();
 
         videoPanel.SetActive(true);
-
-        //videoPlayer.Stop();
         videoPlayer.clip = transitionVideo;
         videoPlayer.Play();
     }

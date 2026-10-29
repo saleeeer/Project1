@@ -34,7 +34,6 @@ public class StoryEventManager : MonoBehaviour
             eventVideoPlayer.playOnAwake = false;
             eventVideoPlayer.isLooping = false;
 
-            // El video sigue avanzando aunque el juego esté pausado.
             eventVideoPlayer.timeUpdateMode =
                 VideoTimeUpdateMode.UnscaledGameTime;
         }
@@ -55,7 +54,6 @@ public class StoryEventManager : MonoBehaviour
 
     void Update()
     {
-        // TEST MANUAL
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (!eventRunning)
@@ -110,7 +108,6 @@ public class StoryEventManager : MonoBehaviour
     {
         eventRunning = true;
 
-        // Pausar el gameplay.
         Time.timeScale = 0f;
 
         if (eventVideoPanel == null ||
@@ -183,8 +180,6 @@ public class StoryEventManager : MonoBehaviour
 
         if (EventUIManager.Instance == null)
         {
-            Debug.LogError("No EventUIManager");
-
             Time.timeScale = 1f;
             eventRunning = false;
             return;

@@ -13,7 +13,6 @@ public class CommanderEnergyShield : ShipAbility
     void Awake()
     {
         feedback = GetComponent<AbilityFeedback>();
-        Debug.Log("[SHIELD] AbilityFeedback encontrado: " + (feedback != null));
     }
 
     void Start()
@@ -28,14 +27,6 @@ public class CommanderEnergyShield : ShipAbility
 
         if (distance <= shieldRadius)
         {
-            Debug.Log(
-                "[ESCUDO] " + name +
-                " protege a un aliado. Distancia: " +
-                distance.ToString("F2") +
-                " | Multiplicador: " +
-                incomingDamageMultiplier
-            );
-
             return incomingDamageMultiplier;
         }
 

@@ -34,8 +34,6 @@ public class GalaxyGenerator : MonoBehaviour
     void Start()
     {
         GenerateGalaxy();
-
-        // 🔥 NUEVO (CLAVE)
         AssignStartingEmpires();
     }
 
@@ -80,13 +78,8 @@ public class GalaxyGenerator : MonoBehaviour
         if (data == null)
             data = planet.AddComponent<PlanetData>();
 
-        // 🔥 tipo de planeta
         data.planetType = GetRandomPlanetType();
-
-        // 🔥 buffs
         ApplyPlanetBuffs(data);
-
-        // 🔥 sigue igual (sin dueño por ahora)
         data.SetOwner(-1);
 
         allPlanets.Add(data);
@@ -105,14 +98,12 @@ public class GalaxyGenerator : MonoBehaviour
 
         List<PlanetData> available = new List<PlanetData>(allPlanets);
 
-        // 🔵 1. jugador SIEMPRE spawnea
         PlanetData playerPlanet = GetRandomFromList(available);
         available.Remove(playerPlanet);
 
         playerPlanet.SetOwner(playerEmpire);
         playerPlanet.units = 15;
 
-        // 🔴 2. enemigos (todos los demás imperios)
         for (int i = 0; i < empireCount; i++)
         {
             if (i == playerEmpire) continue;
@@ -126,7 +117,6 @@ public class GalaxyGenerator : MonoBehaviour
             enemyPlanet.units = 12;
         }
 
-        // ⚪ 3. resto neutrales
         foreach (PlanetData p in available)
         {
             p.SetOwner(-1);
@@ -182,22 +172,19 @@ public class GalaxyGenerator : MonoBehaviour
                 break;
 
             case PlanetType.NeutralPlanet:
-                // sin bonus
                 break;
         }
 
-        Debug.Log($"🌍 {planet.name} tipo {planet.planetType} → Buff aplicado");
     }
 
     PlanetType GetRandomPlanetType()
     {
         int roll = Random.Range(0, 100);
 
-        // 60% neutrales
+      
         if (roll < 60)
             return PlanetType.NeutralPlanet;
 
-        // 40% especiales
         int special = Random.Range(0, 7);
 
         switch (special)

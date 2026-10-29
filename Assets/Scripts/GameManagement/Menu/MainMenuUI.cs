@@ -69,27 +69,12 @@ public class MainMenuUI : MonoBehaviour
 
     void OnVideoFinished(VideoPlayer vp)
     {
-        //CloseVideo();
-
         if (currentCanvas != null)
             currentCanvas.SetActive(false);
 
         if (nextCanvas != null)
             nextCanvas.SetActive(true);
     }
-
-    /*public void CloseVideo()
-    {
-        videoPlayer.Stop();
-        videoPanel.SetActive(false);
-
-        if (AudioManager.Instance != null)
-        {
-            AudioManager.Instance.PlaySFX(
-                AudioManager.Instance.buttonClick
-            );
-        }
-    }*/
 
     public void ExitGame()
     {

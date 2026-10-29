@@ -79,8 +79,7 @@ public class PlanetTargetFeedback : MonoBehaviour
             Vector3.left
         };
 
-        // La flecha original apunta hacia ABAJO.
-        // Todas apuntan hacia el centro del planeta.
+
         float[] rotations =
         {
             0f,
@@ -129,25 +128,21 @@ public class PlanetTargetFeedback : MonoBehaviour
             Vector3 newPosition =
                 originalPositions[i];
 
-            // Arriba: hacia arriba / hacia el planeta
             if (i == 0)
             {
                 newPosition.y += offset;
             }
 
-            // Derecha: hacia derecha / hacia el planeta
             else if (i == 1)
             {
                 newPosition.x += offset;
             }
 
-            // Abajo: dirección inversa
             else if (i == 2)
             {
                 newPosition.y -= offset;
             }
 
-            // Izquierda: dirección inversa
             else if (i == 3)
             {
                 newPosition.x -= offset;

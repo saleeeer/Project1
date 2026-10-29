@@ -112,10 +112,6 @@ public class PlanetData : MonoBehaviour
 
     // ================= TUTORIAL VISIBILITY =================
 
-    /// <summary>
-    /// Muestra u oculta el planeta y controla si el jugador puede
-    /// interactuar con él. No desactiva el GameObject.
-    /// </summary>
     public void SetTutorialVisibility(bool visible, bool canInteract)
     {
         isTutorialVisible = visible;
@@ -425,11 +421,6 @@ public class PlanetData : MonoBehaviour
                 ownerEmpireIndex
             );
 
-        // ============================
-        // NUEVO:
-        // Prefab según IMPERIO + TIPO
-        // ============================
-
         GameObject prefab =
             gm.GetShipPrefab(
                 type,
@@ -543,11 +534,6 @@ public class PlanetData : MonoBehaviour
             GameManager.Instance
                 .playerEmpireIndex;
 
-        // ============================
-        // CLICK IZQUIERDO
-        // Seleccionar origen
-        // ============================
-
         if (Input.GetMouseButtonDown(0))
         {
             if (ownerEmpireIndex !=
@@ -567,11 +553,6 @@ public class PlanetData : MonoBehaviour
 
             return;
         }
-
-        // ============================
-        // CLICK DERECHO
-        // Enviar flota
-        // ============================
 
         if (Input.GetMouseButtonDown(1))
         {
@@ -672,11 +653,6 @@ public class PlanetData : MonoBehaviour
 
             return;
         }
-
-        // ============================
-        // NUEVO:
-        // Prefab según imperio + tipo
-        // ============================
 
         GameObject prefab =
             gm.GetShipPrefab(

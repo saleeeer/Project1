@@ -24,14 +24,12 @@ public class VictoryManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.V))
         {
-            Debug.Log("Se presionó V: VictoryManager recibió la tecla");
             Win();
             return;
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            Debug.Log("Se presionó D: VictoryManager recibió la tecla");
             Lose();
             return;
         }
@@ -118,12 +116,10 @@ public class VictoryManager : MonoBehaviour
 
         while (elapsed < popDuration)
         {
-            // UnscaledDeltaTime funciona aunque el juego esté pausado.
             elapsed += Time.unscaledDeltaTime;
 
             float t = Mathf.Clamp01(elapsed / popDuration);
 
-            // Curva Back Out: aparece y rebota ligeramente.
             float eased = 1f
                 + 2.70158f * Mathf.Pow(t - 1f, 3f)
                 + 1.70158f * Mathf.Pow(t - 1f, 2f);

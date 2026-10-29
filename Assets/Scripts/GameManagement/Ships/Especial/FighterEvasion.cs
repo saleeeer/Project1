@@ -31,10 +31,6 @@ public class FighterEvasion : ShipAbility
 
         if (evade)
         {
-            Debug.Log(
-                name + " ESQUIVÓ un disparo"
-            );
-
             if (feedback != null)
             {
                 feedback.PlaySpriteFlash(

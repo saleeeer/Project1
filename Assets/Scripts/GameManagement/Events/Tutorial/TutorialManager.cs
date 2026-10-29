@@ -60,8 +60,6 @@ public class TutorialManager : MonoBehaviour
 
     IEnumerator InitializeTutorial()
     {
-        // Esperar a que los demás objetos de la escena
-        // completen su inicialización.
         yield return null;
 
         gm = GameManager.Instance;
@@ -99,7 +97,6 @@ public class TutorialManager : MonoBehaviour
             yield break;
         }
 
-        // El oponente siempre será el otro imperio.
         enemyEmpireIndex = playerEmpireIndex == 0 ? 1 : 0;
 
         SetupScenario();
@@ -118,12 +115,10 @@ public class TutorialManager : MonoBehaviour
 
     void SetupScenario()
     {
-        // Configurar la propiedad de los planetas.
         playerHome.SetOwner(playerEmpireIndex);
         neutralPlanet.SetOwner(-1);
         enemyPlanet.SetOwner(enemyEmpireIndex);
 
-        // Dar recursos suficientes para practicar.
         playerHome.units = Mathf.Clamp(
             startingUnits,
             0,
@@ -141,15 +136,10 @@ public class TutorialManager : MonoBehaviour
             gm.AddCredits(playerEmpireIndex, creditsNeeded);
         }
 
-        // Evitar que la IA mande flotas por su cuenta
-        // durante el tutorial.
         enemyPlanet.minUnitsToSend = int.MaxValue;
 
-        // Mantener oculto y bloqueado el planeta rival hasta
-        // que el jugador capture el planeta neutral.
         enemyPlanet.SetTutorialVisibility(false, false);
 
-        // El tutorial empieza sin ningún planeta seleccionado.
         gm.selectedOriginPlanet = null;
         gm.selectedPlanet = null;
     }
@@ -280,8 +270,6 @@ public class TutorialManager : MonoBehaviour
             return;
         }
 
-        // El planeta rival recién aparece y se habilita cuando
-        // el tutorial llega al objetivo de ataque.
         enemyPlanet.SetTutorialVisibility(true, true);
 
         ShowStep(
@@ -339,9 +327,6 @@ public class TutorialManager : MonoBehaviour
         tutorialEnemyShip.isPlayerControlled = false;
         tutorialEnemyShip.currentPlanet = enemyPlanet;
         tutorialEnemyShip.targetPlanet = null;
-
-        // Variar su órbita permite que se acerque a otras naves
-        // y evita que ambas naves mantengan siempre la misma distancia.
         tutorialEnemyShip.orbitSpeed *= 0.7f;
 
         ShipCombat enemyCombat =
@@ -356,9 +341,6 @@ public class TutorialManager : MonoBehaviour
         }
 
         enemySpawned = true;
-
-        // ShipMovement registra la nave en GameManager
-        // desde su propio Start(). No registrarla aquí otra vez.
 
         return true;
     }

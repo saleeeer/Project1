@@ -13,7 +13,6 @@ public class CommanderBattleAura : ShipAbility
     void Awake()
     {
         feedback = GetComponent<AbilityFeedback>();
-        Debug.Log("[AURA] AbilityFeedback encontrado: " + (feedback != null));
     }
 
     void Start()
@@ -44,14 +43,6 @@ public class CommanderBattleAura : ShipAbility
 
         if (distance <= auraRadius)
         {
-            Debug.Log(
-                "[AURA] " + name +
-                " aumenta la velocidad de ataque de un aliado. Distancia: " +
-                distance.ToString("F2") +
-                " | Multiplicador: " +
-                attackRateMultiplier
-            );
-
             return attackRateMultiplier;
         }
 

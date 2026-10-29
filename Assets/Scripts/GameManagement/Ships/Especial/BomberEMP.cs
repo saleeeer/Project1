@@ -29,9 +29,7 @@ public class BomberEMP : ShipAbility
                 Quaternion.identity
             );
 
-            // El efecto acompaña a la nave impactada.
             effect.transform.SetParent(target.transform, true);
-
             Destroy(effect, duration);
         }
 

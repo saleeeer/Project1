@@ -41,20 +41,6 @@ public class FighterOverdrive : ShipAbility
             );
         }
 
-        if (inCombat && !wasInCombat)
-        {
-            Debug.Log(
-                name + " activó OVERDRIVE"
-            );
-        }
-
-        if (!inCombat && wasInCombat)
-        {
-            Debug.Log(
-                name + " desactivó OVERDRIVE"
-            );
-        }
-
         wasInCombat = inCombat;
     }
 

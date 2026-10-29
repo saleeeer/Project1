@@ -22,7 +22,6 @@ public class ShipAbility : MonoBehaviour
         return false;
     }
 
-    // Devuelve true si la habilidad reemplaza el ataque normal.
     public virtual bool TrySpecialAttack(
         ShipCombat target,
         float damage)
@@ -30,14 +29,12 @@ public class ShipAbility : MonoBehaviour
         return false;
     }
 
-    // Se ejecuta cuando un proyectil de esta nave impacta.
     public virtual void OnBulletHit(
         ShipCombat target,
         float damage)
     {
     }
 
-    // Buffs para aliados cercanos.
     public virtual float GetAllyDamageMultiplier(
         Vector3 allyPosition)
     {
@@ -50,7 +47,6 @@ public class ShipAbility : MonoBehaviour
         return 1f;
     }
 
-    // Reducción de daño para aliados cercanos.
     public virtual float GetIncomingDamageMultiplier(
         Vector3 allyPosition)
     {
