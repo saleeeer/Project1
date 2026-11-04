@@ -18,16 +18,12 @@ public class FighterEvasion : ShipAbility
 
     void Awake()
     {
-        feedback =
-            GetComponent<AbilityFeedback>();
+        feedback = GetComponent<AbilityFeedback>();
     }
 
-    public override bool TryEvadeDamage(
-        float damage
-    )
+    public override bool TryEvadeDamage(float damage)
     {
-        bool evade =
-            Random.value < evadeChance;
+        bool evade = Random.value < evadeChance;
 
         if (evade)
         {
@@ -37,6 +33,13 @@ public class FighterEvasion : ShipAbility
                     evadeColor,
                     evadeAlpha,
                     feedbackDuration
+                );
+            }
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX(
+                    AudioManager.Instance.evadeSound
                 );
             }
         }

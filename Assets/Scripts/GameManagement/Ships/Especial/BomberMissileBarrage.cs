@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System.Collections;
 
@@ -49,6 +48,13 @@ public class BomberMissileBarrage : ShipAbility
 
         if (feedback != null)
             feedback.PlayOneShot();
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.rapidFireSound
+            );
+        }
 
         yield return new WaitForSeconds(duration);
 

@@ -1,5 +1,7 @@
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour
 {
@@ -18,6 +20,27 @@ public class AudioManager : MonoBehaviour
     public AudioClip shipSpawn;
     public AudioClip shipDestroyed;
     public AudioClip planetCaptured;
+    public AudioClip overdriveSound;
+    public AudioClip evadeSound;
+    public AudioClip energyShieldSound;
+    public AudioClip battleAuraSound;
+    public AudioClip empSound;
+    public AudioClip rapidFireSound;
+
+    [Header("SFX Control")]
+    [Range(1, 10)]
+    public int maxSimultaneousSFX = 4;
+
+    [Range(0f, 1f)]
+    public float sfxVolumeMultiplier = 0.7f;
+
+    [Range(0f, 1f)]
+    public float abilitySoundCooldown = 0.5f;
+
+    private readonly Dictionary<AudioClip, float> lastPlayedTimes =
+        new Dictionary<AudioClip, float>();
+
+    private int activeSFX = 0;
 
     [Header("Volume")]
     [Range(0f, 1f)]
@@ -90,7 +113,36 @@ public class AudioManager : MonoBehaviour
         if (clip == null)
             return;
 
-        sfxSource.PlayOneShot(clip);
+        // Evita repetir el mismo sonido demasiado seguido.
+        if (lastPlayedTimes.ContainsKey(clip))
+        {
+            float elapsed = Time.time - lastPlayedTimes[clip];
+
+            if (elapsed < abilitySoundCooldown)
+                return;
+        }
+
+        // Limita la cantidad de sonidos simultáneos.
+        if (activeSFX >= maxSimultaneousSFX)
+            return;
+
+        lastPlayedTimes[clip] = Time.time;
+
+        activeSFX++;
+
+        sfxSource.PlayOneShot(
+            clip,
+            sfxVolumeMultiplier
+        );
+
+        StartCoroutine(ReleaseSFXSlot(clip.length));
+    }
+
+    private System.Collections.IEnumerator ReleaseSFXSlot(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        activeSFX = Mathf.Max(0, activeSFX - 1);
     }
 
     public void SetMusicVolume(float volume)

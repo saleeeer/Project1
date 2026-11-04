@@ -19,6 +19,13 @@ public class CommanderEnergyShield : ShipAbility
     {
         if (feedback != null)
             feedback.SetPersistent(true);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.energyShieldSound
+            );
+        }
     }
 
     public override float GetIncomingDamageMultiplier(Vector3 allyPosition)

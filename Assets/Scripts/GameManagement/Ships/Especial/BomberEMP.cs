@@ -38,5 +38,12 @@ public class BomberEMP : ShipAbility
             speedMultiplier,
             attackRateMultiplier
         );
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.empSound
+            );
+        }
     }
 }

@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class FighterOverdrive : ShipAbility
@@ -9,11 +10,13 @@ public class FighterOverdrive : ShipAbility
 
     [Header("Sprite Feedback")]
     public Color overdriveColor = Color.cyan;
+
     [Range(0f, 1f)]
     public float overdriveAlpha = 1f;
 
-    AbilityFeedback feedback;
+   
 
+    AbilityFeedback feedback;
     ShipMovement movement;
 
     bool wasInCombat = false;
@@ -29,16 +32,25 @@ public class FighterOverdrive : ShipAbility
         if (movement == null)
             return;
 
-        bool inCombat =
-            movement.HasCombatTarget;
+        bool inCombat = movement.HasCombatTarget;
 
-        if (feedback != null && inCombat != wasInCombat)
+        if (inCombat != wasInCombat)
         {
-            feedback.SetSpriteFeedback(
-                inCombat,
-                overdriveColor,
-                overdriveAlpha
-            );
+            if (feedback != null)
+            {
+                feedback.SetSpriteFeedback(
+                    inCombat,
+                    overdriveColor,
+                    overdriveAlpha
+                );
+            }
+
+            if (inCombat && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX(
+                    AudioManager.Instance.overdriveSound
+                    );
+            }
         }
 
         wasInCombat = inCombat;
@@ -46,33 +58,24 @@ public class FighterOverdrive : ShipAbility
 
     public override float GetSpeedMultiplier()
     {
-        if (movement != null &&
-            movement.HasCombatTarget)
-        {
+        if (movement != null && movement.HasCombatTarget)
             return speedMultiplier;
-        }
 
         return 1f;
     }
 
     public override float GetAttackRateMultiplier()
     {
-        if (movement != null &&
-            movement.HasCombatTarget)
-        {
+        if (movement != null && movement.HasCombatTarget)
             return attackRateMultiplier;
-        }
 
         return 1f;
     }
 
     public override float GetDamageMultiplier()
     {
-        if (movement != null &&
-            movement.HasCombatTarget)
-        {
+        if (movement != null && movement.HasCombatTarget)
             return damageMultiplier;
-        }
 
         return 1f;
     }

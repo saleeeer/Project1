@@ -146,7 +146,8 @@ MonoBehaviour:
   attackRateMultiplier: 1.2
   damageMultiplier: 1.15
   overdriveColor: {r: 0, g: 0.01790699, b: 0.6603774, a: 1}
-  overdriveAlpha: 1
+  overdriveAlpha: 0.204
+  overdriveSound: {fileID: 8300000, guid: dd5d437b137abc342a13a11280438233, type: 3}
 --- !u!1 &7335127511500774236
 GameObject:
   m_ObjectHideFlags: 0

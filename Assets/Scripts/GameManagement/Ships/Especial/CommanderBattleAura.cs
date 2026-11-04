@@ -19,17 +19,23 @@ public class CommanderBattleAura : ShipAbility
     {
         if (feedback != null)
             feedback.SetPersistent(true);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.battleAuraSound
+            );
+        }
     }
 
     public override float GetAllyDamageMultiplier(
         Vector3 allyPosition
     )
     {
-        float distance =
-            Vector2.Distance(
-                transform.position,
-                allyPosition
-            );
+        float distance = Vector2.Distance(
+            transform.position,
+            allyPosition
+        );
 
         if (distance <= auraRadius)
             return damageMultiplier;
@@ -37,14 +43,17 @@ public class CommanderBattleAura : ShipAbility
         return 1f;
     }
 
-    public override float GetAllyAttackRateMultiplier(Vector3 allyPosition)
+    public override float GetAllyAttackRateMultiplier(
+        Vector3 allyPosition
+    )
     {
-        float distance = Vector2.Distance(transform.position, allyPosition);
+        float distance = Vector2.Distance(
+            transform.position,
+            allyPosition
+        );
 
         if (distance <= auraRadius)
-        {
             return attackRateMultiplier;
-        }
 
         return 1f;
     }

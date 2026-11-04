@@ -2697,6 +2697,15 @@ MonoBehaviour:
   shipSpawn: {fileID: 8300000, guid: 61231d94acc77044db957cb38635f79b, type: 3}
   shipDestroyed: {fileID: 8300000, guid: e8cf546474c88404e8b640830dec8d43, type: 3}
   planetCaptured: {fileID: 8300000, guid: 694dea765e2ae0740bacbb86292e0078, type: 3}
+  overdriveSound: {fileID: 8300000, guid: 7b242c2896c860347af2eb168ac19019, type: 3}
+  evadeSound: {fileID: 0}
+  energyShieldSound: {fileID: 0}
+  battleAuraSound: {fileID: 0}
+  empSound: {fileID: 0}
+  rapidFireSound: {fileID: 0}
+  maxSimultaneousSFX: 4
+  sfxVolumeMultiplier: 0.7
+  abilitySoundCooldown: 0.5
   musicVolume: 1
   sfxVolume: 1
 --- !u!4 &1148733654
