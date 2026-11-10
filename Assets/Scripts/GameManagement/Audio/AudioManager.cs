@@ -26,6 +26,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip battleAuraSound;
     public AudioClip empSound;
     public AudioClip rapidFireSound;
+    public AudioClip victorySound;
+    public AudioClip defeatSound;
+    public AudioClip eventVideoSound;
 
     [Header("SFX Control")]
     [Range(1, 10)]

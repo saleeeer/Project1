@@ -8,18 +8,21 @@ public class FighterOverdrive : ShipAbility
     public float attackRateMultiplier = 1.20f;
     public float damageMultiplier = 1.15f;
 
+    [Header("Activation Chance")]
+    [Range(0f, 1f)]
+    public float activationChance = 0.30f;
+
     [Header("Sprite Feedback")]
     public Color overdriveColor = Color.cyan;
 
     [Range(0f, 1f)]
     public float overdriveAlpha = 1f;
 
-   
-
     AbilityFeedback feedback;
     ShipMovement movement;
 
     bool wasInCombat = false;
+    bool overdriveActive = false;
 
     void Awake()
     {
@@ -34,23 +37,33 @@ public class FighterOverdrive : ShipAbility
 
         bool inCombat = movement.HasCombatTarget;
 
-        if (inCombat != wasInCombat)
+        if (inCombat && !wasInCombat)
         {
-            if (feedback != null)
-            {
-                feedback.SetSpriteFeedback(
-                    inCombat,
-                    overdriveColor,
-                    overdriveAlpha
-                );
-            }
+            overdriveActive = Random.value < activationChance;
 
-            if (inCombat && AudioManager.Instance != null)
+            if (overdriveActive)
             {
-                AudioManager.Instance.PlaySFX(
-                    AudioManager.Instance.overdriveSound
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySFX(
+                        AudioManager.Instance.overdriveSound
                     );
+                }
             }
+        }
+
+        if (!inCombat)
+        {
+            overdriveActive = false;
+        }
+
+        if (inCombat != wasInCombat && feedback != null)
+        {
+            feedback.SetSpriteFeedback(
+                inCombat && overdriveActive,
+                overdriveColor,
+                overdriveAlpha
+            );
         }
 
         wasInCombat = inCombat;
@@ -58,25 +71,16 @@ public class FighterOverdrive : ShipAbility
 
     public override float GetSpeedMultiplier()
     {
-        if (movement != null && movement.HasCombatTarget)
-            return speedMultiplier;
-
-        return 1f;
+        return overdriveActive ? speedMultiplier : 1f;
     }
 
     public override float GetAttackRateMultiplier()
     {
-        if (movement != null && movement.HasCombatTarget)
-            return attackRateMultiplier;
-
-        return 1f;
+        return overdriveActive ? attackRateMultiplier : 1f;
     }
 
     public override float GetDamageMultiplier()
     {
-        if (movement != null && movement.HasCombatTarget)
-            return damageMultiplier;
-
-        return 1f;
+        return overdriveActive ? damageMultiplier : 1f;
     }
 }

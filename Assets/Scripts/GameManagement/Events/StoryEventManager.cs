@@ -120,6 +120,13 @@ public class StoryEventManager : MonoBehaviour
 
         eventVideoPanel.SetActive(true);
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.eventVideoSound
+            );
+        }
+
         eventVideoPlayer.Stop();
 
         eventVideoPlayer.clip =

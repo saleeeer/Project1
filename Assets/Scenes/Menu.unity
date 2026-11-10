@@ -2698,11 +2698,14 @@ MonoBehaviour:
   shipDestroyed: {fileID: 8300000, guid: e8cf546474c88404e8b640830dec8d43, type: 3}
   planetCaptured: {fileID: 8300000, guid: 694dea765e2ae0740bacbb86292e0078, type: 3}
   overdriveSound: {fileID: 8300000, guid: 7b242c2896c860347af2eb168ac19019, type: 3}
-  evadeSound: {fileID: 0}
-  energyShieldSound: {fileID: 0}
-  battleAuraSound: {fileID: 0}
-  empSound: {fileID: 0}
-  rapidFireSound: {fileID: 0}
+  evadeSound: {fileID: 8300000, guid: 03a44e23eb9fda1488858dcb6769b2dd, type: 3}
+  energyShieldSound: {fileID: 8300000, guid: 68c201af091b9084d8e17d8193a8497b, type: 3}
+  battleAuraSound: {fileID: 8300000, guid: 7e76cf17bae245a41b0eb1db28d5fffe, type: 3}
+  empSound: {fileID: 8300000, guid: 6bef50eb92aad454db6072ecc9a97155, type: 3}
+  rapidFireSound: {fileID: 8300000, guid: 68c201af091b9084d8e17d8193a8497b, type: 3}
+  victorySound: {fileID: 8300000, guid: b1b0b29fe459b3541b7ea0ba07762e82, type: 3}
+  defeatSound: {fileID: 8300000, guid: e58b4b952b633b649925dc50e335b8c3, type: 3}
+  eventVideoSound: {fileID: 8300000, guid: 344d2f5a2d72f2140aa4d3390de9133e, type: 3}
   maxSimultaneousSFX: 4
   sfxVolumeMultiplier: 0.7
   abilitySoundCooldown: 0.5

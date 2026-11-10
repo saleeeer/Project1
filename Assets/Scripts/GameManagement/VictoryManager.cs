@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,17 +23,17 @@ public class VictoryManager : MonoBehaviour
         // ================= TEST =================
 
 #if UNITY_EDITOR
-if (Input.GetKeyDown(KeyCode.V))
-{
-    Win();
-    return;
-}
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            Win();
+            return;
+        }
 
-if (Input.GetKeyDown(KeyCode.D))
-{
-    Lose();
-    return;
-}
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Lose();
+            return;
+        }
 #endif
 
         // ================= NORMAL =================
@@ -83,6 +84,13 @@ if (Input.GetKeyDown(KeyCode.D))
 
         victoryPanel.SetActive(true);
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.victorySound
+            );
+        }
+
         Time.timeScale = 0f;
     }
 
@@ -91,6 +99,13 @@ if (Input.GetKeyDown(KeyCode.D))
         gameEnded = true;
 
         defeatPanel.SetActive(true);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.defeatSound
+            );
+        }
 
         Time.timeScale = 0f;
     }
