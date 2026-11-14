@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
@@ -10,6 +11,7 @@ public class EmpireSelectionUI : MonoBehaviour
     public VideoClip transitionVideo;
 
     int selectedEmpire;
+    bool loadingLevel = false;
 
     void Start()
     {
@@ -18,6 +20,9 @@ public class EmpireSelectionUI : MonoBehaviour
 
     public void SelectEmpire(int empireIndex)
     {
+        if (loadingLevel)
+            return;
+
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySFX(
@@ -27,16 +32,23 @@ public class EmpireSelectionUI : MonoBehaviour
 
         selectedEmpire = empireIndex;
 
-        PlayerPrefs.SetInt("SelectedEmpire", empireIndex);
+        PlayerPrefs.SetInt("SelectedEmpire", selectedEmpire);
         PlayerPrefs.Save();
 
+        loadingLevel = true;
+
         videoPanel.SetActive(true);
+        videoPlayer.Stop();
         videoPlayer.clip = transitionVideo;
         videoPlayer.Play();
     }
 
     void OnVideoFinished(VideoPlayer vp)
     {
+        if (!loadingLevel)
+            return;
+
+        loadingLevel = false;
         SceneManager.LoadScene("Level");
     }
 
