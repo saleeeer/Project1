@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -20,29 +19,26 @@ public class MainMenuUI : MonoBehaviour
 
     GameObject nextCanvas;
 
-    bool isTransitioning = false;
-
     void Start()
     {
         videoPanel.SetActive(false);
+
         videoPlayer.loopPointReached += OnVideoFinished;
     }
 
     public void PlayMenu()
     {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.buttonClick
+            );
+        }
         PlayVideo(SelectionCanvas_1, selectionCanvas);
     }
 
     public void PlayOptions()
     {
-        PlayVideo(MenuCanvas, OptionCanvas);
-    }
-
-    void PlayVideo(VideoClip clip, GameObject canvasToOpen)
-    {
-        if (isTransitioning)
-            return;
-
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySFX(
@@ -50,7 +46,18 @@ public class MainMenuUI : MonoBehaviour
             );
         }
 
-        isTransitioning = true;
+        PlayVideo(MenuCanvas, OptionCanvas);
+    }
+
+    void PlayVideo(VideoClip clip, GameObject canvasToOpen)
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                AudioManager.Instance.buttonClick
+            );
+        }
+
         nextCanvas = canvasToOpen;
 
         videoPanel.SetActive(true);
@@ -66,14 +73,7 @@ public class MainMenuUI : MonoBehaviour
             currentCanvas.SetActive(false);
 
         if (nextCanvas != null)
-        {
             nextCanvas.SetActive(true);
-            currentCanvas = nextCanvas;
-        }
-
-        videoPanel.SetActive(false);
-        nextCanvas = null;
-        isTransitioning = false;
     }
 
     public void ExitGame()
@@ -86,12 +86,7 @@ public class MainMenuUI : MonoBehaviour
         }
 
         Debug.Log("Cerrando juego...");
-        Application.Quit();
-    }
 
-    void OnDestroy()
-    {
-        if (videoPlayer != null)
-            videoPlayer.loopPointReached -= OnVideoFinished;
+        Application.Quit();
     }
 }

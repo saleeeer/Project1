@@ -173,6 +173,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d297371d777350c478ee22faa667f2b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  missileCount: 3
-  damagePerMissile: 0.45
+  activationChance: 0.25
   attackRateMultiplier: 0.8
+  duration: 2

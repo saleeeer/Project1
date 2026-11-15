@@ -11,18 +11,9 @@ public class EmpireSelectionUI : MonoBehaviour
     public VideoClip transitionVideo;
 
     int selectedEmpire;
-    bool loadingLevel = false;
-
-    void Start()
-    {
-        videoPlayer.loopPointReached += OnVideoFinished;
-    }
 
     public void SelectEmpire(int empireIndex)
     {
-        if (loadingLevel)
-            return;
-
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySFX(
@@ -32,12 +23,17 @@ public class EmpireSelectionUI : MonoBehaviour
 
         selectedEmpire = empireIndex;
 
-        PlayerPrefs.SetInt("SelectedEmpire", selectedEmpire);
+        PlayerPrefs.SetInt("SelectedEmpire", empireIndex);
         PlayerPrefs.Save();
 
-        loadingLevel = true;
+        // Evitar suscripciones duplicadas.
+        videoPlayer.loopPointReached -= OnVideoFinished;
+
+        // Escuchar únicamente la transición de selección.
+        videoPlayer.loopPointReached += OnVideoFinished;
 
         videoPanel.SetActive(true);
+
         videoPlayer.Stop();
         videoPlayer.clip = transitionVideo;
         videoPlayer.Play();
@@ -45,16 +41,17 @@ public class EmpireSelectionUI : MonoBehaviour
 
     void OnVideoFinished(VideoPlayer vp)
     {
-        if (!loadingLevel)
-            return;
+        // Dejar de escuchar antes de cambiar de escena.
+        videoPlayer.loopPointReached -= OnVideoFinished;
 
-        loadingLevel = false;
         SceneManager.LoadScene("Level");
     }
 
     void OnDestroy()
     {
         if (videoPlayer != null)
+        {
             videoPlayer.loopPointReached -= OnVideoFinished;
+        }
     }
 }

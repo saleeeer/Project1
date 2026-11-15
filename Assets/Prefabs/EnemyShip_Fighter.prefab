@@ -189,8 +189,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   evadeChance: 0.284
-  evadeColor: {r: 1, g: 1, b: 1, a: 0}
-  evadeAlpha: 0.698
+  evadeColor: {r: 0.38679248, g: 0.38679248, b: 0.38679248, a: 1}
+  evadeAlpha: 0.125
   feedbackDuration: 0.25
 --- !u!114 &-9121264542758312376
 MonoBehaviour:
