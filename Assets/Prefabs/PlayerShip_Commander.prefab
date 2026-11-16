@@ -107,7 +107,7 @@ MonoBehaviour:
   empireIndex: 0
   orbitDistance: 20
   orbitSpeed: 50
-  captureTime: 1
+  captureTime: 4
   currentPlanet: {fileID: 0}
   targetPlanet: {fileID: 0}
   path: []
