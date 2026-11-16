@@ -332,22 +332,27 @@ public class GameManager : MonoBehaviour
         return total;
     }
 
+
     public bool IsEmpireAlive(int empireIndex)
     {
-        PlanetData[] planets =
-            FindObjectsOfType<PlanetData>();
+        if (GalaxyGenerator.Instance == null)
+            return false;
+
+        List<PlanetData> planets =
+            GalaxyGenerator.Instance.allPlanets;
 
         foreach (PlanetData planet in planets)
         {
-            if (planet.ownerEmpireIndex ==
-                empireIndex)
-            {
+            if (planet == null)
+                continue;
+
+            if (planet.ownerEmpireIndex == empireIndex)
                 return true;
-            }
         }
 
         return false;
     }
+
 
     public EmpireStats GetEmpireBaseStats(int index)
     {
