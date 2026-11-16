@@ -52,7 +52,6 @@ public class PlanetData : MonoBehaviour
     public Sprite valkurionSprite;
     public Sprite novaeonSprite;
     public Sprite heliosIXSprite;
-    public Sprite calystrumSprite;
     public Sprite orionisSprite;
     public Sprite dominiaSprite;
     public Sprite SpriteneutralPlanetSprite;
@@ -160,10 +159,6 @@ public class PlanetData : MonoBehaviour
                 break;
 
             case PlanetType.HeliosIX:
-                baseIncome = 2;
-                break;
-
-            case PlanetType.Calystrum:
                 baseIncome = 2;
                 break;
 
@@ -728,6 +723,8 @@ public class PlanetData : MonoBehaviour
             sr =
                 GetComponent<SpriteRenderer>();
 
+       
+
         switch (planetType)
         {
             case PlanetType.AstraPrime:
@@ -750,11 +747,6 @@ public class PlanetData : MonoBehaviour
                     heliosIXSprite;
                 break;
 
-            case PlanetType.Calystrum:
-                sr.sprite =
-                    calystrumSprite;
-                break;
-
             case PlanetType.Orionis:
                 sr.sprite =
                     orionisSprite;
@@ -770,5 +762,17 @@ public class PlanetData : MonoBehaviour
                     SpriteneutralPlanetSprite;
                 break;
         }
+
+        if (sr.sprite == null)
+        {
+            Debug.LogError(
+                $"PLANETA INVISIBLE: {name} | " +
+                $"Tipo: {planetType} | " +
+                "No tiene un Sprite asignado.",
+                gameObject
+            );
+        }
     }
+
+
 }

@@ -157,10 +157,6 @@ public class GalaxyGenerator : MonoBehaviour
                 planet.statBuff.morale = 5;
                 break;
 
-            case PlanetType.Calystrum:
-                planet.statBuff.intelligence = 5;
-                break;
-
             case PlanetType.Orionis:
                 planet.statBuff.power = 2;
                 planet.statBuff.defense = 2;
@@ -193,7 +189,6 @@ public class GalaxyGenerator : MonoBehaviour
             case 1: return PlanetType.Valkurion;
             case 2: return PlanetType.Novaeon;
             case 3: return PlanetType.HeliosIX;
-            case 4: return PlanetType.Calystrum;
             case 5: return PlanetType.Orionis;
             case 6: return PlanetType.Dominia;
         }

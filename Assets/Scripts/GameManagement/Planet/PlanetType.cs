@@ -6,7 +6,6 @@ public enum PlanetType
     Valkurion,
     Novaeon,
     HeliosIX,
-    Calystrum,
     Orionis,
     Dominia
 }
