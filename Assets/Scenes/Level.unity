@@ -3105,8 +3105,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   empires:
-  - name: Blue
-    color: {r: 0, g: 0.74262595, b: 1, a: 1}
+  - name: Green
+    color: {r: 0.22821677, g: 1, b: 0, a: 1}
     stats:
       power: 2
       defense: 5
