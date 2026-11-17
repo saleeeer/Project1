@@ -27,11 +27,19 @@ public class FleetSelectorUI : MonoBehaviour
 
     void Update()
     {
-        // Abrir o cerrar el selector con Ctrl.
         if (Input.GetKeyDown(KeyCode.LeftControl) ||
             Input.GetKeyDown(KeyCode.RightControl))
         {
             ToggleSelector();
+        }
+
+        // Si el juego se pausa por cualquier motivo,
+        // cerrar el selector si estaba abierto.
+        if (Time.timeScale == 0f &&
+            fleetSelectorPanel != null &&
+            fleetSelectorPanel.activeSelf)
+        {
+            fleetSelectorPanel.SetActive(false);
         }
     }
 
@@ -39,6 +47,14 @@ public class FleetSelectorUI : MonoBehaviour
     {
         if (fleetSelectorPanel == null)
             return;
+
+        // No permitir abrir el selector durante pausa,
+        // eventos, victoria o derrota.
+        if (Time.timeScale == 0f)
+        {
+            fleetSelectorPanel.SetActive(false);
+            return;
+        }
 
         fleetSelectorPanel.SetActive(
             !fleetSelectorPanel.activeSelf
