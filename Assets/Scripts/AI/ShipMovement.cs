@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,6 +51,17 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
+    public bool CanReceiveFleetOrder
+    {
+        get
+        {
+            return currentPlanet != null &&
+                   isOrbiting &&
+                   !isCapturing &&
+                   path.Count == 0;
+        }
+    }
+
     void Awake()
     {
         combat = GetComponent<ShipCombat>();
@@ -75,18 +87,16 @@ public class ShipMovement : MonoBehaviour
         PlanetData[] planets =
             FindObjectsOfType<PlanetData>();
 
-        float minDist =
-            Mathf.Infinity;
+        float minDist = Mathf.Infinity;
 
         PlanetData closest = null;
 
         foreach (PlanetData p in planets)
         {
-            float dist =
-                Vector2.Distance(
-                    transform.position,
-                    p.transform.position
-                );
+            float dist = Vector2.Distance(
+                transform.position,
+                p.transform.position
+            );
 
             if (dist < minDist)
             {
@@ -108,9 +118,6 @@ public class ShipMovement : MonoBehaviour
     {
         HandleCombat();
 
-        if (isPlayerControlled)
-            HandleInput();
-
         if (isOrbiting)
             Orbit();
         else
@@ -123,15 +130,12 @@ public class ShipMovement : MonoBehaviour
     {
         currentTarget = null;
 
-        float closestDistance =
-            Mathf.Infinity;
+        float closestDistance = Mathf.Infinity;
 
         if (GameManager.Instance == null)
             return;
 
-        foreach (
-            ShipMovement other
-            in GameManager.Instance.allShips)
+        foreach (ShipMovement other in GameManager.Instance.allShips)
         {
             if (other == this)
                 continue;
@@ -139,11 +143,10 @@ public class ShipMovement : MonoBehaviour
             if (other.empireIndex == empireIndex)
                 continue;
 
-            float dist =
-                Vector2.Distance(
-                    transform.position,
-                    other.transform.position
-                );
+            float dist = Vector2.Distance(
+                transform.position,
+                other.transform.position
+            );
 
             if (dist <= combat.attackRange)
             {
@@ -157,94 +160,57 @@ public class ShipMovement : MonoBehaviour
                     other.GetComponent<ShipCombat>();
 
                 if (enemyCombat != null)
-                {
                     combat.TryAttack(enemyCombat);
-                }
             }
         }
 
         if (currentTarget != null)
-        {
-            LookAt(
-                currentTarget.transform.position
-            );
-        }
+            LookAt(currentTarget.transform.position);
     }
 
     void LookAt(Vector3 target)
     {
         Vector3 dir =
-            (target - transform.position)
-            .normalized;
+            (target - transform.position).normalized;
 
         if (dir == Vector3.zero)
             return;
 
-        float angle =
-            Mathf.Atan2(
-                dir.y,
-                dir.x
-            ) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(
+            dir.y,
+            dir.x
+        ) * Mathf.Rad2Deg;
 
         transform.rotation =
-            Quaternion.Euler(
-                0,
-                0,
-                angle
-            );
-    }
-
-    // ================= INPUT =================
-
-    void HandleInput()
-    {
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (Camera.main == null)
-                return;
-
-            Vector2 mouseWorld =
-                Camera.main.ScreenToWorldPoint(
-                    Input.mousePosition
-                );
-
-            RaycastHit2D hit =
-                Physics2D.Raycast(
-                    mouseWorld,
-                    Vector2.zero
-                );
-
-            if (hit.collider == null)
-                return;
-
-            PlanetData planet =
-                hit.collider.GetComponent<PlanetData>();
-
-            if (planet == null)
-            {
-                planet =
-                    hit.collider
-                    .GetComponentInParent<PlanetData>();
-            }
-
-            if (planet != null)
-            {
-                SetTarget(planet);
-            }
-        }
+            Quaternion.Euler(0, 0, angle);
     }
 
     // ================= MOVIMIENTO =================
 
-    public void SetTarget(
-        PlanetData newTarget
-    )
+    public void SetTarget(PlanetData newTarget)
     {
-        if (currentPlanet == null)
+        if (currentPlanet == null || newTarget == null)
             return;
 
-        if (newTarget == null)
+        if (isCapturing)
+        {
+            Debug.Log(
+                "Primero tenés que completar la captura del planeta."
+            );
             return;
+        }
+
+        if (newTarget == currentPlanet)
+            return;
+
+        if (currentPlanet.neighbors == null ||
+            !currentPlanet.neighbors.Contains(newTarget))
+        {
+            Debug.LogWarning(
+                "Destino no permitido: primero tenés que avanzar por los planetas vecinos."
+            );
+            return;
+        }
 
         targetPlanet = newTarget;
 
@@ -254,88 +220,58 @@ public class ShipMovement : MonoBehaviour
         currentIndex = 0;
 
         isOrbiting = false;
-
-        if (isCapturing)
-        {
-            StopCoroutine(
-                nameof(CaptureRoutine)
-            );
-
-            isCapturing = false;
-        }
     }
 
     void Move()
     {
-        if (path == null ||
-            path.Count == 0)
-        {
+        if (path == null || path.Count == 0)
             return;
-        }
 
         if (currentIndex >= path.Count)
             return;
 
-        PlanetData targetNode =
-            path[currentIndex];
+        PlanetData targetNode = path[currentIndex];
 
         if (targetNode == null)
             return;
 
-        Vector3 targetPos =
-            targetNode.transform.position;
+        Vector3 targetPos = targetNode.transform.position;
 
         Vector3 direction =
-            (targetPos - transform.position)
-            .normalized;
+            (targetPos - transform.position).normalized;
 
         if (direction != Vector3.zero &&
             currentTarget == null)
         {
-            float angle =
-                Mathf.Atan2(
-                    direction.y,
-                    direction.x
-                ) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(
+                direction.y,
+                direction.x
+            ) * Mathf.Rad2Deg;
 
             transform.rotation =
-                Quaternion.Euler(
-                    0,
-                    0,
-                    angle
-                );
+                Quaternion.Euler(0, 0, angle);
         }
 
-        float currentSpeed =
-            speed;
+        float currentSpeed = speed;
 
         if (currentTarget != null)
-        {
-            currentSpeed *=
-         combat.GetExternalSpeedMultiplier();
-        }
+            currentSpeed *= combat.GetExternalSpeedMultiplier();
 
         if (ability != null)
-        {
-            currentSpeed *=
-                ability.GetSpeedMultiplier();
-        }
+            currentSpeed *= ability.GetSpeedMultiplier();
 
-        transform.position =
-            Vector3.MoveTowards(
-                transform.position,
-                targetPos,
-                currentSpeed *
-                Time.deltaTime
-            );
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPos,
+            currentSpeed * Time.deltaTime
+        );
 
         if (Vector3.Distance(
-                transform.position,
-                targetPos
-            ) < 0.1f)
+            transform.position,
+            targetPos
+        ) < 0.1f)
         {
-            currentPlanet =
-                targetNode;
+            currentPlanet = targetNode;
 
             isOrbiting = true;
 
@@ -343,15 +279,12 @@ public class ShipMovement : MonoBehaviour
 
             path.Clear();
 
-            SnapToOrbit(
-                currentPlanet
-            );
+            SnapToOrbit(currentPlanet);
 
-            if (!isCapturing)
+            if (!isCapturing &&
+                currentPlanet.ownerEmpireIndex != empireIndex)
             {
-                StartCoroutine(
-                    CaptureRoutine()
-                );
+                StartCoroutine(CaptureRoutine());
             }
         }
     }
@@ -382,15 +315,12 @@ public class ShipMovement : MonoBehaviour
 
         if (currentPlanet != null)
         {
-            currentPlanet.SetOwner(
-                empireIndex
-            );
+            currentPlanet.SetOwner(empireIndex);
 
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlaySFX(
-                    AudioManager.Instance
-                    .planetCaptured
+                    AudioManager.Instance.planetCaptured
                 );
             }
         }
@@ -405,101 +335,73 @@ public class ShipMovement : MonoBehaviour
         if (currentPlanet == null)
             return;
 
-        float currentOrbitSpeed =
-            orbitSpeed;
+        float currentOrbitSpeed = orbitSpeed;
 
         if (currentTarget != null)
-        {
-            currentOrbitSpeed *=
-        combat.GetExternalSpeedMultiplier();
-        }
+            currentOrbitSpeed *= combat.GetExternalSpeedMultiplier();
 
-        orbitAngle +=
-            currentOrbitSpeed *
-            Time.deltaTime;
+        orbitAngle += currentOrbitSpeed * Time.deltaTime;
 
-        float rad =
-            orbitAngle *
-            Mathf.Deg2Rad;
+        float rad = orbitAngle * Mathf.Deg2Rad;
 
-        Vector3 offset =
-            new Vector3(
-                Mathf.Cos(rad),
-                Mathf.Sin(rad),
-                0
-            ) * orbitDistance;
+        Vector3 offset = new Vector3(
+            Mathf.Cos(rad),
+            Mathf.Sin(rad),
+            0
+        ) * orbitDistance;
 
         transform.position =
-            currentPlanet.transform.position +
-            offset;
+            currentPlanet.transform.position + offset;
 
         if (currentTarget != null)
         {
-            LookAt(
-                currentTarget.transform.position
-            );
+            LookAt(currentTarget.transform.position);
         }
         else
         {
-            Vector3 direction =
-                new Vector3(
-                    -Mathf.Sin(rad),
-                    Mathf.Cos(rad),
-                    0
-                );
+            Vector3 direction = new Vector3(
+                -Mathf.Sin(rad),
+                Mathf.Cos(rad),
+                0
+            );
 
-            float angle =
-                Mathf.Atan2(
-                    direction.y,
-                    direction.x
-                ) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(
+                direction.y,
+                direction.x
+            ) * Mathf.Rad2Deg;
 
             transform.rotation =
-                Quaternion.Euler(
-                    0,
-                    0,
-                    angle
-                );
+                Quaternion.Euler(0, 0, angle);
         }
     }
 
     // ================= ORBITA INICIAL =================
 
-    void SnapToOrbit(
-        PlanetData planet
-    )
+    void SnapToOrbit(PlanetData planet)
     {
         if (planet == null)
             return;
 
         Vector2 dir =
-            transform.position -
-            planet.transform.position;
+            transform.position - planet.transform.position;
 
         if (dir.magnitude < 0.01f)
         {
-            dir =
-                Random.insideUnitCircle
-                .normalized;
+            dir = Random.insideUnitCircle.normalized;
         }
         else
         {
-            dir =
-                dir.normalized;
+            dir = dir.normalized;
         }
 
-        orbitAngle =
-            Mathf.Atan2(
-                dir.y,
-                dir.x
-            ) * Mathf.Rad2Deg;
+        orbitAngle = Mathf.Atan2(
+            dir.y,
+            dir.x
+        ) * Mathf.Rad2Deg;
 
         transform.position =
             planet.transform.position +
-            (Vector3)(
-                dir *
-                orbitDistance
-            );
+            (Vector3)(dir * orbitDistance);
     }
 
     // ================= DESTROY =================
@@ -508,8 +410,7 @@ public class ShipMovement : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            GameManager.Instance
-                .UnregisterShip(this);
+            GameManager.Instance.UnregisterShip(this);
         }
     }
 }

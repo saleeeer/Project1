@@ -115,6 +115,10 @@ public class TutorialManager : MonoBehaviour
 
     void SetupScenario()
     {
+        // Conecta los planetas del tutorial para que el nuevo
+        // sistema de movimiento por planetas vecinos funcione.
+        ConnectTutorialPlanets();
+
         playerHome.SetOwner(playerEmpireIndex);
         neutralPlanet.SetOwner(-1);
         enemyPlanet.SetOwner(enemyEmpireIndex);
@@ -282,6 +286,33 @@ public class TutorialManager : MonoBehaviour
             "cuando entren en rango.",
             false
         );
+    }
+
+    // ================= CONEXIONES DEL TUTORIAL =================
+
+    void ConnectTutorialPlanets()
+    {
+        if (playerHome == null || neutralPlanet == null || enemyPlanet == null)
+        {
+            Debug.LogError("TutorialManager: no se pudieron conectar los planetas. Revisá las referencias.");
+            return;
+        }
+
+        // Player Home <-> Neutral Planet
+        if (!playerHome.neighbors.Contains(neutralPlanet))
+            playerHome.neighbors.Add(neutralPlanet);
+
+        if (!neutralPlanet.neighbors.Contains(playerHome))
+            neutralPlanet.neighbors.Add(playerHome);
+
+        // Neutral Planet <-> Enemy Planet
+        if (!neutralPlanet.neighbors.Contains(enemyPlanet))
+            neutralPlanet.neighbors.Add(enemyPlanet);
+
+        if (!enemyPlanet.neighbors.Contains(neutralPlanet))
+            enemyPlanet.neighbors.Add(neutralPlanet);
+
+        Debug.Log("TutorialManager: conexiones entre planetas del tutorial configuradas correctamente.");
     }
 
     // ================= ENEMIGO DE PRÁCTICA =================
