@@ -11,6 +11,7 @@ public class TutorialManager : MonoBehaviour
     {
         Intro,
         SpawnShip,
+        FleetSelection,
         MoveToNeutral,
         CaptureNeutral,
         OrderAttack,
@@ -44,6 +45,9 @@ public class TutorialManager : MonoBehaviour
     int enemyEmpireIndex;
 
     int shipsBeforeSpawn;
+
+    // Detecta si el jugador eligió una opción del selector.
+    int fleetSelectionVersionBefore;
 
     ShipMovement tutorialEnemyShip;
     bool enemySpawned = false;
@@ -157,7 +161,22 @@ public class TutorialManager : MonoBehaviour
         {
             case TutorialStep.SpawnShip:
 
-                if (CountPlayerShips() > shipsBeforeSpawn)
+                // El jugador necesita construir 8 naves
+                // adicionales para aprender a seleccionar flotas.
+                if (CountPlayerShips() >= shipsBeforeSpawn + 8)
+                {
+                    BeginFleetSelectionStep();
+                }
+
+                break;
+
+            case TutorialStep.FleetSelection:
+
+                // Avanza únicamente cuando el jugador selecciona
+                // una de las opciones del selector.
+                if (FleetSelectorUI.Instance != null &&
+                    FleetSelectorUI.Instance.SelectionVersion >
+                    fleetSelectionVersionBefore)
                 {
                     BeginMoveStep();
                 }
@@ -236,11 +255,35 @@ public class TutorialManager : MonoBehaviour
 
         ShowStep(
             TutorialStep.SpawnShip,
-            "OBJETIVO 1: CONSTRUIR UNA NAVE\n\n" +
-            "1. Hace click izquierdo sobre tu planeta base.\n" +
-            "2. Usa el boton de spawn de naves del HUD.\n\n" +
-            "El planeta necesita unidades disponibles y " +
-            "creditos para construir una nave.",
+            "OBJETIVO 1: CONSTRUIR TU FLOTA\n\n" +
+            "Hace click izquierdo sobre tu planeta base " +
+            "y utiliza el boton de spawn del HUD para construir naves.\n\n" +
+            "Necesitas construir 8 naves para continuar.\n\n" +
+            "Recorda que necesitas unidades disponibles y creditos.",
+            false
+        );
+    }
+
+    void BeginFleetSelectionStep()
+    {
+        if (FleetSelectorUI.Instance == null)
+        {
+            Debug.LogError(
+                "TutorialManager: no se encontró FleetSelectorUI."
+            );
+            return;
+        }
+
+        fleetSelectionVersionBefore =
+            FleetSelectorUI.Instance.SelectionVersion;
+
+        ShowStep(
+            TutorialStep.FleetSelection,
+            "OBJETIVO 2: SELECCIONAR EL TAMAÑO DE TU FLOTA\n\n" +
+            "¡Ahora que tenes varias naves, podes elegir cuantas enviar!\n\n" +
+            "1. Presiona CTRL para abrir el selector de flotas.\n" +
+            "2. Elegi entre enviar 1, 4 u 8 naves.\n\n" +
+            "Selecciona una de las opciones para continuar.",
             false
         );
     }
@@ -249,11 +292,11 @@ public class TutorialManager : MonoBehaviour
     {
         ShowStep(
             TutorialStep.MoveToNeutral,
-            "OBJETIVO 2: MOVER TU FLOTA\n\n" +
+            "OBJETIVO 3: MOVER TU FLOTA\n\n" +
             "Hace click derecho sobre el planeta neutral " +
-            "del mapa para enviar tus naves hacia el.\n\n" +
-            "El movimiento y la captura se realizarán " +
-            "automaticamente.",
+            "del mapa para enviar la cantidad de naves que elegiste.\n\n" +
+            "Las naves viajaran automaticamente y comenzaran " +
+            "a capturar el planeta cuando lleguen.",
             false
         );
     }
@@ -278,7 +321,7 @@ public class TutorialManager : MonoBehaviour
 
         ShowStep(
             TutorialStep.OrderAttack,
-            "OBJETIVO 3: ATACAR AL OTRO IMPERIO\n\n" +
+            "OBJETIVO 4: ATACAR AL OTRO IMPERIO\n\n" +
             "Hace click derecho sobre el planeta enemigo " +
             "para ordenar el ataque.\n\n" +
             "Hay una nave defensora esperando. " +
@@ -292,9 +335,13 @@ public class TutorialManager : MonoBehaviour
 
     void ConnectTutorialPlanets()
     {
-        if (playerHome == null || neutralPlanet == null || enemyPlanet == null)
+        if (playerHome == null ||
+            neutralPlanet == null ||
+            enemyPlanet == null)
         {
-            Debug.LogError("TutorialManager: no se pudieron conectar los planetas. Revisá las referencias.");
+            Debug.LogError(
+                "TutorialManager: no se pudieron conectar los planetas. Revisá las referencias."
+            );
             return;
         }
 
@@ -312,7 +359,9 @@ public class TutorialManager : MonoBehaviour
         if (!enemyPlanet.neighbors.Contains(neutralPlanet))
             enemyPlanet.neighbors.Add(neutralPlanet);
 
-        Debug.Log("TutorialManager: conexiones entre planetas del tutorial configuradas correctamente.");
+        Debug.Log(
+            "TutorialManager: conexiones entre planetas del tutorial configuradas correctamente."
+        );
     }
 
     // ================= ENEMIGO DE PRÁCTICA =================

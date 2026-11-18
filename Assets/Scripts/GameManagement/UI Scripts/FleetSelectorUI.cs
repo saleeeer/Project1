@@ -14,6 +14,10 @@ public class FleetSelectorUI : MonoBehaviour
 
     public int SelectedFleetSize => selectedFleetSize;
 
+    // Permite detectar cuándo el jugador selecciona
+    // una opción del menú de flotas.
+    public int SelectionVersion { get; private set; }
+
     void Awake()
     {
         Instance = this;
@@ -79,6 +83,10 @@ public class FleetSelectorUI : MonoBehaviour
     void SelectFleetSize(int amount)
     {
         selectedFleetSize = amount;
+
+        // Incrementa la versión cada vez que se elige
+        // una opción, incluso si es la misma que antes.
+        SelectionVersion++;
 
         Debug.Log(
             "Tamaño de flota seleccionado: " +
