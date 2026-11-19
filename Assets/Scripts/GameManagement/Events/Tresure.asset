@@ -29,29 +29,29 @@ MonoBehaviour:
     rewardAccuracy: 2
     rewardMorale: 0
     rewardIntelligence: 0
-    penaltyCredits: 1
+    penaltyCredits: 20
     penaltyPower: 0
     penaltyDefense: 0
     penaltyAccuracy: 0
-    penaltyMorale: 1
-    penaltyIntelligence: 2
+    penaltyMorale: 11
+    penaltyIntelligence: 14
     successMessage: El tesoro a aumentado la moral de tu ejercito
     failureMessage: La avaricia a condenado a parte de tu civilizacion
   - choiceText: Destruir
-    requiredPower: 5
-    requiredDefense: 7
+    requiredPower: 14
+    requiredDefense: 12
     requiredIntelligence: 0
     requiredMorale: 0
-    rewardCredits: 0
-    rewardPower: 0
+    rewardCredits: 11
+    rewardPower: 7
     rewardDefense: 0
     rewardAccuracy: 0
-    rewardMorale: 2
-    rewardIntelligence: 4
+    rewardMorale: 12
+    rewardIntelligence: 5
     penaltyCredits: 0
-    penaltyPower: 2
-    penaltyDefense: 3
-    penaltyAccuracy: 1
+    penaltyPower: 7
+    penaltyDefense: 5
+    penaltyAccuracy: 4
     penaltyMorale: 0
     penaltyIntelligence: 0
     successMessage: Destruiste el artefacto

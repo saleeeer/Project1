@@ -16,40 +16,40 @@ MonoBehaviour:
   description: Un grupo se puso rebelde en uno de tus planetas.
   choices:
   - choiceText: Aplastarla
-    requiredPower: 8
+    requiredPower: 13
     requiredDefense: 0
     requiredIntelligence: 0
-    requiredMorale: 6
-    rewardCredits: 0
+    requiredMorale: 11
+    rewardCredits: 17
     rewardPower: 3
     rewardDefense: 2
     rewardAccuracy: 1
     rewardMorale: 1
     rewardIntelligence: 0
-    penaltyCredits: 0
-    penaltyPower: 4
-    penaltyDefense: 2
-    penaltyAccuracy: 1
-    penaltyMorale: 5
+    penaltyCredits: 20
+    penaltyPower: 12
+    penaltyDefense: 5
+    penaltyAccuracy: 3
+    penaltyMorale: 7
     penaltyIntelligence: 0
     successMessage: La has aplastado.
     failureMessage: Derrotan a tus tropas.
   - choiceText: Negociar
     requiredPower: 0
     requiredDefense: 0
-    requiredIntelligence: 7
-    requiredMorale: 5
+    requiredIntelligence: 14
+    requiredMorale: 13
     rewardCredits: 40
     rewardPower: 2
     rewardDefense: 2
     rewardAccuracy: 2
     rewardMorale: 1
     rewardIntelligence: 4
-    penaltyCredits: 0
-    penaltyPower: 3
-    penaltyDefense: 2
-    penaltyAccuracy: 1
-    penaltyMorale: 4
-    penaltyIntelligence: 2
+    penaltyCredits: 32
+    penaltyPower: 11
+    penaltyDefense: 5
+    penaltyAccuracy: 3
+    penaltyMorale: 6
+    penaltyIntelligence: 12
     successMessage: Funciono, reino la paz
     failureMessage: Su rebelion continua......

@@ -46,7 +46,8 @@ public class TutorialManager : MonoBehaviour
 
     int shipsBeforeSpawn;
 
-    // Detecta si el jugador eligió una opción del selector.
+    // Detecta cuándo el jugador selecciona una opción
+    // en el selector de flotas.
     int fleetSelectionVersionBefore;
 
     ShipMovement tutorialEnemyShip;
@@ -119,8 +120,6 @@ public class TutorialManager : MonoBehaviour
 
     void SetupScenario()
     {
-        // Conecta los planetas del tutorial para que el nuevo
-        // sistema de movimiento por planetas vecinos funcione.
         ConnectTutorialPlanets();
 
         playerHome.SetOwner(playerEmpireIndex);
@@ -161,8 +160,6 @@ public class TutorialManager : MonoBehaviour
         {
             case TutorialStep.SpawnShip:
 
-                // El jugador necesita construir 8 naves
-                // adicionales para aprender a seleccionar flotas.
                 if (CountPlayerShips() >= shipsBeforeSpawn + 8)
                 {
                     BeginFleetSelectionStep();
@@ -172,8 +169,6 @@ public class TutorialManager : MonoBehaviour
 
             case TutorialStep.FleetSelection:
 
-                // Avanza únicamente cuando el jugador selecciona
-                // una de las opciones del selector.
                 if (FleetSelectorUI.Instance != null &&
                     FleetSelectorUI.Instance.SelectionVersion >
                     fleetSelectionVersionBefore)
@@ -322,7 +317,7 @@ public class TutorialManager : MonoBehaviour
         ShowStep(
             TutorialStep.OrderAttack,
             "OBJETIVO 4: ATACAR AL OTRO IMPERIO\n\n" +
-            "Hace click derecho sobre el planeta enemigo " +
+            "Hace click izquierdo sobre tu nuevo planeta para controlar las naves de ahi y click derecho para mandarlas sobre el planeta enemigo" +
             "para ordenar el ataque.\n\n" +
             "Hay una nave defensora esperando. " +
             "Las naves comenzarán a combatir automáticamente " +
@@ -407,7 +402,22 @@ public class TutorialManager : MonoBehaviour
         tutorialEnemyShip.isPlayerControlled = false;
         tutorialEnemyShip.currentPlanet = enemyPlanet;
         tutorialEnemyShip.targetPlanet = null;
-        tutorialEnemyShip.orbitSpeed *= 0.7f;
+
+        // Mantener la nave en una posición fija.
+        // Sigue orbitando, pero con velocidad cero.
+        tutorialEnemyShip.orbitSpeed = 0f;
+
+        tutorialEnemyShip.path.Clear();
+
+        // Desactivar la IA para evitar que intente
+        // moverse o conquistar otros planetas.
+        AIShipController enemyAI =
+            enemyObject.GetComponent<AIShipController>();
+
+        if (enemyAI != null)
+        {
+            enemyAI.enabled = false;
+        }
 
         ShipCombat enemyCombat =
             enemyObject.GetComponent<ShipCombat>();

@@ -16,8 +16,8 @@ MonoBehaviour:
   description: Una tribu antigua fue encontrada en uno de tus planetas.
   choices:
   - choiceText: Robarle
-    requiredPower: 6
-    requiredDefense: 5
+    requiredPower: 15
+    requiredDefense: 10
     requiredIntelligence: 0
     requiredMorale: 0
     rewardCredits: 100
@@ -27,29 +27,29 @@ MonoBehaviour:
     rewardMorale: 2
     rewardIntelligence: 0
     penaltyCredits: 0
-    penaltyPower: 3
-    penaltyDefense: 2
-    penaltyAccuracy: 2
-    penaltyMorale: 2
+    penaltyPower: 8
+    penaltyDefense: 5
+    penaltyAccuracy: 4
+    penaltyMorale: 3
     penaltyIntelligence: 0
     successMessage: Has robado los recursos
     failureMessage: Tu intento es aplastado, fallaste.
   - choiceText: Trabajar junto a ellos
     requiredPower: 0
     requiredDefense: 0
-    requiredIntelligence: 6
-    requiredMorale: 5
-    rewardCredits: 0
+    requiredIntelligence: 14
+    requiredMorale: 16
+    rewardCredits: 20
     rewardPower: 3
     rewardDefense: 1
     rewardAccuracy: 0
     rewardMorale: 5
     rewardIntelligence: 4
-    penaltyCredits: 0
-    penaltyPower: 4
+    penaltyCredits: 10
+    penaltyPower: 8
     penaltyDefense: 1
     penaltyAccuracy: 1
-    penaltyMorale: 3
-    penaltyIntelligence: 2
+    penaltyMorale: 10
+    penaltyIntelligence: 13
     successMessage: Estan contentos de trabajar contigo.
     failureMessage: Te traicionaron.
